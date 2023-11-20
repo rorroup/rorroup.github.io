@@ -1,0 +1,136 @@
+
+{
+	"name": "Rodrigo Alejandro Urrutia Pozo",
+	"title": "Bachelor of Electrical Engineering, Graduated",
+	
+	
+	"Personal": {
+		"name": "Personal",
+		"content": [
+			["direction", "Peñalolén, Santiago"],
+			["age", "31 years old"],
+			["civil", "Single"],
+			["nationality", "Chilean"],
+			["phone", "+569 78700660"],
+			["email", "rorroup@gmail.com"]
+		]
+	},
+	
+	"Links": {
+		"name": "Links",
+		"content": [
+			["resume", "Resume"],
+			["github", "/rorroup"],
+			["linkedin", "/rodrigo-urrutia-pozo"]
+		]
+	},
+	
+	
+	"Software": {
+		"name": "Software",
+		"content": [
+			["Office", 3],
+			["MATLAB", 3],
+			["FEMM", 2],
+			["PLECS", 2],
+			["DIgSILENT", 2],
+			["Visual Studio", 2]
+		]
+	},
+	
+	"Programming": {
+		"name": "Programming",
+		"content": [
+			["C", 2],
+			["C++", 3],
+			["Python", 4],
+			["Lua ", 4],
+			["HTML", 2],
+			["CSS", 2],
+			["Javascript", 3],
+			["PHP", 2],
+			["MySQL", 2],
+			["LaTeX", 3]
+		]
+	},
+	
+	"Language": {
+		"name": "Language",
+		"content": [
+			["Spanish", "Native"],
+			["English", 4]
+		]
+	},
+	
+	
+	"Profile": {
+		"name": "Profile",
+		"content": [
+			"Bachelor of Electrical Engineering graduate with experience in transformer design and dissolved gas analysis. Deeply interested in software development and its digital electronics association which has motivated increasingly comprehensive programming and software development self teaching."
+		]
+	},
+	
+	"Experience": {
+		"name": "Experience",
+		"content": [
+			{
+				"date": "2021 - 2023",
+				"job": "Thesis development",
+				"institution": "Universidad Técnica Federico Santa María, Main Campus, Valparaíso",
+				"detail": [
+					"Transformer and filter design and modeling for a modified high dc current rectifier for simulation and technical analysis."
+				]
+			},
+			{
+				"date": "2019",
+				"job": "Pre project",
+				"institution": "Expreso Rancagua",
+				"detail": [
+					"Factibility and cost evaluation of changing an urban bus fleet to electric buses."
+				]
+			},
+			{
+				"date": "2019",
+				"job": "Internship",
+				"institution": "Pacific Hydro, Rancagua",
+				"detail": [
+					"Assigned to the electrical maintenance team and maintenance planning department overseeing hydroelectric plants."
+				]
+			}
+		]
+	},
+	
+	"Education": {
+		"name": "Education",
+		"content": [
+			{
+				"date": "2011 - 2021",
+				"job": "Bachelor of Electrical Engineering",
+				"institution": "Universidad Técnica Federico Santa María, Main Campus, Valparaíso",
+				"detail": [
+					"Graduate student."
+				]
+			},
+			{
+				"date": "Finished 2010",
+				"job": "High School Diploma",
+				"institution": "Colegio Instituto Inglés, Rancagua"
+			}
+		]
+	},
+	
+	"References": {
+		"name": "References",
+		"content": [
+			{
+				"person": "Cristóbal González",
+				"job": "Planning and innovation Manager",
+				"institution": "Pacific Hydro",
+				"detail": [
+					"+569 83532438",
+					"cgonzalez@pacifichydro.cl"
+				]
+			}
+		]
+    }
+}

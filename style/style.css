@@ -1,0 +1,90 @@
+
+/* =========   TEMP   ========== */
+
+#temp{
+	display: block;
+	position: fixed;
+	left: 0px;
+	top: 50%;
+	transform: translateY(-50%);
+	border: 1px solid red;
+	background-color: black;
+	z-index: 100;
+}
+
+/* ============================= */
+
+*{
+	/* Remove extra whitespace around elements. */
+	margin: 0px;
+	padding: 0px;
+	outline: none;
+	border: 0px;
+}
+
+body{
+	position: relative;
+	width: 100%;
+	background-color: #111111;
+	color: #FFFFFF;
+}
+
+header,
+main
+{
+	position: relative;
+	width: 100%;
+}
+
+footer{
+	position: fixed;
+	width: 100%;
+	bottom: 0px;
+}
+
+hr{
+	border: 1px solid;
+}
+
+section{
+	display: block;
+	position: relative;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+	box-sizing: border-box;
+	z-index: 1;
+}
+
+#background
+{
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+#title{
+	padding: 20px 0px;
+	background-color: black;
+	color: white;
+}
+
+#title_name
+{
+	font-size: 40pt;
+	font-variant: small-caps;
+	text-align: center;
+	margin: 10px auto;
+}
+
+.centering{
+	text-align: center;
+}
+
+.show{
+	display: block !important;
+}
+
+.credits{
+	text-align: right;
+}

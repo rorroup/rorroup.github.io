@@ -1,0 +1,327 @@
+
+/* =========  DIALOGUE  ========= */
+
+#dialogue{
+	display: none;
+	font-size: 14pt;
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
+#dialogue_prompt
+{
+	font-size: inherit;
+	width: 50%;
+	height: 75%;
+	position: relative;
+	top: 0px;
+	margin: 0px auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+}
+
+#dialogue_input
+{
+	position: absolute;
+	width: 50%;
+	height: 25%;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 4px;
+	border: 2px solid #9933FF;
+	background-color: #5900B3;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-around;
+}
+
+#dialogue_input>input,
+#dialogue_input>button
+{
+	font-size: inherit;
+}
+
+#dialogue_input>input
+{
+	width: 80%;
+	text-align: center;
+}
+
+#dialogue_input>button
+{
+	display: block;
+	padding: 2px 1ex;
+	width: 5em;
+	box-sizing: border-box;
+}
+
+.dialogue_choice{
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 4px;
+	border: 2px solid #000033;
+	background-color: #000022;
+}
+
+.dialogue_choice:hover{
+	background-color: #003200;
+}
+
+#dialogue_talk
+{
+	position: relative;
+	width: 100%;
+	height: 25%;
+	bottom: 0px;
+	margin: 0px auto;
+	background-color: #440000;
+	border: 2px solid white;
+	border-radius: 15px;
+	padding: 15px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+}
+
+#dialogue_name
+{
+	position: absolute;
+	bottom: 100%;
+	left: 0px;
+}
+
+#dialogue_text
+{
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+#dialogue_button
+{
+	font-size: inherit;
+	display: block;
+	padding: 2px 1ex;
+	width: 5em;
+	box-sizing: border-box;
+	margin: 1em 0px 0px auto;
+}
+
+
+.dropdown_container{
+	position: relative;
+}
+
+.dropdown_trigger{
+	border: 2px dotted #FF0000;
+}
+
+.dropdown_content{
+	background-color: #440000;
+	display: none;
+	position: absolute;
+	min-width: 24ch;
+	overflow: auto;
+	left: 0px;
+	top: 100%;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	padding: 12px 16px;
+	z-index: 1;
+}
+
+.dropdown_container:hover>.dropdown_content{
+	display: inline-block;
+}
+
+
+/* =========    NPC    ========= */
+
+#npc /* npc */
+{
+	display: none;
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	width: 75vh;
+	height: 75vh;
+	/* transform: translateX(10%); */
+}
+
+#npc>div
+{
+	background-color: #222222;
+}
+
+/* References:
+* https://www.dwuser.com/education/content/creating-responsive-tiled-layout-with-pure-css/
+*/
+#npc>div:nth-last-child(1) /* head */
+{
+	width: 50%;
+	padding-bottom: 50%;
+	border-radius: 50%;
+	position: absolute;
+	top: 0px;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+#npc>div:nth-last-child(1)>div:nth-child(1) /* eyes */
+{
+	width: 90%;
+	height: 30%;
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: space-around;
+}
+
+#npc>div:nth-last-child(1)>div:nth-child(1)>div:nth-child(1), /* left eye */
+#npc>div:nth-last-child(1)>div:nth-child(1)>div:nth-child(2) /* right eye */
+{
+	position: relative;
+	background-color: white;
+}
+
+.eyes_surprise
+{
+	width: 20%;
+	padding-bottom: 20%;
+	border-radius: 50%;
+}
+
+.eyes_happy
+{
+	width: 8%;
+	padding-bottom: 5%;
+	border-radius: 50% 50% 0px 0px / 100% 100% 0px 0px;
+}
+
+.eyes_angryL
+{
+	width: 8%;
+	padding-bottom: 5%;
+	border-radius: 0px 0px 50% 50% / 0px 0px 100% 100%;
+	background-color: #FF0000 !important;
+	transform: rotate(30deg);
+}
+
+.eyes_angryR
+{
+	width: 8%;
+	padding-bottom: 5%;
+	border-radius: 0px 0px 50% 50% / 0px 0px 100% 100%;
+	background-color: #FF0000 !important;
+	transform: rotate(-30deg);
+}
+
+.eyes_blink
+{
+	width: 8%;
+	padding-bottom: 8%;
+	border-radius: 50%;
+	animation-name: a_eyes_blink;
+	animation-duration: 3s;
+	animation-iteration-count: infinite;
+}
+
+@keyframes a_eyes_blink
+{
+	10%{
+		padding-bottom: 8%;
+	}
+	20%{
+		padding-bottom: 0%;
+	}
+	30%{
+		padding-bottom: 8%;
+	}
+}
+
+#npc>div:nth-last-child(1)>div:nth-child(2) /* mouth */
+{
+	position: absolute;
+	top: 65%;
+	left: 50%;
+	transform: translateX(-50%);
+	background-color: pink;
+}
+
+.mouth_idle
+{
+	width: 10%;
+	height: 2%;
+	border-radius: 50%;
+}
+
+.mouth_surprise
+{
+	width: 30%;
+	height: 25%;
+	border-radius: 20%;
+}
+
+.mouth_smile
+{
+	width: 18%;
+	height: 8%;
+	border-radius: 0px 0px 50% 50% / 0px 0px 100% 100%;
+}
+
+.mouth_angry
+{
+	width: 15%;
+	height: 5%;
+	border-radius: 50% 50% 0px 0px / 100% 100% 0px 0px;
+}
+
+.mouth_talk
+{
+	width: 15%;
+	height: 5%;
+	border-radius: 50%;
+	animation-name: a_mouth_talk;
+	animation-duration: 0.8s;
+	animation-iteration-count: 4;
+}
+
+@keyframes a_mouth_talk
+{
+	25%{
+		width: 15%;
+		height: 15%;
+	}
+	50%{
+		width: 15%;
+		height: 5%;
+	}
+	75%{
+		width: 5%;
+		height: 5%;
+	}
+}
+
+
+#npc>div:nth-child(1) /* body */
+{
+	width: 100%;
+	padding-bottom: 120%;
+	position: absolute;
+	bottom: 0px;
+	left: 50%;
+	border-radius: 50%;
+	transform: translate(-50%, 50%);
+}

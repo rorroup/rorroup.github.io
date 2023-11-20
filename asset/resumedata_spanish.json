@@ -1,0 +1,150 @@
+
+{
+	"name": "Rodrigo Alejandro Urrutia Pozo",
+	"title": "Egresado de Ingeniería Eléctrica",
+	
+	
+	"Personal": {
+		"name": "Personal",
+		"content": [
+			["direction", "Peñalolén, Santiago"],
+			["age", "31 años"],
+			["civil", "Soltero"],
+			["nationality", "Chileno"],
+			["phone", "+569 78700660"],
+			["email", "rorroup@gmail.com"]
+		]
+	},
+	
+	"Links": {
+		"name": "Enlaces",
+		"content": [
+			["resume", "Currículum Vitae"],
+			["github", "/rorroup"],
+			["linkedin", "/rodrigo-urrutia-pozo"]
+		]
+	},
+	
+	
+	"Software": {
+		"name": "Software",
+		"content": [
+			["Office", 3],
+			["MATLAB", 3],
+			["FEMM", 2],
+			["PLECS", 2],
+			["DIgSILENT", 2],
+			["Visual Studio", 2]
+		]
+	},
+	
+	
+	"Programming": {
+		"name": "Programación",
+		"content": [
+			["C", 2],
+			["C++", 3],
+			["Python", 4],
+			["Lua ", 4],
+			["HTML", 2],
+			["CSS", 2],
+			["Javascript", 3],
+			["PHP", 2],
+			["MySQL", 2],
+			["LaTeX", 3]
+		]
+	},
+	
+	
+	"Language": {
+		"name": "Idioma",
+		"content": [
+			["Español", "Nativo"],
+			["Inglés", 4]
+		]
+	},
+	
+	
+	"Profile": {
+		"name": "Perfil",
+		"content": [
+			"Egresado de Ingeniería Eléctrica en la Universidad Técnica Federico Santa María, con experiencia en el diseño electromagnético y diagnóstico cromatográfico de transformadores. Ampliamente interesado en la computación y su asociación con la electrónica digital, que ha motivado un creciente aprendizaje sobre programación y desarrollo de software."
+		]
+	},
+	
+	"Experience": {
+		"name": "Experiencia",
+		"content": [
+			{
+				"date": "2021 - 2023",
+				"job": "Memorista",
+				"institution": "Universidad Técnica Federico Santa María, Casa Central, Valparaíso",
+				"detail": [
+					"Diseño y modelamiento circuital del transformador y los filtros armónicos para la conexión modificada de un rectificador de alta corriente de manera de analizar y comparar su desempeño a partir de simulaciones computacionales."
+				]
+			},
+			{
+				"date": "2019",
+				"job": "Anteproyecto",
+				"institution": "Expreso Rancagua",
+				"detail": [
+					"Análisis de factibilidad y evaluación de costos del reemplazo de una flota de microbuses para transporte urbano por microbuses eléctricos."
+				]
+			},
+			{
+				"date": "2019",
+				"job": "Practicante",
+				"institution": "Pacific Hydro, Rancagua",
+				"detail": [
+					"Confección de una especificación técnica para el reemplazo de las baterías del circuito de respaldo en corriente continua de una central generadora.",
+					"Diagnóstico de transformadores de centrales generadoras y subestaciones a partir de las pruebas cromatográficas de sus mantenimientos."
+				]
+			}
+		]
+	},
+	
+	"Education": {
+		"name": "Educación",
+		"content": [
+			{
+				"date": "2011 - 2021",
+				"job": "Estudios Profesionales",
+				"institution": "Universidad Técnica Federico Santa María, Casa Central, Valparaíso",
+				"detail": [
+					"Ingeniería Eléctrica, Egresado"
+				]
+			},
+			{
+				"date": "2004 - 2010",
+				"job": "Enseñanza Básica y Media",
+				"institution": "Colegio Instituto Inglés, Rancagua",
+				"detail": [
+					"Sexto Básico a Cuarto Medio"
+				]
+			},
+			{
+				"date": "1997 - 2003",
+				"job": "Enseñanza Básica",
+				"institution": "Colegio De La Salle, La Reina, Santiago",
+				"detail": [
+					"Parvulario a Quinto Básico"
+				]
+			}
+		]
+	},
+	
+	"References": {
+		"name": "Referencias",
+		"content": [
+			{
+				"person": "Cristóbal González",
+				"job": "Jefe de Planificación e Innovación",
+				"institution": "Pacific Hydro",
+				"detail": [
+					"+569 83532438",
+					"cgonzalez@pacifichydro.cl"
+				]
+			}
+		]
+    }
+}
