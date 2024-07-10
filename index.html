@@ -16,7 +16,11 @@
 		<link rel="stylesheet" href="style/resume.css"/>
 		<link rel="stylesheet" href="style/demo.css"/>
 		
-		<script src="https://kit.fontawesome.com/127833a4af.js" crossorigin="anonymous"></script>
+		<!-- <script src="https://kit.fontawesome.com/127833a4af.js" crossorigin="anonymous"></script> -->
+		
+		<script type="text/javascript" src="script/projection.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.8.1/gl-matrix-min.js" integrity="sha512-zhHQR0/H5SEBL3Wn6yYSaTTZej12z0hVZKOv3TwCUXT1z5qeqGcXJLLrbERYRScEDDpYIJhPC1fk31gqR783iQ==" crossorigin="anonymous" defer></script>
+		<script src="script/graphics.js" type="module"></script>
 		
 	</head>
 	<body>
@@ -26,55 +30,8 @@
 			
 			<section id="">
 				
-				<div id="background">
-					<div id="title">
-						<h1 id="title_name">The Penicilina Quest</h1>
-					</div>
-					<div id="demo" class="">
-						<div id="demo_wrapper">
-							<canvas id="demo_canvas">
-							</canvas>
-							<p id="demo_instruction">Click to play</p>
-							<div id="demo_cover"></div>
-						</div>
-					</div>
-				</div>
-				
-				<div id="npc" class="">
-					<div>
-					</div>
-					<div>
-						<div>
-							<div class=""></div>
-							<div class=""></div>
-						</div>
-						<div class=""></div>
-					</div>
-				</div>
-				
-				<div id="dialogue" class="">
-					<div id="dialogue_prompt">
-					</div>
-					<div id="dialogue_talk">
-						<div id="dialogue_name"></div>
-						<div id="dialogue_text"></div>
-						<div><button id="dialogue_button"></button></div>
-					</div>
-				</div>
-				
-				<div id="resume" class="">
-					<div id="resume_resume">
-						<div id="resume_top">
-						</div>
-						<div id="resume_columns">
-							<div id="resume_left">
-							</div>
-							<div id="resume_right">
-							</div>
-						</div>
-					</div>
-					<div id="resume_close"><p>Close</p></div>
-				</div>
+				<canvas id="glcanvas">Your browser does not seem to support HTML canvas.</canvas>
+
 				
 			</section>
 			
@@ -87,11 +44,8 @@
 			</div>
 		</footer>
 	</body>
-	<script src="script/lib/Vector2.js"></script>
-	<script src="script/lib/canvas2d.js"></script>
-	<script src="script/lib/animation.js"></script>
-	<script src="script/general.js"></script>
-	<script src="script/dialogue.js"></script>
-	<script src="script/demo.js"></script>
-	<script src="script/resume.js"></script>
+	<!-- <script type="text/javascript" src="script/buffers.js"></script> -->
+	<!-- <script type="text/javascript" src="script/draw.js"></script> -->
+	
+
 </html>
