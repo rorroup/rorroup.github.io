@@ -45,6 +45,10 @@ function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
     modelViewMatrix, // matrix to translate
     [-0.0, 0.0, -6.0],
   ); // amount to translate
+  
+  
+  // Tell WebGL to use our program when drawing
+  gl.useProgram(programInfo.program);
 
   // Tell WebGL how to pull out the positions from the position
   // buffer into the vertexPosition attribute.
@@ -56,8 +60,7 @@ function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
 
 
 
-  // Tell WebGL to use our program when drawing
-  gl.useProgram(programInfo.program);
+  
 
   // Set the shader uniforms
   gl.uniformMatrix4fv(
