@@ -50,12 +50,7 @@ function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
   // buffer into the vertexPosition attribute.
   setPositionAttribute(gl, buffers, programInfo, itime);
   
-  
   setTextureAttribute(gl, buffers, programInfo);
-
-  
-  // Tell WebGL which indices to use to index the vertices
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffers.indices);
   
   setNormalAttribute(gl, buffers, programInfo);
 
@@ -128,7 +123,7 @@ gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
   const vertexCount = 36;
   const type = gl.UNSIGNED_SHORT;
   const offset = 0;
-  gl.drawElements(gl.TRIANGLES, vertexCount, type, offset);
+  gl.drawArrays(gl.TRIANGLES, 0, vertexCount);
 }
 
 }
