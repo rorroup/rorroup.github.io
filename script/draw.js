@@ -48,7 +48,7 @@ function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
   );
   
   
-  const rotationSpeedX = 100 * Math.PI / 180.0;
+  const rotationSpeedX = 0.2 * Math.PI / 180.0;
   squareRotationX += rotationSpeedX * timeDelta;
   if(squareRotationX > 2 * Math.PI) squareRotationX -= 2 * Math.PI;
   
