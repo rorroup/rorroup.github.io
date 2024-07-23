@@ -288,6 +288,31 @@ class Body{
 		// Tell the shader we bound the texture to texture unit 0
 		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 		
+		
+		
+		// Set the drawing position to the "identity" point, which is
+		// the center of the scene.
+		const modelViewMatrix = mat4.create();
+
+		// Now move the drawing position a bit to where we want to
+		// start drawing the square.
+		mat4.translate(
+			modelViewMatrix, // destination matrix
+			modelViewMatrix, // matrix to translate
+			[-0.0, 0.0, -6.0],
+		); // amount to translate
+		
+		const normalMatrix = mat4.create();
+		mat4.invert(normalMatrix, modelViewMatrix);
+		mat4.transpose(normalMatrix, normalMatrix);
+
+		gl.uniformMatrix4fv(
+			programInfo.uniformLocations.normalMatrix,
+			false,
+			normalMatrix,
+		);
+		
+		
 		gl.drawArrays(gl.TRIANGLES, this.model.offset, this.model.vertexCount);
 	}
 	

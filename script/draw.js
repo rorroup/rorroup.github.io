@@ -13,17 +13,7 @@ function drawScene(gl, programInfo, bodies, timeDelta) {
   // Tell WebGL to use our program when drawing
   gl.useProgram(programInfo.program);
 
-  // Set the drawing position to the "identity" point, which is
-  // the center of the scene.
-  const modelViewMatrix = mat4.create();
 
-  // Now move the drawing position a bit to where we want to
-  // start drawing the square.
-  mat4.translate(
-    modelViewMatrix, // destination matrix
-    modelViewMatrix, // matrix to translate
-    [-0.0, 0.0, -6.0],
-  ); // amount to translate
   
 
   // Set the shader uniforms
@@ -34,16 +24,6 @@ function drawScene(gl, programInfo, bodies, timeDelta) {
   );
   
   bodies.update(timeDelta);
-  
-  const normalMatrix = mat4.create();
-mat4.invert(normalMatrix, modelViewMatrix);
-mat4.transpose(normalMatrix, normalMatrix);
-
-gl.uniformMatrix4fv(
-  programInfo.uniformLocations.normalMatrix,
-  false,
-  normalMatrix,
-);
   
   bodies.draw(gl, programInfo);
 
