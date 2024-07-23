@@ -1,8 +1,6 @@
 
-import { initBuffers } from "./buffers.js";
 import { drawScene } from "./draw.js";
 
-var iTime = 0;
 
 // Vertex shader program
 const vsSource = `
@@ -50,7 +48,6 @@ const fsSource = `
   `;
 
 
-
 //
 // start here
 //
@@ -90,21 +87,17 @@ const programInfo = {
   },
 };
 
-
   // Set clear color to black, fully opaque
   // gl.clearColor(1.0, 0.0, 0.0, 1.0);
   // Clear the color buffer with specified clear color
   // gl.clear(gl.COLOR_BUFFER_BIT);
 
-
 // Here's where we call the routine that builds all the
 // objects we'll be drawing.
-const buffers = new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), new Model(gl, 2.0, 1.0, 1.0), gl);
-
+const body = new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), new Model(gl, 2.0, 1.0, 1.0), gl);
 
 // Flip image pixels into the bottom-to-top order that WebGL expects.
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-
 
 
 let then = 0;
@@ -113,16 +106,12 @@ let then = 0;
 function render(now) {
   let deltaTime = now - then;
   then = now;
-  iTime++;
 
-  drawScene(gl, programInfo, buffers, deltaTime, iTime);
+  drawScene(gl, programInfo, body, deltaTime);
   
-
   requestAnimationFrame(render);
 }
 requestAnimationFrame(render);
-
-
 
 }
 

@@ -1,6 +1,6 @@
 
 
-function drawScene(gl, programInfo, buffers, timeDelta, itime) {
+function drawScene(gl, programInfo, bodies, timeDelta) {
   gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
   gl.clearDepth(1.0); // Clear everything
   gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -33,7 +33,7 @@ function drawScene(gl, programInfo, buffers, timeDelta, itime) {
     new Float32Array(myProjectionMatrix.el[0].concat(myProjectionMatrix.el[1]).concat(myProjectionMatrix.el[2]).concat(myProjectionMatrix.el[3]))
   );
   
-  buffers.update(timeDelta);
+  bodies.update(timeDelta);
   
   const normalMatrix = mat4.create();
 mat4.invert(normalMatrix, modelViewMatrix);
@@ -44,15 +44,8 @@ gl.uniformMatrix4fv(
   false,
   normalMatrix,
 );
-
-
-  // Tell WebGL how to pull out the positions from the position
-  // buffer into the vertexPosition attribute.
-  // setPositionAttribute(gl, buffers, programInfo);
-  // setTextureAttribute(gl, buffers, programInfo);
-  // setNormalAttribute(gl, buffers, programInfo);
   
-  buffers.draw(gl, programInfo);
+  bodies.draw(gl, programInfo);
 
 }
 
