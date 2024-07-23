@@ -46,14 +46,7 @@ gl.uniformMatrix4fv(
 );
 
 
-// Tell WebGL we want to affect texture unit 0
-gl.activeTexture(gl.TEXTURE0);
 
-// Bind the texture to texture unit 0
-gl.bindTexture(gl.TEXTURE_2D, texture);
-
-// Tell the shader we bound the texture to texture unit 0
-gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 
 
   // Tell WebGL how to pull out the positions from the position

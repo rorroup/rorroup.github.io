@@ -208,6 +208,7 @@ class Model{
 		]);
 		this.vertexCount = 36;
 		this.offset = 0;
+		// Load texture
 		this.texture = loadTextureCopy(gl, "cubetexture.png");
 	}
 }
@@ -277,6 +278,15 @@ class Body{
 				0, 0, 0, 1,
 			])
 		);
+		
+		// Tell WebGL we want to affect texture unit 0
+		gl.activeTexture(gl.TEXTURE0);
+
+		// Bind the texture to texture unit 0
+		gl.bindTexture(gl.TEXTURE_2D, this.model.texture);
+
+		// Tell the shader we bound the texture to texture unit 0
+		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 		
 		gl.drawArrays(gl.TRIANGLES, this.model.offset, this.model.vertexCount);
 	}

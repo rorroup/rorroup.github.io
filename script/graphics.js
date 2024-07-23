@@ -102,8 +102,6 @@ const programInfo = {
 const buffers = new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), new Model(gl, 2.0, 1.0, 1.0), gl);
 
 
-// Load texture
-const texture = loadTexture(gl, "cubetexture.png");
 // Flip image pixels into the bottom-to-top order that WebGL expects.
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 
