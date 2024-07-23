@@ -99,7 +99,7 @@ const programInfo = {
 
 // Here's where we call the routine that builds all the
 // objects we'll be drawing.
-const buffers = initBuffers(gl);
+const buffers = new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), new Model(gl, 2.0, 1.0, 1.0), gl);
 
 
 // Load texture

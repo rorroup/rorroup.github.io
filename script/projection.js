@@ -74,3 +74,243 @@ function makeCube(x, y, z){
 	return positions;
 }
 
+//
+// Initialize a texture and load an image.
+// When the image finished loading copy it into the texture.
+//
+function loadTextureCopy(gl, url) {
+  const texture = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+
+  // Because images have to be downloaded over the internet
+  // they might take a moment until they are ready.
+  // Until then put a single pixel in the texture so we can
+  // use it immediately. When the image has finished downloading
+  // we'll update the texture with the contents of the image.
+  const level = 0;
+  const internalFormat = gl.RGBA;
+  const width = 1;
+  const height = 1;
+  const border = 0;
+  const srcFormat = gl.RGBA;
+  const srcType = gl.UNSIGNED_BYTE;
+  const pixel = new Uint8Array([0, 255, 255, 255]); // opaque cyan
+  gl.texImage2D(
+    gl.TEXTURE_2D,
+    level,
+    internalFormat,
+    width,
+    height,
+    border,
+    srcFormat,
+    srcType,
+    pixel,
+  );
+/*
+  const image = new Image();
+  image.onload = () => {
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      level,
+      internalFormat,
+      srcFormat,
+      srcType,
+      image,
+    );
+
+    // WebGL1 has different requirements for power of 2 images
+    // vs. non power of 2 images so check if the image is a
+    // power of 2 in both dimensions.
+    if (isPowerOf2(image.width) && isPowerOf2(image.height)) {
+      // Yes, it's a power of 2. Generate mips.
+      gl.generateMipmap(gl.TEXTURE_2D);
+    } else {
+      // No, it's not a power of 2. Turn off mips and set
+      // wrapping to clamp to edge
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    }
+  };
+  image.src = url;
+*/
+  return texture;
+}
+
+class Model{
+	constructor(gl, x, y, z){
+		x = x * 0.5;
+		y = y * 0.5;
+		z = z * 0.5;
+		this.vertices = new Float32Array([
+			// Front face
+			// 0	1	2	3
+			-x, -y, z, x, -y, z, x, y, z, -x, -y, z, x, y, z, -x, y, z,
+
+			// Back face
+			// 4	5	6	7
+			-x, -y, -z, -x, y, -z, x, y, -z, -x, -y, -z, x, y, -z, x, -y, -z,
+
+			// Top face
+			// 8	9	10	11
+			-x, y, -z, -x, y, z, x, y, z, -x, y, -z, x, y, z, x, y, -z,
+
+			// Bottom face
+			// 12	13	14	15
+			-x, -y, -z, x, -y, -z, x, -y, z, -x, -y, -z, x, -y, z, -x, -y, z,
+
+			// Right face
+			// 16	17	18	19
+			x, -y, -z, x, y, -z, x, y, z, x, -y, -z, x, y, z, x, -y, z,
+
+			// Left face
+			// 20	21	22	23
+			-x, -y, -z,	// 20
+			-x, -y, z,	// 21
+			-x, y, z,	// 22
+			-x, -y, -z,
+			-x, y, z,
+			-x, y, -z,	// 23
+		]);
+		this.normals = new Float32Array([
+			// Front
+			0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
+
+			// Back
+			0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0,
+
+			// Top
+			0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+
+			// Bottom
+			0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0,
+
+			// Right
+			1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+
+			// Left
+			-1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0,
+		]);
+		this.texCoordinates = new Float32Array([
+			// Front
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Back
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Top
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Bottom
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Right
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Left
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+		]);
+		this.vertexCount = 36;
+		this.offset = 0;
+		this.texture = loadTextureCopy(gl, "cubetexture.png");
+	}
+}
+
+class Body{
+	constructor(position, rotation, model, gl){
+		this.position = position;
+		this.rotation = rotation;
+		this.model = model;
+		
+		// Create a buffer for the square's positions.
+		this.positionBuffer = gl.createBuffer();
+		// Select the positionBuffer as the one to apply buffer
+		// operations to from here out.
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+		// Now pass the list of positions into WebGL to build the
+		// shape. We do this by creating a Float32Array from the
+		// JavaScript array, then use it to fill the current buffer.
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.model.vertices), gl.STATIC_DRAW);
+		
+		this.textureCoordBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.model.texCoordinates), gl.STATIC_DRAW);
+		
+		this.normalBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.model.normals), gl.STATIC_DRAW);
+	}
+	
+	update(deltaTime){
+		return true;
+	}
+	
+	draw(gl, programInfo){
+		// Tell WebGL how to pull out the positions from the position
+		// buffer into the vertexPosition attribute.
+		this.setPositionAttribute(gl, programInfo);
+		this.setTextureAttribute(gl, programInfo);
+		this.setNormalAttribute(gl, programInfo);
+		
+		this.model.vertexCount = 36;
+		this.model.offset = 0;
+		gl.drawArrays(gl.TRIANGLES, this.model.offset, this.model.vertexCount);
+	}
+	
+	// Tell WebGL how to pull out the positions from the position
+	// buffer into the vertexPosition attribute.
+	setPositionAttribute(gl, programInfo){
+		const numComponents = 3; // pull out 3 values per iteration
+		const type = gl.FLOAT; // the data in the buffer is 32bit floats
+		const normalize = false; // don't normalize
+		const stride = 0; // how many bytes to get from one set of values to the next
+		// 0 = use type and numComponents above
+		const offset = 0; // how many bytes inside the buffer to start from
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+
+		gl.vertexAttribPointer(
+			programInfo.attribLocations.vertexPosition,
+			numComponents,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+		gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+	}
+	
+	// tell webgl how to pull out the texture coordinates from buffer
+	setTextureAttribute(gl, programInfo){
+		const num = 2; // every coordinate composed of 2 values
+		const type = gl.FLOAT; // the data in the buffer is 32-bit float
+		const normalize = false; // don't normalize
+		const stride = 0; // how many bytes to get from one set to the next
+		const offset = 0; // how many bytes inside the buffer to start from
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordBuffer);
+		gl.vertexAttribPointer(
+			programInfo.attribLocations.textureCoord,
+			num,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+		gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+	}
+	
+	// Tell WebGL how to pull out the normals from
+	// the normal buffer into the vertexNormal attribute.
+	setNormalAttribute(gl, programInfo){
+		const numComponents = 3;
+		const type = gl.FLOAT;
+		const normalize = false;
+		const stride = 0;
+		const offset = 0;
+		gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+		gl.vertexAttribPointer(
+			programInfo.attribLocations.vertexNormal,
+			numComponents,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+		gl.enableVertexAttribArray(programInfo.attribLocations.vertexNormal);
+	}
+}

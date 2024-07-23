@@ -17,13 +17,6 @@ function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
   // Tell WebGL to use our program when drawing
   gl.useProgram(programInfo.program);
 
-  // Tell WebGL how to pull out the positions from the position
-  // buffer into the vertexPosition attribute.
-  setPositionAttribute(gl, buffers, programInfo);
-  setTextureAttribute(gl, buffers, programInfo);
-  setNormalAttribute(gl, buffers, programInfo);
-
-
   // Set the drawing position to the "identity" point, which is
   // the center of the scene.
   const modelViewMatrix = mat4.create();
@@ -91,12 +84,13 @@ gl.bindTexture(gl.TEXTURE_2D, texture);
 gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 
 
-  {
-  const vertexCount = 36;
-  const type = gl.UNSIGNED_SHORT;
-  const offset = 0;
-  gl.drawArrays(gl.TRIANGLES, offset, vertexCount);
-}
+  // Tell WebGL how to pull out the positions from the position
+  // buffer into the vertexPosition attribute.
+  // setPositionAttribute(gl, buffers, programInfo);
+  // setTextureAttribute(gl, buffers, programInfo);
+  // setNormalAttribute(gl, buffers, programInfo);
+  
+  buffers.draw(gl, programInfo);
 
 }
 
