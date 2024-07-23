@@ -248,8 +248,6 @@ class Body{
 		this.setTextureAttribute(gl, programInfo);
 		this.setNormalAttribute(gl, programInfo);
 		
-		this.model.vertexCount = 36;
-		this.model.offset = 0;
 		gl.drawArrays(gl.TRIANGLES, this.model.offset, this.model.vertexCount);
 	}
 	
