@@ -1,5 +1,3 @@
-let squareRotationX = 0.0;
-let squareRotationY = 0.0;
 
 
 function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
@@ -36,32 +34,8 @@ function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
     false,
     myProjectionMatrixSexy,
   );
-  gl.uniformMatrix4fv(
-    programInfo.uniformLocations.modelViewMatrix,
-    false,
-    new Float32Array([
-		1, 0, 0, 0,
-		0, 1, 0, 0,
-		0, 0, 1, 0,
-		0, 0, -6.0, 1,
-	]),
-  );
   
-  
-  const rotationSpeedX = 0.2 * Math.PI / 180.0;
-  squareRotationX += rotationSpeedX * timeDelta;
-  if(squareRotationX > 2 * Math.PI) squareRotationX -= 2 * Math.PI;
-  
-  gl.uniformMatrix4fv(
-    programInfo.uniformLocations.rotationMatrix,
-    false,
-    new Float32Array([
-    Math.cos(squareRotationX), 0, -Math.sin(squareRotationX), 0,
-	0, 1, 0, 0,
-	Math.sin(squareRotationX), 0, Math.cos(squareRotationX), 0,
-	0, 0, 0, 1,
-  ]),
-  );
+  buffers.update(timeDelta);
   
   const normalMatrix = mat4.create();
 mat4.invert(normalMatrix, modelViewMatrix);

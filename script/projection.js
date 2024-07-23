@@ -238,6 +238,14 @@ class Body{
 	}
 	
 	update(deltaTime){
+		const moveSpeedZ = -0.001;
+		this.position[2] += moveSpeedZ * deltaTime;
+		if(this.position[2] <= -10.0) this.position[2] = -10.0;
+		
+		const rotationSpeedX = 0.2 * Math.PI / 180.0;
+		this.rotation[0] += rotationSpeedX * deltaTime;
+		if(this.rotation[0] > 2 * Math.PI) this.rotation[0] -= 2 * Math.PI;
+		
 		return true;
 	}
 	
@@ -247,6 +255,28 @@ class Body{
 		this.setPositionAttribute(gl, programInfo);
 		this.setTextureAttribute(gl, programInfo);
 		this.setNormalAttribute(gl, programInfo);
+		
+		// Set the shader uniforms
+		gl.uniformMatrix4fv(
+			programInfo.uniformLocations.modelViewMatrix,
+			false,
+			new Float32Array([
+				1, 0, 0, 0,
+				0, 1, 0, 0,
+				0, 0, 1, 0,
+				this.position[0], this.position[1], this.position[2], this.position[3],
+			])
+		);
+		gl.uniformMatrix4fv(
+			programInfo.uniformLocations.rotationMatrix,
+			false,
+			new Float32Array([
+				Math.cos(this.rotation[0]), 0, -Math.sin(this.rotation[0]), 0,
+				0, 1, 0, 0,
+				Math.sin(this.rotation[0]), 0, Math.cos(this.rotation[0]), 0,
+				0, 0, 0, 1,
+			])
+		);
 		
 		gl.drawArrays(gl.TRIANGLES, this.model.offset, this.model.vertexCount);
 	}
