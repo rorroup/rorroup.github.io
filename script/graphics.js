@@ -115,7 +115,7 @@ function render(now) {
   then = now;
   iTime++;
 
-  drawScene(gl, programInfo, buffers, deltaTime, texture, iTime);
+  drawScene(gl, programInfo, buffers, deltaTime, iTime);
   
 
   requestAnimationFrame(render);
