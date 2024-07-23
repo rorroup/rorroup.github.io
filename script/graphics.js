@@ -13,12 +13,15 @@ const vsSource = `
     uniform mat4 uNormalMatrix;
     uniform mat4 uModelViewMatrix;
     uniform mat4 uProjectionMatrix;
+	
+	uniform mat4 uCameraPosition;
+	uniform mat4 uCameraRotation;
 
     varying highp vec2 vTextureCoord;
     varying highp vec3 vLighting;
 
     void main(void) {
-      gl_Position = uProjectionMatrix * uModelViewMatrix * uRotationMatrix * aVertexPosition;
+      gl_Position = uProjectionMatrix * uCameraRotation * uCameraPosition * uModelViewMatrix * uRotationMatrix * aVertexPosition;
       vTextureCoord = aTextureCoord;
 
       // Apply lighting effect
@@ -82,6 +85,8 @@ const programInfo = {
     projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
     modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
 	rotationMatrix: gl.getUniformLocation(shaderProgram, "uRotationMatrix"),
+	cameraPosition: gl.getUniformLocation(shaderProgram, "uCameraPosition"),
+	cameraRotation: gl.getUniformLocation(shaderProgram, "uCameraRotation"),
     normalMatrix: gl.getUniformLocation(shaderProgram, "uNormalMatrix"),
     uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
   },
@@ -94,9 +99,10 @@ const programInfo = {
 
 // Here's where we call the routine that builds all the
 // objects we'll be drawing.
-const body = new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), new Model(gl, 2.0, 1.0, 1.0), gl);
-const cube = new Body(new Float32Array([2.0, 0.0, 0.0, 1.0]), new Float32Array([0.5, 0.0, 0.0, 1.0]), new Model(gl, 1.0, 1.0, 1.0), gl);
-const square = new Body(new Float32Array([-2.0, 0.0, 0.0, 1.0]), new Float32Array([-0.5, 0.0, 0.0, 1.0]), new Model(gl, 1.0, 1.0, 1.0), gl);
+let bodies = [];
+for(let i = 0; i < 20; i++){
+	bodies.push(new Body(new Float32Array([40.0 * (Math.random() - 0.5), 0.0, 40.0 * (Math.random() - 0.5), 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), new Model(gl, 3.0 * (Math.random() + 0.1), 1.0, 1.0), gl));
+}
 
 // Flip image pixels into the bottom-to-top order that WebGL expects.
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -109,7 +115,7 @@ function render(now) {
   let deltaTime = now - then;
   then = now;
 
-  drawScene(gl, programInfo, [body, cube, square], deltaTime);
+  drawScene(gl, programInfo, bodies, deltaTime);
   
   requestAnimationFrame(render);
 }
@@ -244,3 +250,32 @@ function loadTexture(gl, url) {
 function isPowerOf2(value) {
   return (value & (value - 1)) === 0;
 }
+
+window.onkeydown = function(event_){
+	// console.log(event_);
+	if(event_.key == 'w' || event_.key == 'W'){
+		cameraPos[2] += 0.2;
+	}
+	if(event_.key == 's' || event_.key == 'S'){
+		cameraPos[2] -= 0.2;
+	}
+	if(event_.key == 'a' || event_.key == 'A'){
+		cameraPos[0] += 0.2;
+	}
+	if(event_.key == 'd' || event_.key == 'D'){
+		cameraPos[0] -= 0.2;
+	}
+	
+	if(event_.key == "ArrowUp"){
+		cameraRot[0] -= 0.05;
+	}
+	if(event_.key == "ArrowDown"){
+		cameraRot[0] += 0.05;
+	}
+	if(event_.key == "ArrowLeft"){
+		cameraRot[1] -= 0.05;
+	}
+	if(event_.key == "ArrowRight"){
+		cameraRot[1] += 0.05;
+	}
+};

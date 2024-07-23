@@ -12,8 +12,6 @@ function drawScene(gl, programInfo, bodies, timeDelta) {
   
   // Tell WebGL to use our program when drawing
   gl.useProgram(programInfo.program);
-
-
   
 
   // Set the shader uniforms
@@ -21,6 +19,28 @@ function drawScene(gl, programInfo, bodies, timeDelta) {
     programInfo.uniformLocations.projectionMatrix,
     false,
     new Float32Array(myProjectionMatrix.el[0].concat(myProjectionMatrix.el[1]).concat(myProjectionMatrix.el[2]).concat(myProjectionMatrix.el[3]))
+  );
+  
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.cameraPosition,
+    false,
+    new Float32Array([
+		1.0, 0.0, 0.0, 0.0,
+		0.0, 1.0, 0.0, 0.0,
+		0.0, 0.0, 1.0, 0.0,
+		cameraPos[0], cameraPos[1], cameraPos[2], 1.0,
+	])
+  );
+  
+  gl.uniformMatrix4fv(
+    programInfo.uniformLocations.cameraRotation,
+    false,
+    new Float32Array([
+		Math.cos(cameraRot[1]), Math.sin(cameraRot[1]) * Math.sin(cameraRot[0]), -Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+		0.0, Math.cos(cameraRot[0]), Math.sin(cameraRot[0]), 0.0,
+		Math.sin(cameraRot[1]), -Math.cos(cameraRot[1]) * Math.sin(cameraRot[0]), Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+		0.0, 0.0, 0.0, 1.0,
+	])
   );
   
   bodies.forEach((body) => {body.update(timeDelta);});

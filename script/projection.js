@@ -1,4 +1,7 @@
 
+var cameraPos = new Float32Array([0.0, 0.0, 0.0, 1.0]);
+var cameraRot = new Float32Array([0.0, 0.0, 0.0, 1.0]);
+
 
 class Matrix{
 	constructor(rows, columns){
@@ -239,9 +242,9 @@ class Body{
 	}
 	
 	update(deltaTime){
-		const moveSpeedZ = -0.001;
-		this.position[2] += moveSpeedZ * deltaTime;
-		if(this.position[2] <= -10.0) this.position[2] = -10.0;
+		// const moveSpeedZ = -0.001;
+		// this.position[2] += moveSpeedZ * deltaTime;
+		// if(this.position[2] <= -10.0) this.position[2] = -10.0;
 		
 		const rotationSpeedX = 0.2 * Math.PI / 180.0;
 		this.rotation[0] += rotationSpeedX * deltaTime;
