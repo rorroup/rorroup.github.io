@@ -23,10 +23,10 @@ function drawScene(gl, programInfo, bodies, timeDelta) {
     new Float32Array(myProjectionMatrix.el[0].concat(myProjectionMatrix.el[1]).concat(myProjectionMatrix.el[2]).concat(myProjectionMatrix.el[3]))
   );
   
-  bodies.update(timeDelta);
+  bodies.forEach((body) => {body.update(timeDelta);});
   
-  bodies.draw(gl, programInfo);
-
+  bodies.forEach((body) => {body.draw(gl, programInfo);});
+  
 }
 
 // Tell WebGL how to pull out the positions from the position

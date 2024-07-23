@@ -95,6 +95,8 @@ const programInfo = {
 // Here's where we call the routine that builds all the
 // objects we'll be drawing.
 const body = new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), new Model(gl, 2.0, 1.0, 1.0), gl);
+const cube = new Body(new Float32Array([2.0, 0.0, 0.0, 1.0]), new Float32Array([0.5, 0.0, 0.0, 1.0]), new Model(gl, 1.0, 1.0, 1.0), gl);
+const square = new Body(new Float32Array([-2.0, 0.0, 0.0, 1.0]), new Float32Array([-0.5, 0.0, 0.0, 1.0]), new Model(gl, 1.0, 1.0, 1.0), gl);
 
 // Flip image pixels into the bottom-to-top order that WebGL expects.
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
@@ -107,7 +109,7 @@ function render(now) {
   let deltaTime = now - then;
   then = now;
 
-  drawScene(gl, programInfo, body, deltaTime);
+  drawScene(gl, programInfo, [body, cube, square], deltaTime);
   
   requestAnimationFrame(render);
 }
