@@ -10,8 +10,6 @@ function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
 
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   
-  const myProjectionMatrixSexy = new Float32Array(myProjectionMatrix.el[0].concat(myProjectionMatrix.el[1]).concat(myProjectionMatrix.el[2]).concat(myProjectionMatrix.el[3]));
-  
   // Tell WebGL to use our program when drawing
   gl.useProgram(programInfo.program);
 
@@ -32,7 +30,7 @@ function drawScene(gl, programInfo, buffers, timeDelta, texture, itime) {
   gl.uniformMatrix4fv(
     programInfo.uniformLocations.projectionMatrix,
     false,
-    myProjectionMatrixSexy,
+    new Float32Array(myProjectionMatrix.el[0].concat(myProjectionMatrix.el[1]).concat(myProjectionMatrix.el[2]).concat(myProjectionMatrix.el[3]))
   );
   
   buffers.update(timeDelta);
