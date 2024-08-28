@@ -56,6 +56,15 @@ section{
 	z-index: 1;
 }
 
+#glcanvas{
+	width: 100vw;
+	height: 100vh;
+	display: block;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+}
+
 #background
 {
 	width: 100%;
