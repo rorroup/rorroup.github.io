@@ -1,4 +1,18 @@
 
+fetch("asset/desktop.obj")
+  .then((res) => res.text())
+  .then((text) => {
+    // do something with "text"
+	let textload = document.getElementById("textload");
+	textload.textContent = text;
+   })
+  .catch((e) => {
+	  console.error(e);
+	  let textload = document.getElementById("textload");
+	  textload.textContent = e;
+	  });
+
+
 var cameraPos = new Float32Array([0.0, 0.0, 0.0, 1.0]);
 var cameraRot = new Float32Array([0.0, 0.0, 0.0, 1.0]);
 
