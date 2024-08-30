@@ -1,18 +1,4 @@
 
-fetch("asset/desktop.obj")
-  .then((res) => res.text())
-  .then((text) => {
-    // do something with "text"
-	let textload = document.getElementById("textload");
-	textload.textContent = text;
-   })
-  .catch((e) => {
-	  console.error(e);
-	  let textload = document.getElementById("textload");
-	  textload.textContent = e;
-	  });
-
-
 var cameraPos = new Float32Array([0.0, 0.0, 0.0, 1.0]);
 var cameraRot = new Float32Array([0.0, 0.0, 0.0, 1.0]);
 
@@ -230,6 +216,18 @@ class Model{
 	}
 }
 
+class ModelTrue{
+	constructor(gl, v, vt, vn, f){
+		this.vertices = new Float32Array(v);
+		this.texCoordinates = new Float32Array(vt);
+		this.normals = new Float32Array(vn);
+		this.vertexCount = f;
+		this.offset = 0;
+		// Load texture
+		this.texture = loadTextureCopy(gl, "cubetexture.png");
+	}
+}
+
 class Body{
 	constructor(position, rotation, model, gl){
 		this.position = position;
@@ -256,14 +254,6 @@ class Body{
 	}
 	
 	update(deltaTime){
-		// const moveSpeedZ = -0.001;
-		// this.position[2] += moveSpeedZ * deltaTime;
-		// if(this.position[2] <= -10.0) this.position[2] = -10.0;
-		
-		const rotationSpeedX = 0.2 * Math.PI / 180.0;
-		this.rotation[0] += rotationSpeedX * deltaTime;
-		if(this.rotation[0] > 2 * Math.PI) this.rotation[0] -= 2 * Math.PI;
-		
 		return true;
 	}
 	

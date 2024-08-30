@@ -100,9 +100,252 @@ const programInfo = {
 // Here's where we call the routine that builds all the
 // objects we'll be drawing.
 let bodies = [];
-for(let i = 0; i < 20; i++){
-	bodies.push(new Body(new Float32Array([40.0 * (Math.random() - 0.5), 0.0, 40.0 * (Math.random() - 0.5), 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), new Model(gl, 3.0 * (Math.random() + 0.1), 1.0, 1.0), gl));
+
+function loadOBJfile(t){
+	let loadedObjects = [];
+	let vertexData = {
+		v: [],
+		vt: [],
+		vn: [],
+	};
+	let ERROR = 0;
+	let o = {
+		name: "",
+		f: [],
+	};
+	
+	let tableloaded = document.getElementById("tableload").children[0];
+	
+	// TODO: 
+	// account for whitespaces and missing texCoord indices.
+	// load materials.
+	const l = t.split('\n');
+	l.forEach((row) => {
+		if(row[0] != '#'){
+			const tr = document.createElement("tr");
+			
+			let w = row.split(' ');
+			
+			switch(w[0]){
+				case "o":{
+					if(o.f.length > 0){
+						loadedObjects.push(o);
+					}
+					
+					o = {
+						name: "",
+						f: [],
+					};
+					if(w.length >= 2){
+						o.name = w[1];
+					}
+					let td = document.createElement("td");
+					td.textContent = w[0];
+					tr.appendChild(td);
+					let td2 = document.createElement("td");
+					td2.textContent = o.name;
+					tr.appendChild(td2);
+					tableloaded.appendChild(tr);
+					}
+					break;
+				case "v":{
+					if(w.length == 4){
+						let x = Number(w[1]);
+						let y = Number(w[2]);
+						let z = Number(w[3]);
+						if(!isNaN(x) && !isNaN(y) && !isNaN(z)){
+							vertexData.v.push([x, y ,z]);
+						}else{
+							ERROR++;
+						}
+						
+						let td = document.createElement("td");
+						td.textContent = w[0];
+						tr.appendChild(td);
+						let tdx = document.createElement("td");
+						tdx.textContent = w[1];
+						tr.appendChild(tdx);
+						let tdy = document.createElement("td");
+						tdy.textContent = w[2];
+						tr.appendChild(tdy);
+						let tdz = document.createElement("td");
+						tdz.textContent = w[3];
+						tr.appendChild(tdz);
+						tableloaded.appendChild(tr);
+					}else{
+						ERROR++;
+					}
+					}
+					break;
+				case "vt":{
+					if(w.length == 3){
+						let x = Number(w[1]);
+						let y = Number(w[2]);
+						if(!isNaN(x) && !isNaN(y)){
+							vertexData.vt.push([x, y]);
+						}else{
+							ERROR++;
+						}
+						
+						let td = document.createElement("td");
+						td.textContent = w[0];
+						tr.appendChild(td);
+						let tdx = document.createElement("td");
+						tdx.textContent = w[1];
+						tr.appendChild(tdx);
+						let tdy = document.createElement("td");
+						tdy.textContent = w[2];
+						tr.appendChild(tdy);
+						tableloaded.appendChild(tr);
+					}else{
+						ERROR++;
+					}
+					}
+					break;
+				case "vn":{
+					if(w.length == 4){
+						let x = Number(w[1]);
+						let y = Number(w[2]);
+						let z = Number(w[3]);
+						if(!isNaN(x) && !isNaN(y) && !isNaN(z)){
+							vertexData.vn.push([x, y ,z]);
+						}else{
+							ERROR++;
+						}
+						
+						let td = document.createElement("td");
+						td.textContent = w[0];
+						tr.appendChild(td);
+						let tdx = document.createElement("td");
+						tdx.textContent = w[1];
+						tr.appendChild(tdx);
+						let tdy = document.createElement("td");
+						tdy.textContent = w[2];
+						tr.appendChild(tdy);
+						let tdz = document.createElement("td");
+						tdz.textContent = w[3];
+						tr.appendChild(tdz);
+						tableloaded.appendChild(tr);
+					}else{
+						ERROR++;
+					}
+					}
+					break;
+				case "f":{
+					if(w.length == 4){
+						let l = [];
+						for(let i = 1; i < 4; i++){
+							let ww = w[i].split('/');
+							let v = Number(ww[0]);
+							let vn = Number(ww[1]);
+							let vt = Number(ww[2]);
+							if(!isNaN(v) && !isNaN(vn) && !isNaN(vt)){
+								l.push([v, vn, vt]);
+							}else{
+								ERROR++;
+							}
+						}
+						o.f.push(l);
+						
+						let td = document.createElement("td");
+						td.textContent = w[0];
+						tr.appendChild(td);
+						let tdx = document.createElement("td");
+						tdx.textContent = w[1];
+						tr.appendChild(tdx);
+						let tdy = document.createElement("td");
+						tdy.textContent = w[2];
+						tr.appendChild(tdy);
+						let tdz = document.createElement("td");
+						tdz.textContent = w[3];
+						tr.appendChild(tdz);
+						tableloaded.appendChild(tr);
+					}else{
+						ERROR++;
+					}
+					}
+					break;
+				default:
+					break;
+			}
+		}
+	});
+	if(o.f.length > 0){
+		loadedObjects.push(o);
+	}
+	// console.log(`O: ${loadedObjects.length}. V: ${vertexData.v.length}. VN: ${vertexData.vn.length}. VT: ${vertexData.vt.length}.`);
+	return {
+		o: loadedObjects,
+		vd: vertexData,
+		e: ERROR,
+	};
 }
+
+function buildObjMeshFromData(obj, vertexData){
+	// console.log(`Attempting to load object: '${obj.name}'`);
+	let v = [];
+	let vt = [];
+	let vn = [];
+	
+	// use the faces indices to access the other arrays.
+	for(let i = 0; i < obj.f.length; i++){
+		// check index within array length range to access
+		if(obj.f[i][0][0] <= 0 || vertexData.v.length < obj.f[i][0][0] || obj.f[i][1][0] <= 0 || vertexData.v.length < obj.f[i][1][0] || obj.f[i][2][0] <= 0 || vertexData.v.length < obj.f[i][2][0]){
+			return false;
+		}
+		if(obj.f[i][0][1] <= 0 || vertexData.vt.length < obj.f[i][0][1] || obj.f[i][1][1] <= 0 || vertexData.vt.length < obj.f[i][1][1] || obj.f[i][2][1] <= 0 || vertexData.vt.length < obj.f[i][2][1]){
+			return false;
+		}
+		if(obj.f[i][0][2] <= 0 || vertexData.vn.length < obj.f[i][0][2] || obj.f[i][1][2] <= 0 || vertexData.vn.length < obj.f[i][1][2] || obj.f[i][2][2] <= 0 || vertexData.vn.length < obj.f[i][2][2]){
+			return false;
+		}
+		
+		// check index not decimal Number
+		if(!Number.isInteger(obj.f[i][0][0]) || !Number.isInteger(obj.f[i][1][0]) || !Number.isInteger(obj.f[i][2][0])){
+			return false;
+		}
+		if(!Number.isInteger(obj.f[i][0][1]) || !Number.isInteger(obj.f[i][1][1]) || !Number.isInteger(obj.f[i][2][1])){
+			return false;
+		}
+		if(!Number.isInteger(obj.f[i][0][2]) || !Number.isInteger(obj.f[i][1][2]) || !Number.isInteger(obj.f[i][2][2])){
+			return false;
+		}
+		
+		v.push(...vertexData.v[obj.f[i][0][0] - 1], ...vertexData.v[obj.f[i][1][0] - 1], ...vertexData.v[obj.f[i][2][0] - 1]);
+		vt.push(...vertexData.vt[obj.f[i][0][1] - 1], ...vertexData.vt[obj.f[i][1][1] - 1], ...vertexData.vt[obj.f[i][2][1] - 1]);
+		vn.push(...vertexData.vn[obj.f[i][0][2] - 1], ...vertexData.vn[obj.f[i][1][2] - 1], ...vertexData.vn[obj.f[i][2][2] - 1]);
+		
+	}
+	
+	let f = 3 * obj.f.length;
+	let model = new ModelTrue(gl, v, vt, vn, f);
+	bodies.push(new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), model, gl));
+	
+	console.log(`Object '${obj.name}' loaded successfully!`);
+	return true;
+}
+
+fetch("asset/scene3.obj")
+.then((res) => res.text())
+.then((text) => {
+	let textload = document.getElementById("textload");
+	textload.textContent = text;
+	let loaded = loadOBJfile(text);
+	document.getElementById("INFO").textContent = `OBJECTS READ: ${loaded.o.length}\nOBJ LOADING ERRORS: ${loaded.e}\nLOADED OBJECTS: `;
+	if(loaded.e <= 0){
+		let s = 0;
+		for(let i = 0; i < loaded.o.length; i++){
+			s += buildObjMeshFromData(loaded.o[i], loaded.vd);
+		}
+		document.getElementById("INFO").textContent += `${s}/${loaded.o.length}`;
+	}
+})
+.catch((e) => {
+	console.error(e);
+	let textload = document.getElementById("textload");
+	textload.textContent = e;
+});
+
 
 // Flip image pixels into the bottom-to-top order that WebGL expects.
 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
