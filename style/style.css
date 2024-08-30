@@ -98,6 +98,19 @@ section{
 	text-align: right;
 }
 
+#INFO{
+	display: block;
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	width: 200px;
+	height: 200px;
+	overflow: auto;
+	color: white;
+	background-color: #222222;
+	z-index: 100;
+}
+
 #textload{
 	display: block;
 	position: fixed;
