@@ -318,7 +318,7 @@ function buildObjMeshFromData(obj, vertexData){
 	}
 	
 	let f = 3 * obj.f.length;
-	let model = new ModelTrue(gl, v, vt, vn, f);
+	let model = new Model(gl, v, vt, vn, f);
 	bodies.push(new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), model, gl));
 	
 	console.log(`Object '${obj.name}' loaded successfully!`);

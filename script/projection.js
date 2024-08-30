@@ -40,41 +40,54 @@ myProjectionMatrix.el[2][3] = 1.0                              * -1;  /// ??????
 
 
 function makeCube(x, y, z){
-	x = x / 2;
-	y = y / 2;
-	z = z / 2;
-	const positions = [
-		// Front face
-		// 0	1	2	3
-		-x, -y, z, x, -y, z, x, y, z, -x, -y, z, x, y, z, -x, y, z,
-
-		// Back face
-		// 4	5	6	7
-		-x, -y, -z, -x, y, -z, x, y, -z, -x, -y, -z, x, y, -z, x, -y, -z,
-
-		// Top face
-		// 8	9	10	11
-		-x, y, -z, -x, y, z, x, y, z, -x, y, -z, x, y, z, x, y, -z,
-
-		// Bottom face
-		// 12	13	14	15
-		-x, -y, -z, x, -y, -z, x, -y, z, -x, -y, -z, x, -y, z, -x, -y, z,
-
-		// Right face
-		// 16	17	18	19
-		x, -y, -z, x, y, -z, x, y, z, x, -y, -z, x, y, z, x, -y, z,
-
-		// Left face
-		// 20	21	22	23
-		-x, -y, -z,	// 20
-		-x, -y, z,	// 21
-		-x, y, z,	// 22
-		-x, -y, -z,
-		-x, y, z,
-		-x, y, -z,	// 23
+	x = x * 0.5;
+	y = y * 0.5;
+	z = z * 0.5;
+	return [
+		[ // v
+			// Front face
+			-x, -y, z, x, -y, z, x, y, z, -x, -y, z, x, y, z, -x, y, z,
+			// Back face
+			-x, -y, -z, -x, y, -z, x, y, -z, -x, -y, -z, x, y, -z, x, -y, -z,
+			// Top face
+			-x, y, -z, -x, y, z, x, y, z, -x, y, -z, x, y, z, x, y, -z,
+			// Bottom face
+			-x, -y, -z, x, -y, -z, x, -y, z, -x, -y, -z, x, -y, z, -x, -y, z,
+			// Right face
+			x, -y, -z, x, y, -z, x, y, z, x, -y, -z, x, y, z, x, -y, z,
+			// Left face
+			-x, -y, -z, -x, -y, z, -x, y, z, -x, -y, -z, -x, y, z, -x, y, -z,
+		],
+		[ // vt
+			// Front
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Back
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Top
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Bottom
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Right
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+			// Left
+			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
+		],
+		[ // vn
+			// Front
+			0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
+			// Back
+			0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0,
+			// Top
+			0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
+			// Bottom
+			0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0,
+			// Right
+			1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
+			// Left
+			-1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0,
+		],
+		36, // vc
 	];
-	
-	return positions;
 }
 
 //
@@ -142,86 +155,11 @@ function loadTextureCopy(gl, url) {
 }
 
 class Model{
-	constructor(gl, x, y, z){
-		x = x * 0.5;
-		y = y * 0.5;
-		z = z * 0.5;
-		this.vertices = new Float32Array([
-			// Front face
-			// 0	1	2	3
-			-x, -y, z, x, -y, z, x, y, z, -x, -y, z, x, y, z, -x, y, z,
-
-			// Back face
-			// 4	5	6	7
-			-x, -y, -z, -x, y, -z, x, y, -z, -x, -y, -z, x, y, -z, x, -y, -z,
-
-			// Top face
-			// 8	9	10	11
-			-x, y, -z, -x, y, z, x, y, z, -x, y, -z, x, y, z, x, y, -z,
-
-			// Bottom face
-			// 12	13	14	15
-			-x, -y, -z, x, -y, -z, x, -y, z, -x, -y, -z, x, -y, z, -x, -y, z,
-
-			// Right face
-			// 16	17	18	19
-			x, -y, -z, x, y, -z, x, y, z, x, -y, -z, x, y, z, x, -y, z,
-
-			// Left face
-			// 20	21	22	23
-			-x, -y, -z,	// 20
-			-x, -y, z,	// 21
-			-x, y, z,	// 22
-			-x, -y, -z,
-			-x, y, z,
-			-x, y, -z,	// 23
-		]);
-		this.normals = new Float32Array([
-			// Front
-			0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0,
-
-			// Back
-			0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0,
-
-			// Top
-			0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
-
-			// Bottom
-			0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0,
-
-			// Right
-			1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0,
-
-			// Left
-			-1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0, -1.0, 0.0, 0.0,
-		]);
-		this.texCoordinates = new Float32Array([
-			// Front
-			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-			// Back
-			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-			// Top
-			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-			// Bottom
-			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-			// Right
-			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-			// Left
-			0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-		]);
-		this.vertexCount = 36;
-		this.offset = 0;
-		// Load texture
-		this.texture = loadTextureCopy(gl, "cubetexture.png");
-	}
-}
-
-class ModelTrue{
-	constructor(gl, v, vt, vn, f){
+	constructor(gl, v, vt, vn, vc){
 		this.vertices = new Float32Array(v);
 		this.texCoordinates = new Float32Array(vt);
 		this.normals = new Float32Array(vn);
-		this.vertexCount = f;
+		this.vertexCount = vc;
 		this.offset = 0;
 		// Load texture
 		this.texture = loadTextureCopy(gl, "cubetexture.png");
