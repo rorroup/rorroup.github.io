@@ -120,7 +120,8 @@ function loadOBJfile(t){
 	// account for whitespaces and missing texCoord indices.
 	// load materials.
 	const l = t.split('\n');
-	l.forEach((row) => {
+	for(let j = 0; j < l.length; j++){
+		const row = l[j];
 		if(row[0] != '#'){
 			const tr = document.createElement("tr");
 			
@@ -269,7 +270,7 @@ function loadOBJfile(t){
 					break;
 			}
 		}
-	});
+	}
 	if(o.f.length > 0){
 		loadedObjects.push(o);
 	}
