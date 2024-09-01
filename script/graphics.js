@@ -101,7 +101,7 @@ const programInfo = {
 // objects we'll be drawing.
 let bodies = [];
 
-function loadOBJfile(t){
+async function loadOBJfile(t){
 	let loadedObjects = [];
 	let vertexData = {
 		v: [],
@@ -331,7 +331,9 @@ fetch("asset/scene3.obj")
 .then((text) => {
 	let textload = document.getElementById("textload");
 	textload.textContent = text;
-	let loaded = loadOBJfile(text);
+	return loadOBJfile(text);
+})
+.then((loaded) => {
 	document.getElementById("INFO").textContent = `OBJECTS READ: ${loaded.o.length}\nOBJ LOADING ERRORS: ${loaded.e}\nLOADED OBJECTS: `;
 	if(loaded.e <= 0){
 		let s = 0;
