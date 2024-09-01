@@ -112,13 +112,15 @@ async function loadOBJfile(t){
 	let o = {
 		name: "",
 		f: [],
+		color: [0.2, 0.2, 0.2],
 	};
+	
+	let mtllib = {};
 	
 	let tableloaded = document.getElementById("tableload").children[0];
 	
 	// TODO: 
 	// account for whitespaces and missing texCoord indices.
-	// load materials.
 	const l = t.split('\n');
 	for(let j = 0; j < l.length; j++){
 		const row = l[j];
@@ -136,6 +138,7 @@ async function loadOBJfile(t){
 					o = {
 						name: "",
 						f: [],
+						color: [0.2, 0.2, 0.2],
 					};
 					if(w.length >= 2){
 						o.name = w[1];
@@ -266,6 +269,25 @@ async function loadOBJfile(t){
 					}
 					}
 					break;
+				case "mtllib":{
+					if(w.length == 2){
+						const response = await fetch(`asset/${w[1]}`);
+						const txt = await response.text();
+						let loaded_colors = parseMaterialFile(txt);
+						mtllib = {...mtllib, ...loaded_colors};
+					}
+					}
+					break;
+				case "usemtl":{
+					if(w.length == 2){
+						if(w[1] in mtllib){
+							if("Kd" in mtllib[w[1]]){
+								o.color = mtllib[w[1]]["Kd"];
+							}
+						}
+					}
+					}
+					break;
 				default:
 					break;
 			}
@@ -280,6 +302,53 @@ async function loadOBJfile(t){
 		vd: vertexData,
 		e: ERROR,
 	};
+}
+
+function parseMaterialFile(t){
+	let materials = {};
+	let newmtl = {};
+	t.split('\n').forEach((row) => {
+		if(row[0] != '#'){
+			let w = row.split(' ');
+			switch(w[0]){
+				case "newmtl":{
+					if("newmtl" in newmtl){
+						materials[newmtl["newmtl"]] = newmtl;
+					}
+					newmtl = {};
+					if(w.length >= 2){
+						newmtl[w[0]] = w[1];
+					}
+					}
+					break;
+				case "Kd":{
+					if(w.length == 4){
+						let r = Number(w[1]);
+						let g = Number(w[2]);
+						let b = Number(w[3]);
+						if(!isNaN(r) && !isNaN(g) && !isNaN(b)){
+							newmtl[w[0]] = [r, g, b];
+						}
+					}
+					}
+					break;
+				// TODO:
+				case "Ns":
+				case "Ka":
+				case "Ks":
+				case "Ke":
+				case "Ni":
+				case "d":
+				case "illum":
+				default:
+					break;
+			}
+		}
+	});
+	if("newmtl" in newmtl){
+		materials[newmtl["newmtl"]] = newmtl;
+	}
+	return materials;
 }
 
 function buildObjMeshFromData(obj, vertexData){
@@ -319,7 +388,7 @@ function buildObjMeshFromData(obj, vertexData){
 	}
 	
 	let f = 3 * obj.f.length;
-	let model = new Model(gl, v, vt, vn, f);
+	let model = new Model(gl, v, vt, vn, f, obj.color);
 	bodies.push(new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), model, gl));
 	
 	console.log(`Object '${obj.name}' loaded successfully!`);

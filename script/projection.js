@@ -155,7 +155,7 @@ function loadTextureCopy(gl, url) {
 }
 
 class Model{
-	constructor(gl, v, vt, vn, vc){
+	constructor(gl, v, vt, vn, vc, color){
 		this.vertices = new Float32Array(v);
 		this.texCoordinates = new Float32Array(vt);
 		this.normals = new Float32Array(vn);
@@ -163,6 +163,8 @@ class Model{
 		this.offset = 0;
 		// Load texture
 		this.texture = loadTextureCopy(gl, "cubetexture.png");
+		
+		this.color = new Float32Array(color);
 	}
 }
 
@@ -232,7 +234,6 @@ class Body{
 
 		// Tell the shader we bound the texture to texture unit 0
 		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
-		
 		
 		
 		// Set the drawing position to the "identity" point, which is
