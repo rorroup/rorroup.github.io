@@ -19,6 +19,10 @@ const vsSource = `
 	
 	uniform vec3 uVertexColor;
 	varying lowp vec4 vColor;
+	
+	uniform vec3 uLightAmbient;
+	uniform vec3 uLightDirection;
+	uniform vec3 uLightColor;
 
     varying highp vec2 vTextureCoord;
     varying highp vec3 vLighting;
@@ -30,15 +34,8 @@ const vsSource = `
 	  vColor = vec4(uVertexColor, 1.0);
 
       // Apply lighting effect
-
-      highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-      highp vec3 directionalLightColor = vec3(1, 1, 1);
-      highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
-
-      highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
-
-      highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-      vLighting = ambientLight + (directionalLightColor * directional);
+	  
+	  vLighting = uLightAmbient + max(-dot(aVertexNormal, uLightDirection), 0.0) * uLightColor;
     }
   `;
 
@@ -98,6 +95,9 @@ const programInfo = {
     normalMatrix: gl.getUniformLocation(shaderProgram, "uNormalMatrix"),
     uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
 	VertexColor: gl.getUniformLocation(shaderProgram, "uVertexColor"),
+	LightAmbient: gl.getUniformLocation(shaderProgram, "uLightAmbient"),
+	LightDirection: gl.getUniformLocation(shaderProgram, "uLightDirection"),
+	LightColor: gl.getUniformLocation(shaderProgram, "uLightColor"),
   },
 };
 

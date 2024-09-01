@@ -1,7 +1,7 @@
 
 
 function drawScene(gl, programInfo, bodies, timeDelta) {
-  gl.clearColor(0.0, 0.0, 0.0, 1.0); // Clear to black, fully opaque
+  gl.clearColor(0.0, 1.0, 7.0, 1.0); // Background color
   gl.clearDepth(1.0); // Clear everything
   gl.enable(gl.DEPTH_TEST); // Enable depth testing
   gl.depthFunc(gl.LEQUAL); // Near things obscure far things
@@ -42,6 +42,11 @@ function drawScene(gl, programInfo, bodies, timeDelta) {
 		0.0, 0.0, 0.0, 1.0,
 	])
   );
+  
+  // Pass Lighting conditions
+  gl.uniform3fv(programInfo.uniformLocations.LightAmbient, LightAmbient);
+  gl.uniform3fv(programInfo.uniformLocations.LightDirection, LightDirection);
+  gl.uniform3fv(programInfo.uniformLocations.LightColor, LightColor);
   
   bodies.forEach((body) => {body.update(timeDelta);});
   

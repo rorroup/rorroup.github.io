@@ -3,6 +3,11 @@ var cameraPos = new Float32Array([-0.2, -0.4, 0.0, 1.0]);
 var cameraRot = new Float32Array([0.0, -Math.PI * 100 / 180, 0.0, 1.0]);
 
 
+var LightAmbient = new Float32Array([0.3, 0.3, 0.3]);
+var LightDirection = new Float32Array([-0.09759000729485333, -0.9759000729485332, -0.19518001458970666]);
+var LightColor = new Float32Array([1.0, 1.0, 1.0]);
+
+
 class Matrix{
 	constructor(rows, columns){
 		this.row = rows;
