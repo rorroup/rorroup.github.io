@@ -10,7 +10,6 @@ const vsSource = `
 	
 	uniform mat4 uRotationMatrix;
 
-    uniform mat4 uNormalMatrix;
     uniform mat4 uModelViewMatrix;
     uniform mat4 uProjectionMatrix;
 	
@@ -92,7 +91,6 @@ const programInfo = {
 	rotationMatrix: gl.getUniformLocation(shaderProgram, "uRotationMatrix"),
 	cameraPosition: gl.getUniformLocation(shaderProgram, "uCameraPosition"),
 	cameraRotation: gl.getUniformLocation(shaderProgram, "uCameraRotation"),
-    normalMatrix: gl.getUniformLocation(shaderProgram, "uNormalMatrix"),
     uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
 	VertexColor: gl.getUniformLocation(shaderProgram, "uVertexColor"),
 	LightAmbient: gl.getUniformLocation(shaderProgram, "uLightAmbient"),
