@@ -16,6 +16,9 @@ const vsSource = `
 	
 	uniform mat4 uCameraPosition;
 	uniform mat4 uCameraRotation;
+	
+	uniform vec3 uVertexColor;
+	varying lowp vec4 vColor;
 
     varying highp vec2 vTextureCoord;
     varying highp vec3 vLighting;
@@ -23,6 +26,8 @@ const vsSource = `
     void main(void) {
       gl_Position = uProjectionMatrix * uCameraRotation * uCameraPosition * uModelViewMatrix * uRotationMatrix * aVertexPosition;
       vTextureCoord = aTextureCoord;
+	  
+	  vColor = vec4(uVertexColor, 1.0);
 
       // Apply lighting effect
 
@@ -42,9 +47,12 @@ const fsSource = `
     varying highp vec3 vLighting;
 
     uniform sampler2D uSampler;
+	
+	varying lowp vec4 vColor;
 
     void main(void) {
-      highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
+      // highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
+	  highp vec4 texelColor = vColor;
 
       gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
     }
@@ -89,6 +97,7 @@ const programInfo = {
 	cameraRotation: gl.getUniformLocation(shaderProgram, "uCameraRotation"),
     normalMatrix: gl.getUniformLocation(shaderProgram, "uNormalMatrix"),
     uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
+	VertexColor: gl.getUniformLocation(shaderProgram, "uVertexColor"),
   },
 };
 

@@ -236,6 +236,10 @@ class Body{
 		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 		
 		
+		
+		gl.uniform3fv(programInfo.uniformLocations.VertexColor, this.model.color);
+		
+		
 		// Set the drawing position to the "identity" point, which is
 		// the center of the scene.
 		const modelViewMatrix = mat4.create();
