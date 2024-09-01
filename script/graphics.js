@@ -71,6 +71,11 @@ function main() {
     return;
   }
   
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  
+  gl.viewport(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+  
   // Initialize a shader program; this is where all the lighting
 // for the vertices and so forth is established.
 const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
