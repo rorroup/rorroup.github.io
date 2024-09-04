@@ -163,7 +163,7 @@ fetch("asset/scene3.obj")
 .then((text) => {
 	let textload = document.getElementById("textload");
 	textload.textContent = text;
-	return loadOBJfile(text);
+	return pen_obj.obj_read(text);
 })
 .then((loaded) => {
 	document.getElementById("INFO").textContent = `OBJECTS READ: ${loaded.o.length}\nOBJ LOADING ERRORS: ${loaded.e}\nLOADED OBJECTS: `;
