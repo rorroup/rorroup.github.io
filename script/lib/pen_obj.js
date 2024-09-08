@@ -203,47 +203,83 @@ var pen_obj = {
 		};
 	},
 	
-	mtl_read: async function(t){
+	mtl_read: async function(text_){
 		let materials = {};
 		let newmtl = {};
-		t.split('\n').forEach((row) => {
-			if(row[0] != '#'){
-				let w = row.split(' ');
-				switch(w[0]){
-					case "newmtl":{
-						if("newmtl" in newmtl){
-							materials[newmtl["newmtl"]] = newmtl;
+		let isValid = true;
+		const lines = text_.split('\n');
+		for(let i = 0; i < lines.length; i++){
+			const line = lines[i].trim();
+			const content = line.split('#')[0].trim();
+			if(content.length > 0){
+				const data = content.split(/\s+/);
+				if(data[0] == "newmtl"){
+					if("newmtl" in newmtl){
+						materials[newmtl["newmtl"]] = newmtl;
+					}
+					newmtl = {};
+					isValid = true;
+					if(data.length >= 2){
+						const name = data[1];
+						if(name in materials){
+							isValid = false;
+							console.log(`[Error] Failed to set material name '${name}' on line ${i + 1} because it is already in use. Skipping material.`);
+						}else{
+							newmtl["newmtl"] = name;
 						}
-						newmtl = {};
-						if(w.length >= 2){
-							newmtl[w[0]] = w[1];
-						}
-						}
-						break;
-					case "Kd":{
-						if(w.length == 4){
-							let r = Number(w[1]);
-							let g = Number(w[2]);
-							let b = Number(w[3]);
-							if(!isNaN(r) && !isNaN(g) && !isNaN(b)){
-								newmtl[w[0]] = [r, g, b];
+					}else{
+						isValid = false;
+						console.log(`[Error] Malformed statement '${content}' on line ${i + 1}. Skipping material.`);
+					}
+				}else if(!("newmtl" in newmtl)){
+					if(isValid){
+						console.log(`[Error] Data '${content}' on line ${i + 1} does not belong to a material scope. Skipping line.`);
+					}
+				}else if(data[0] in newmtl){
+					console.log(`[Error] Field '${data[0]}' on line ${i + 1} for material '${newmtl["newmtl"]}' has already been set. Skipping line.`);
+				}else{
+					switch(data[0]){
+						case "newmtl": break;
+						case "Kd":
+							{
+								if(data.length == 4){
+									let param = [];
+									for(let j = 1; j < 4; j++){
+										const color = Number(data[j]);
+										if(isNaN(color)){
+											console.log(`[Error] Failed to interpret '${data[j]}' on line ${i + 1} for field '${data[0]}' as a valid number. Skipping line.`);
+											break;
+										}else{
+											param.push(color);
+										}
+									}
+									if(param.length == 3){
+										newmtl["Kd"] = param;
+									}
+								}else{
+									console.log(`[Error] Malformed statement '${content}' on line ${i + 1} for material '${newmtl["newmtl"]}'. Skipping line.`);
+								}
 							}
-						}
-						}
-						break;
-					// TODO:
-					case "Ns":
-					case "Ka":
-					case "Ks":
-					case "Ke":
-					case "Ni":
-					case "d":
-					case "illum":
-					default:
-						break;
+							break;
+						// TODO:
+						case "Ns":
+						case "Ka":
+						case "Ks":
+						case "Ke":
+						case "Ni":
+						case "d":
+						case "illum":
+							{
+								// console.log(`[Warning] '${data[0]}' field in line ${i + 1} for material '${newmtl["newmtl"]}' is not currently supported. Skipping line.`);
+							}
+							break;
+						default:
+							console.log(`[Error] Unsupported field '${data[0]}' in line ${i + 1} for material '${newmtl["newmtl"]}'. Skipping line.`);
+							break;
+					}
 				}
 			}
-		});
+		}
 		if("newmtl" in newmtl){
 			materials[newmtl["newmtl"]] = newmtl;
 		}
