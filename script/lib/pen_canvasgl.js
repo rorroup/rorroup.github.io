@@ -59,7 +59,7 @@ function isPowerOf2(value){
 
 // Initialize a texture and load an image.
 // When the image finished loading copy it into the texture.
-function loadTextureCopy(gl, url){
+function loadTexture(gl, url){
 	const texture = gl.createTexture();
 	gl.bindTexture(gl.TEXTURE_2D, texture);
 
@@ -135,7 +135,7 @@ class Model{
 		this.vertexCount = vc;
 		this.offset = 0;
 		// Load texture
-		this.texture = loadTextureCopy(gl, "cubetexture.png");
+		this.texture = loadTexture(gl, "cubetexture.png");
 		
 		this.color = new Float32Array(color);
 	}
