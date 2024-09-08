@@ -127,8 +127,10 @@ class Material{
 	}
 }
 
+const Material_DEFAULT = new Material();
+
 class Model{
-	constructor(gl, v, vt, vn, vc, color){
+	constructor(gl, v, vt, vn, vc, material){
 		this.vertices = new Float32Array(v);
 		this.texCoordinates = new Float32Array(vt);
 		this.normals = new Float32Array(vn);
@@ -137,7 +139,7 @@ class Model{
 		// Load texture
 		this.texture = loadTexture(gl, "cubetexture.png");
 		
-		this.color = new Float32Array(color);
+		this.material = material;
 	}
 }
 

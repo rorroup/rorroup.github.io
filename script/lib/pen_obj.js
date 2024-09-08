@@ -11,7 +11,7 @@ var pen_obj = {
 		let o = {
 			name: "",
 			f: [],
-			color: [0.2, 0.2, 0.2],
+			material: Material_DEFAULT,
 		};
 		
 		let mtllib = {};
@@ -37,7 +37,7 @@ var pen_obj = {
 						o = {
 							name: "",
 							f: [],
-							color: [0.2, 0.2, 0.2],
+							material: Material_DEFAULT,
 						};
 						if(w.length >= 2){
 							o.name = w[1];
@@ -172,7 +172,7 @@ var pen_obj = {
 						if(w.length == 2){
 							const response = await fetch(`asset/${w[1]}`);
 							const txt = await response.text();
-							let loaded_colors = await pen_obj.mtl_read(txt);
+							let loaded_colors = await pen_obj.mtl_load(txt);
 							mtllib = {...mtllib, ...loaded_colors};
 						}
 						}
@@ -180,9 +180,7 @@ var pen_obj = {
 					case "usemtl":{
 						if(w.length == 2){
 							if(w[1] in mtllib){
-								if("Kd" in mtllib[w[1]]){
-									o.color = mtllib[w[1]]["Kd"];
-								}
+								o.material = mtllib[w[1]];
 							}
 						}
 						}
@@ -203,9 +201,10 @@ var pen_obj = {
 		};
 	},
 	
-	mtl_read: async function(text_){
+	mtl_load: async function(text_){
 		let materials = {};
-		let newmtl = {};
+		let newmtl = false;
+		let paramSet = [];
 		let isValid = true;
 		const lines = text_.split('\n');
 		for(let i = 0; i < lines.length; i++){
@@ -214,10 +213,11 @@ var pen_obj = {
 			if(content.length > 0){
 				const data = content.split(/\s+/);
 				if(data[0] == "newmtl"){
-					if("newmtl" in newmtl){
-						materials[newmtl["newmtl"]] = newmtl;
+					if(newmtl != false){
+						materials[newmtl.newmtl] = newmtl;
 					}
-					newmtl = {};
+					newmtl = false;
+					paramSet = [];
 					isValid = true;
 					if(data.length >= 2){
 						const name = data[1];
@@ -225,19 +225,20 @@ var pen_obj = {
 							isValid = false;
 							console.log(`[Error] Failed to set material name '${name}' on line ${i + 1} because it is already in use. Skipping material.`);
 						}else{
-							newmtl["newmtl"] = name;
+							newmtl = new Material(name);
 						}
 					}else{
 						isValid = false;
 						console.log(`[Error] Malformed statement '${content}' on line ${i + 1}. Skipping material.`);
 					}
-				}else if(!("newmtl" in newmtl)){
+				}else if(newmtl == false){
 					if(isValid){
 						console.log(`[Error] Data '${content}' on line ${i + 1} does not belong to a material scope. Skipping line.`);
 					}
-				}else if(data[0] in newmtl){
-					console.log(`[Error] Field '${data[0]}' on line ${i + 1} for material '${newmtl["newmtl"]}' has already been set. Skipping line.`);
+				}else if(paramSet.includes(data[0])){
+					console.log(`[Error] Field '${data[0]}' on line ${i + 1} for material '${newmtl.newmtl}' has already been set. Skipping line.`);
 				}else{
+					paramSet.push(data[0]);
 					switch(data[0]){
 						case "newmtl": break;
 						case "Kd":
@@ -254,10 +255,10 @@ var pen_obj = {
 										}
 									}
 									if(param.length == 3){
-										newmtl["Kd"] = param;
+										newmtl.Kd = new Float32Array(param);
 									}
 								}else{
-									console.log(`[Error] Malformed statement '${content}' on line ${i + 1} for material '${newmtl["newmtl"]}'. Skipping line.`);
+									console.log(`[Error] Malformed statement '${content}' on line ${i + 1} for material '${newmtl.newmtl}'. Skipping line.`);
 								}
 							}
 							break;
@@ -274,14 +275,15 @@ var pen_obj = {
 							}
 							break;
 						default:
-							console.log(`[Error] Unsupported field '${data[0]}' in line ${i + 1} for material '${newmtl["newmtl"]}'. Skipping line.`);
+							paramSet.pop();
+							console.log(`[Error] Unsupported field '${data[0]}' in line ${i + 1} for material '${newmtl.newmtl}'. Skipping line.`);
 							break;
 					}
 				}
 			}
 		}
-		if("newmtl" in newmtl){
-			materials[newmtl["newmtl"]] = newmtl;
+		if(newmtl != false){
+			materials[newmtl.newmtl] = newmtl;
 		}
 		return materials;
 	},
