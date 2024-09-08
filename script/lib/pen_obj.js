@@ -248,7 +248,7 @@ var pen_obj = {
 									for(let j = 1; j < 4; j++){
 										const color = Number(data[j]);
 										if(isNaN(color)){
-											console.log(`[Error] Failed to interpret '${data[j]}' on line ${i + 1} for field '${data[0]}' as a valid number. Skipping line.`);
+											console.log(`[Error] Failed to interpret '${data[j]}' on line ${i + 1} for field '${data[0]}' as a valid number. Using default value.`);
 											break;
 										}else{
 											param.push(color);
@@ -258,7 +258,7 @@ var pen_obj = {
 										newmtl.Kd = new Float32Array(param);
 									}
 								}else{
-									console.log(`[Error] Malformed statement '${content}' on line ${i + 1} for material '${newmtl.newmtl}'. Skipping line.`);
+									console.log(`[Error] Malformed statement '${content}' on line ${i + 1} for material '${newmtl.newmtl}'. Using default value.`);
 								}
 							}
 							break;
