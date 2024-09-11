@@ -114,65 +114,16 @@ const programInfo = {
 let bodies = [];
 
 
-function buildObjMeshFromData(obj, vertexData){
-	// console.log(`Attempting to load object: '${obj.name}'`);
-	let v = [];
-	let vt = [];
-	let vn = [];
-	
-	// use the faces indices to access the other arrays.
-	for(let i = 0; i < obj.f.length; i++){
-		// check index within array length range to access
-		if(obj.f[i][0][0] <= 0 || vertexData.v.length < obj.f[i][0][0] || obj.f[i][1][0] <= 0 || vertexData.v.length < obj.f[i][1][0] || obj.f[i][2][0] <= 0 || vertexData.v.length < obj.f[i][2][0]){
-			return false;
-		}
-		if(obj.f[i][0][1] <= 0 || vertexData.vt.length < obj.f[i][0][1] || obj.f[i][1][1] <= 0 || vertexData.vt.length < obj.f[i][1][1] || obj.f[i][2][1] <= 0 || vertexData.vt.length < obj.f[i][2][1]){
-			return false;
-		}
-		if(obj.f[i][0][2] <= 0 || vertexData.vn.length < obj.f[i][0][2] || obj.f[i][1][2] <= 0 || vertexData.vn.length < obj.f[i][1][2] || obj.f[i][2][2] <= 0 || vertexData.vn.length < obj.f[i][2][2]){
-			return false;
-		}
-		
-		// check index not decimal Number
-		if(!Number.isInteger(obj.f[i][0][0]) || !Number.isInteger(obj.f[i][1][0]) || !Number.isInteger(obj.f[i][2][0])){
-			return false;
-		}
-		if(!Number.isInteger(obj.f[i][0][1]) || !Number.isInteger(obj.f[i][1][1]) || !Number.isInteger(obj.f[i][2][1])){
-			return false;
-		}
-		if(!Number.isInteger(obj.f[i][0][2]) || !Number.isInteger(obj.f[i][1][2]) || !Number.isInteger(obj.f[i][2][2])){
-			return false;
-		}
-		
-		v.push(...vertexData.v[obj.f[i][0][0] - 1], ...vertexData.v[obj.f[i][1][0] - 1], ...vertexData.v[obj.f[i][2][0] - 1]);
-		vt.push(...vertexData.vt[obj.f[i][0][1] - 1], ...vertexData.vt[obj.f[i][1][1] - 1], ...vertexData.vt[obj.f[i][2][1] - 1]);
-		vn.push(...vertexData.vn[obj.f[i][0][2] - 1], ...vertexData.vn[obj.f[i][1][2] - 1], ...vertexData.vn[obj.f[i][2][2] - 1]);
-		
-	}
-	
-	let f = 3 * obj.f.length;
-	let model = new Model(gl, v, vt, vn, f, obj.material);
-	bodies.push(new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), model, gl));
-	
-	console.log(`Object '${obj.name}' loaded successfully!`);
-	return true;
-}
-
 fetch("asset/scene3.obj")
 .then((res) => res.text())
 .then((text) => {
 	let textload = document.getElementById("textload");
 	textload.textContent = text;
-	return pen_obj.obj_read(text);
+	return pen_obj.obj_load(text);
 })
 .then((loaded) => {
-	document.getElementById("INFO").textContent = `OBJECTS READ: ${loaded.o.length}\nOBJ LOADING ERRORS: ${loaded.e}\nLOADED OBJECTS: `;
-	if(loaded.e <= 0){
-		let s = 0;
-		for(let i = 0; i < loaded.o.length; i++){
-			s += buildObjMeshFromData(loaded.o[i], loaded.vd);
-		}
-		document.getElementById("INFO").textContent += `${s}/${loaded.o.length}`;
+	for(let i = 0; i < loaded.length; i++){
+		bodies.push(new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), loaded[i], gl));
 	}
 })
 .catch((e) => {
