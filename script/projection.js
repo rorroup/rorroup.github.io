@@ -52,6 +52,9 @@ class Body{
 		this.rotation = rotation;
 		this.model = model;
 		
+		// Load texture
+		this.texture = loadTexture(gl, this.model.textureSrc);
+		
 		// Create a buffer for the square's positions.
 		this.positionBuffer = gl.createBuffer();
 		// Select the positionBuffer as the one to apply buffer
@@ -108,7 +111,7 @@ class Body{
 		gl.activeTexture(gl.TEXTURE0);
 
 		// Bind the texture to texture unit 0
-		gl.bindTexture(gl.TEXTURE_2D, this.model.texture);
+		gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
 		// Tell the shader we bound the texture to texture unit 0
 		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
