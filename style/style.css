@@ -111,19 +111,6 @@ section{
 	z-index: 100;
 }
 
-#textload{
-	display: block;
-	position: fixed;
-	top: 0px;
-	left: 0px;
-	width: 300px;
-	height: 500px;
-	overflow: auto;
-	color: white;
-	background-color: #222222;
-	z-index: 100;
-}
-
 #tableload{
 	display: block;
 	position: fixed;

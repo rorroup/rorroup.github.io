@@ -117,8 +117,6 @@ let bodies = [];
 fetch("asset/scene3.obj")
 .then((res) => res.text())
 .then((text) => {
-	let textload = document.getElementById("textload");
-	textload.textContent = text;
 	return pen_obj.obj_load(text);
 })
 .then((loaded) => {
@@ -128,8 +126,6 @@ fetch("asset/scene3.obj")
 })
 .catch((e) => {
 	console.error(e);
-	let textload = document.getElementById("textload");
-	textload.textContent = e;
 });
 
 
