@@ -2,6 +2,7 @@
 var pen_obj = {
 	obj_load: async function(text_){
 		let models = [];
+		
 		let objects = [];
 		let mtllib = {};
 		let lineStart = -1;
@@ -18,17 +19,12 @@ var pen_obj = {
 		let vt = [];
 		let vn = [];
 		
-		let tableloaded = document.getElementById("tableload").children[0];
-		
 		const lines = text_.split('\n');
 		for(let i = 0; i < lines.length; i++){
 			const line = lines[i].trim();
 			const content = line.split('#')[0].trim();
 			if(content.length > 0){
-				const tr = document.createElement("tr");
-				
 				const data = content.split(/\s+/);
-				
 				switch(data[0]){
 					case "o":
 						{
@@ -53,13 +49,6 @@ var pen_obj = {
 								o.o = "UNNAMED_" + lineStart.toString().padStart(3, '0');
 								console.log(`[Warning] Object declared without a name on line ${lineStart + 1}. Setting name to '${o.o}'.`);
 							}
-							let td = document.createElement("td");
-							td.textContent = data[0];
-							tr.appendChild(td);
-							let td2 = document.createElement("td");
-							td2.textContent = o.o;
-							tr.appendChild(td2);
-							tableloaded.appendChild(tr);
 						}
 						break;
 					case "v":
@@ -75,20 +64,6 @@ var pen_obj = {
 									param.push(value);
 								}
 								v.push(param);
-								
-								let td = document.createElement("td");
-								td.textContent = data[0];
-								tr.appendChild(td);
-								let tdx = document.createElement("td");
-								tdx.textContent = data[1];
-								tr.appendChild(tdx);
-								let tdy = document.createElement("td");
-								tdy.textContent = data[2];
-								tr.appendChild(tdy);
-								let tdz = document.createElement("td");
-								tdz.textContent = data[3];
-								tr.appendChild(tdz);
-								tableloaded.appendChild(tr);
 							}else{
 								console.log(`[Error] Malformed statement '${content}' on line ${i + 1}. Aborting.`);
 								return models;
@@ -108,17 +83,6 @@ var pen_obj = {
 									param.push(value);
 								}
 								vt.push(param);
-								
-								let td = document.createElement("td");
-								td.textContent = data[0];
-								tr.appendChild(td);
-								let tdx = document.createElement("td");
-								tdx.textContent = data[1];
-								tr.appendChild(tdx);
-								let tdy = document.createElement("td");
-								tdy.textContent = data[2];
-								tr.appendChild(tdy);
-								tableloaded.appendChild(tr);
 							}else{
 								console.log(`[Error] Malformed statement '${content}' on line ${i + 1}. Aborting.`);
 								return models;
@@ -138,20 +102,6 @@ var pen_obj = {
 									param.push(value);
 								}
 								vn.push(param);
-								
-								let td = document.createElement("td");
-								td.textContent = data[0];
-								tr.appendChild(td);
-								let tdx = document.createElement("td");
-								tdx.textContent = data[1];
-								tr.appendChild(tdx);
-								let tdy = document.createElement("td");
-								tdy.textContent = data[2];
-								tr.appendChild(tdy);
-								let tdz = document.createElement("td");
-								tdz.textContent = data[3];
-								tr.appendChild(tdz);
-								tableloaded.appendChild(tr);
 							}else{
 								console.log(`[Error] Malformed statement '${content}' on line ${i + 1}. Aborting.`);
 								return models;
@@ -223,20 +173,6 @@ var pen_obj = {
 									console.log(`[Error] Second index in statement '${content}' on line ${i + 1} for object '${o.o}' omission mismatch. Aborting.`);
 									return models;
 								}
-								
-								let td = document.createElement("td");
-								td.textContent = data[0];
-								tr.appendChild(td);
-								let tdx = document.createElement("td");
-								tdx.textContent = data[1];
-								tr.appendChild(tdx);
-								let tdy = document.createElement("td");
-								tdy.textContent = data[2];
-								tr.appendChild(tdy);
-								let tdz = document.createElement("td");
-								tdz.textContent = data[3];
-								tr.appendChild(tdz);
-								tableloaded.appendChild(tr);
 							}else{
 								console.log(`[Error] Malformed statement '${content}' on line ${i + 1} for object '${o.o}'. Aborting.`);
 								return models;
@@ -293,16 +229,9 @@ var pen_obj = {
 		}else if(lineStart >= 0){
 			console.log(`[Warning] Object '${o.o}' declared on line ${lineStart + 1} defined no faces. Skipping Object.`);
 		}
-		// console.log(`O: ${models.length}. V: ${vertexData.v.length}. VN: ${vertexData.vn.length}. VT: ${vertexData.vt.length}.`);
 		
-		document.getElementById("INFO").textContent = `OBJECTS READ: ${objects.length}\nLOADED OBJECTS: `;
-		
-		let s = 0;
 		for(let i = 0; i < objects.length; i++){
-			
 			let object_ = objects[i];
-			
-			// console.log(`Attempting to load object: '${object_.o}'`);
 			
 			let model_v = [];
 			let model_vt = [];
@@ -325,7 +254,6 @@ var pen_obj = {
 					}
 				}
 			}
-			
 			if(model_vc > 0){
 				for(let j = 0; j < object_.f.vt.length; j++){
 					for(let k = 0; k < object_.f.vt[j].length; k++){
@@ -341,7 +269,6 @@ var pen_obj = {
 					}
 				}
 			}
-			
 			if(model_vc > 0){
 				for(let j = 0; j < object_.f.vn.length; j++){
 					for(let k = 0; k < object_.f.vn[j].length; k++){
@@ -357,7 +284,6 @@ var pen_obj = {
 					}
 				}
 			}
-			
 			if(model_vc > 0){
 				if(object_.usemtl != ""){
 					if(object_.usemtl in mtllib){
@@ -366,14 +292,9 @@ var pen_obj = {
 						console.log(`[Warning] Material '${object_.usemtl}' for object '${object_.o}' not found. Assigning default material.`);
 					}
 				}
-				
 				models.push(new Model(model_v, model_vt, model_vn, model_vc, model_usemtl));
-				// console.log(`Object '${object_.o}' loaded successfully!`);
-				s += 1;
 			}
 		}
-		document.getElementById("INFO").textContent += `${s}/${models.length}`;
-		
 		return models;
 	},
 	
