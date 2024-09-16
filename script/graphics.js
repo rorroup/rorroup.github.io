@@ -152,6 +152,39 @@ requestAnimationFrame(render);
 main();
 
 
+
+class Vector3{
+	constructor(x, y, z){
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	scale(scalar){
+		return new Vector3(scalar * this.x, scalar * this.y, scalar * this.z);
+	}
+	
+	dot(v3){
+		return this.x * v3.x + this.y * v3.y + this.z * v3.z;
+	}
+	
+	cross(v3){
+		return new Vector3(
+			this.y * v3.z - v3.y * this.z,
+			-(this.x * v3.z - v3.x * this.z),
+			this.x * v3.y - v3.x * this.y
+		);
+	}
+	
+	add(v3){
+		return new Vector3(this.x + v3.x, this.y + v3.y, this.z + v3.z);
+	}
+	
+	magnitude(){
+		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+	}
+}
+
 window.onkeydown = function(event_){
 	// console.log(event_);
 	if(event_.key == 'w' || event_.key == 'W'){
