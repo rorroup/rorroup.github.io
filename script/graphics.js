@@ -152,6 +152,20 @@ requestAnimationFrame(render);
 main();
 
 
+function update_cameraDir(){
+	let r = 1;
+	
+	let x = -r * Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]);
+	let z = -r * Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]);
+	let y = r * Math.sin(cameraRot[0]);
+	
+	cameraDir = [x, y, z, 1.0];
+	
+	let phi = Math.asin(y / r);
+	let theta = Math.atan2(-x, -z);
+}
+update_cameraDir();
+
 
 class Vector3{
 	constructor(x, y, z){
@@ -212,4 +226,5 @@ window.onkeydown = function(event_){
 	if(event_.key == "ArrowRight"){
 		cameraRot[1] += 0.05;
 	}
+	update_cameraDir();
 };
