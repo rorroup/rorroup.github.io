@@ -37,13 +37,16 @@ let fFovRad = 1.0 / Math.tan(fFov * 0.5 / 180.0 * Math.PI);
 
 
 
+function build_ProjectionMatrix(fNear, fFar, fFovRad, fAspectRatio){
 myProjectionMatrix.el[0][0] = fAspectRatio * fFovRad;
 myProjectionMatrix.el[1][1] = fFovRad;
 myProjectionMatrix.el[2][2] = fFar / (fFar - fNear)            * -1 ;  //// ????????????
 myProjectionMatrix.el[3][2] = (-fFar * fNear) / (fFar - fNear)  * 2;  /// ???????
 myProjectionMatrix.el[2][3] = 1.0                              * -1;  /// ??????????????
+}
 
 
+build_ProjectionMatrix(fNear, fFar, fFovRad, fAspectRatio);
 
 
 
