@@ -1,6 +1,6 @@
 
-var cameraPos = new Float32Array([-0.2, -0.4, 0.0, 1.0]);
-var cameraRot = new Float32Array([0.0, -Math.PI * 100 / 180, 0.0, 1.0]);
+var cameraPos = new Float32Array([0.2, -0.4, -1.2, 1.0]);
+var cameraRot = new Float32Array([0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
 var cameraDir = new Float32Array([0.0, 0.0, -1.0, 1.0]);
 
 
