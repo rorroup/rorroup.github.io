@@ -53,6 +53,8 @@ class Body{
 		this.rotation = rotation;
 		this.model = model;
 		
+		this.selected = false;
+		
 		// Load texture
 		this.texture = loadTexture(gl, this.model.textureSrc);
 		
@@ -119,7 +121,7 @@ class Body{
 		
 		
 		
-		gl.uniform3fv(programInfo.uniformLocations.VertexColor, this.model.material.Kd);
+		gl.uniform3fv(programInfo.uniformLocations.VertexColor, this.selected ? Material_DEFAULT.Kd : this.model.material.Kd);
 		
 		
 		gl.drawArrays(gl.TRIANGLES, this.model.offset, this.model.vertexCount);
