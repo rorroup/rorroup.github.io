@@ -260,32 +260,18 @@ class Vector3{
 	}
 }
 
-window.onkeydown = function(event_){
-	// console.log(event_);
-	if(event_.key == 'w' || event_.key == 'W'){
-		cameraPos[2] += 0.2;
-	}
-	if(event_.key == 's' || event_.key == 'S'){
-		cameraPos[2] -= 0.2;
-	}
-	if(event_.key == 'a' || event_.key == 'A'){
-		cameraPos[0] += 0.2;
-	}
-	if(event_.key == 'd' || event_.key == 'D'){
-		cameraPos[0] -= 0.2;
-	}
+document.getElementById("glcanvas").addEventListener("mousemove", function(event_){
+	let mouseX = event_.offsetX;
+	let mouseY = event_.offsetY;
 	
-	if(event_.key == "ArrowUp"){
-		cameraRot[0] -= 0.05;
-	}
-	if(event_.key == "ArrowDown"){
-		cameraRot[0] += 0.05;
-	}
-	if(event_.key == "ArrowLeft"){
-		cameraRot[1] -= 0.05;
-	}
-	if(event_.key == "ArrowRight"){
-		cameraRot[1] += 0.05;
-	}
+	const canvasWidth = event_.target.offsetWidth;
+	const canvasHeight = event_.target.offsetHeight;
+	
+	const mouseH = mouseX / canvasWidth - 0.5;
+	const mouseV = mouseY / canvasHeight - 0.5;
+	
+	cameraRot[0] = mouseV * camrangeV;
+	cameraRot[1] = -Math.PI * 90 / 180 + mouseH * camRangeH;
+	
 	update_cameraDir();
-};
+});
