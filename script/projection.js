@@ -3,6 +3,9 @@ var cameraPos = new Float32Array([0.2, -0.4, -1.2, 1.0]);
 var cameraRot = new Float32Array([0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
 var cameraDir = new Float32Array([0.0, 0.0, -1.0, 1.0]);
 
+var camRangeH = Math.PI * 25 / 180;
+var camrangeV = Math.PI * 25 / 180;
+
 
 var LightAmbient = new Float32Array([0.3, 0.3, 0.3]);
 var LightDirection = new Float32Array([-0.09759000729485333, -0.9759000729485332, -0.19518001458970666]);
