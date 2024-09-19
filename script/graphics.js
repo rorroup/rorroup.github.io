@@ -227,6 +227,31 @@ function update_cameraDir(){
 }
 update_cameraDir();
 
+function update_canvasResize()
+{
+	const glcanvas = document.getElementById("glcanvas");
+	const gl = glcanvas.getContext("webgl");
+	
+	const canvasWidth = glcanvas.offsetWidth;
+	const canvasHeight = glcanvas.offsetHeight;
+	
+	// Update canvas size.
+	glcanvas.width = canvasWidth;
+	glcanvas.height = canvasHeight;
+	
+	// Apply viewport resolution.
+	gl.viewport(0, 0, canvasWidth, canvasHeight);
+	
+	// Move camera position.
+	cameraPos[0] = 0.0 - 0.8 * ((canvasHeight / canvasWidth) - (9 / 16));
+	
+	// Adjust horizontal and vertical camera direction ranges.
+	camRangeH = Math.PI * (37 + 32 * ((canvasHeight / canvasWidth) - (9 / 16))) / 180;
+	camrangeV = Math.PI * (35 - 22 * ((canvasHeight / canvasWidth) - (9 / 16))) / 180;
+	
+	// Update projection matrix.
+	build_ProjectionMatrix(fNear, fFar, fFovRad, canvasHeight / canvasWidth);
+}
 
 class Vector3{
 	constructor(x, y, z){
