@@ -71,10 +71,12 @@ function main() {
     return;
   }
   
-  canvas.width = canvas.offsetWidth;
-  canvas.height = canvas.offsetHeight;
+  // canvas.width = canvas.offsetWidth;
+  // canvas.height = canvas.offsetHeight;
   
-  gl.viewport(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+  // gl.viewport(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+  
+window.addEventListener("resize", update_canvasResize);
   
   // Initialize a shader program; this is where all the lighting
 // for the vertices and so forth is established.
@@ -252,6 +254,8 @@ function update_canvasResize()
 	// Update projection matrix.
 	build_ProjectionMatrix(fNear, fFar, fFovRad, canvasHeight / canvasWidth);
 }
+update_canvasResize();
+
 
 class Vector3{
 	constructor(x, y, z){
