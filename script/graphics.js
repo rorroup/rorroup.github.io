@@ -1,7 +1,4 @@
 
-import { drawScene } from "./draw.js";
-
-
 // Vertex shader program
 const vsSource = `
 	attribute vec4 aVertexPosition;
