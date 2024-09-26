@@ -1,59 +1,4 @@
-
-// Vertex shader program
-const vsSource = `
-	attribute vec4 aVertexPosition;
-	attribute vec3 aVertexNormal;
-	attribute vec2 aTextureCoord;
-
-	uniform mat4 uRotationMatrix;
-
-	uniform mat4 uModelViewMatrix;
-	uniform mat4 uProjectionMatrix;
-
-	uniform mat4 uCameraPosition;
-	uniform mat4 uCameraRotation;
-
-	uniform vec3 uVertexColor;
-	varying lowp vec4 vColor;
-
-	uniform vec3 uLightAmbient;
-	uniform vec3 uLightDirection;
-	uniform vec3 uLightColor;
-
-	varying highp vec2 vTextureCoord;
-	varying highp vec3 vLighting;
-
-	void main(void){
-		gl_Position = uProjectionMatrix * uCameraRotation * uCameraPosition * uModelViewMatrix * uRotationMatrix * aVertexPosition;
-		vTextureCoord = aTextureCoord;
-
-		vColor = vec4(uVertexColor, 1.0);
-
-		// Apply lighting effect
-
-		vLighting = uLightAmbient + max(-dot(aVertexNormal, uLightDirection), 0.0) * uLightColor;
-	}
-	`;
-
-const fsSource = `
-	varying highp vec2 vTextureCoord;
-	varying highp vec3 vLighting;
-
-	uniform sampler2D uSampler;
-
-	varying lowp vec4 vColor;
-
-	void main(void){
-		// highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
-		highp vec4 texelColor = vColor;
-
-		gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
-	}
-	`;
-
-//
 // start here
-//
 function main(){
 	const canvas = document.querySelector("#glcanvas");
 	// Initialize the GL context
@@ -67,16 +12,65 @@ function main(){
 		return;
 	}
 	
-	// canvas.width = canvas.offsetWidth;
-	// canvas.height = canvas.offsetHeight;
+	// Vertex shader program
+	const vsSource = `
+		attribute vec4 aVertexPosition;
+		attribute vec3 aVertexNormal;
+		attribute vec2 aTextureCoord;
+
+		uniform mat4 uRotationMatrix;
+
+		uniform mat4 uModelViewMatrix;
+		uniform mat4 uProjectionMatrix;
+
+		uniform mat4 uCameraPosition;
+		uniform mat4 uCameraRotation;
+
+		uniform vec3 uVertexColor;
+		varying lowp vec4 vColor;
+
+		uniform vec3 uLightAmbient;
+		uniform vec3 uLightDirection;
+		uniform vec3 uLightColor;
+
+		varying highp vec2 vTextureCoord;
+		varying highp vec3 vLighting;
+
+		void main(void){
+			gl_Position = uProjectionMatrix * uCameraRotation * uCameraPosition * uModelViewMatrix * uRotationMatrix * aVertexPosition;
+			vTextureCoord = aTextureCoord;
+
+			vColor = vec4(uVertexColor, 1.0);
+
+			// Apply lighting effect
+
+			vLighting = uLightAmbient + max(-dot(aVertexNormal, uLightDirection), 0.0) * uLightColor;
+		}
+	`;
 	
-	// gl.viewport(0, 0, canvas.offsetWidth, canvas.offsetHeight);
-	
-	window.addEventListener("resize", update_canvasResize);
+	const fsSource = `
+		varying highp vec2 vTextureCoord;
+		varying highp vec3 vLighting;
+
+		uniform sampler2D uSampler;
+
+		varying lowp vec4 vColor;
+
+		void main(void){
+			// highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
+			highp vec4 texelColor = vColor;
+
+			gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
+		}
+	`;
 	
 	// Initialize a shader program; this is where all the lighting
 	// for the vertices and so forth is established.
 	const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+	
+	if(shaderProgram === null){
+		return;
+	}
 	
 	// Collect all the info needed to use the shader program.
 	// Look up which attribute our shader program is using
@@ -102,27 +96,64 @@ function main(){
 		},
 	};
 	
-	// Set clear color to black, fully opaque
-	// gl.clearColor(1.0, 0.0, 0.0, 1.0);
-	// Clear the color buffer with specified clear color
-	// gl.clear(gl.COLOR_BUFFER_BIT);
+	let fNear = 0.1;
+	let fFar = 100.0;
+	let fFov = 45.0;
+	let fFovRad = 1.0 / Math.tan(fFov * 0.5 / 180.0 * Math.PI);
+	let myProjectionMatrix = new Matrix(4, 4);
+	
+	let cameraPos = new Float32Array([0.2, -0.4, -1.2, 1.0]);
+	let cameraRot = new Float32Array([0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
+	let cameraDir = new Float32Array([0.0, 0.0, -1.0, 1.0]);
+	
+	let camRangeH = Math.PI * 25 / 180;
+	let camrangeV = Math.PI * 25 / 180;
+	
+	let LightAmbient = new Float32Array([0.3, 0.3, 0.3]);
+	let LightDirection = new Float32Array([-0.09759000729485333, -0.9759000729485332, -0.19518001458970666]);
+	let LightColor = new Float32Array([1.0, 1.0, 1.0]);
 	
 	// Here's where we call the routine that builds all the
 	// objects we'll be drawing.
 	let bodies = [];
 	
-	fetch("asset/scene3.obj")
-	.then((res) => res.text())
-	.then((text) => {
-		return pen_obj.obj_load(text);
-	})
-	.then((loaded) => {
+	fetch("asset/scene3.obj").then((res) =>
+		res.text()
+	).then((text) =>
+		pen_obj.obj_load(text)
+	).then((loaded) => {
 		for(let i = 0; i < loaded.length; i++){
 			bodies.push(new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), loaded[i], gl));
 		}
-	})
-	.catch((e) => {
+	}).catch((e) => {
 		console.error(e);
+	});
+	
+	if(bodies.length <= 0){
+		alert("Failed to load 3d scene.");
+		return;
+	}
+	
+	[cameraPos, camRangeH, camrangeV, myProjectionMatrix] = update_canvasResize(cameraPos, myProjectionMatrix, fNear, fFar, fFovRad);
+	window.addEventListener("resize", function(event_){
+		[cameraPos, camRangeH, camrangeV, myProjectionMatrix] = update_canvasResize(cameraPos, myProjectionMatrix, fNear, fFar, fFovRad);
+	});
+	
+	cameraDir = update_cameraDir(cameraDir, cameraRot);
+	document.getElementById("glcanvas").addEventListener("mousemove", function(event_){
+		let mouseX = event_.offsetX;
+		let mouseY = event_.offsetY;
+		
+		const canvasWidth = event_.target.offsetWidth;
+		const canvasHeight = event_.target.offsetHeight;
+		
+		const mouseH = mouseX / canvasWidth - 0.5;
+		const mouseV = mouseY / canvasHeight - 0.5;
+		
+		cameraRot[0] = mouseV * camrangeV;
+		cameraRot[1] = -Math.PI * 90 / 180 + mouseH * camRangeH;
+		
+		cameraDir = update_cameraDir(cameraDir, cameraRot);
 	});
 	
 	document.getElementById("glcanvas").addEventListener("mousemove", function(event_){
@@ -132,10 +163,6 @@ function main(){
 		const canvasWidth = event_.target.offsetWidth;
 		const canvasHeight = event_.target.offsetHeight;
 		
-		let fNear = 0.1;
-		let fFov = 45.0;
-		let fFovRad = Math.tan(fFov * 0.5 / 180.0 * Math.PI);
-		
 		const campos = new Vector3(-cameraPos[0], -cameraPos[1], -cameraPos[2]);
 		const camdir = new Vector3(-cameraDir[0], -cameraDir[1], cameraDir[2]);
 		
@@ -143,7 +170,7 @@ function main(){
 		vecRight = vecRight.scale(1 / vecRight.magnitude()); // Normalize.
 		let vecUpwards = vecRight.cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
 		
-		let cam2mouse = camdir.scale(fNear).add(vecRight.scale(2 * (canvasWidth / canvasHeight) * fNear * fFovRad * ((mouseX - canvasWidth / 2) / canvasWidth))).add(vecUpwards.scale(2 * fNear * fFovRad * ((canvasHeight / 2 - mouseY) / canvasHeight)));
+		let cam2mouse = camdir.scale(fNear).add(vecRight.scale(2 * (canvasWidth / canvasHeight) * fNear / fFovRad * ((mouseX - canvasWidth / 2) / canvasWidth))).add(vecUpwards.scale(2 * fNear / fFovRad * ((canvasHeight / 2 - mouseY) / canvasHeight)));
 		let mouse3d = campos.add(cam2mouse);
 		
 		let cam2mouseNormalized = cam2mouse.scale(1 / cam2mouse.magnitude());
@@ -186,19 +213,16 @@ function main(){
 		}
 	});
 	
-	
 	// Flip image pixels into the bottom-to-top order that WebGL expects.
 	gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 	
 	let then = 0;
-	
-	
 	// Draw the scene repeatedly
 	function render(now){
 		let deltaTime = now - then;
 		then = now;
-
-		drawScene(gl, programInfo, bodies, deltaTime);
+		
+		drawScene(gl, programInfo, {projection: myProjectionMatrix, position: cameraPos, rotation: cameraRot}, {Ambient: LightAmbient, Direction: LightDirection, Color: LightColor}, bodies, deltaTime);
 
 		requestAnimationFrame(render);
 	}
@@ -210,7 +234,7 @@ function main(){
 main();
 
 
-function update_cameraDir(){
+function update_cameraDir(cameraDir, cameraRot){
 	let r = 1;
 	
 	let x = -r * Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]);
@@ -219,12 +243,13 @@ function update_cameraDir(){
 	
 	cameraDir = [x, y, z, 1.0];
 	
-	let phi = Math.asin(y / r);
-	let theta = Math.atan2(-x, -z);
+	// let phi = Math.asin(y / r);
+	// let theta = Math.atan2(-x, -z);
+	
+	return cameraDir;
 }
-update_cameraDir();
 
-function update_canvasResize()
+function update_canvasResize(cameraPos, mProjection, fNear, fFar, fFovRad)
 {
 	const glcanvas = document.getElementById("glcanvas");
 	const gl = glcanvas.getContext("webgl");
@@ -247,55 +272,7 @@ function update_canvasResize()
 	camrangeV = Math.PI * (35 - 22 * ((canvasHeight / canvasWidth) - (9 / 16))) / 180;
 	
 	// Update projection matrix.
-	build_ProjectionMatrix(fNear, fFar, fFovRad, canvasHeight / canvasWidth);
+	build_ProjectionMatrix(mProjection, fNear, fFar, fFovRad, canvasHeight / canvasWidth);
+	
+	return [cameraPos, camRangeH, camrangeV, mProjection];
 }
-update_canvasResize();
-
-
-class Vector3{
-	constructor(x, y, z){
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-	
-	scale(scalar){
-		return new Vector3(scalar * this.x, scalar * this.y, scalar * this.z);
-	}
-	
-	dot(v3){
-		return this.x * v3.x + this.y * v3.y + this.z * v3.z;
-	}
-	
-	cross(v3){
-		return new Vector3(
-			this.y * v3.z - v3.y * this.z,
-			-(this.x * v3.z - v3.x * this.z),
-			this.x * v3.y - v3.x * this.y
-		);
-	}
-	
-	add(v3){
-		return new Vector3(this.x + v3.x, this.y + v3.y, this.z + v3.z);
-	}
-	
-	magnitude(){
-		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
-	}
-}
-
-document.getElementById("glcanvas").addEventListener("mousemove", function(event_){
-	let mouseX = event_.offsetX;
-	let mouseY = event_.offsetY;
-	
-	const canvasWidth = event_.target.offsetWidth;
-	const canvasHeight = event_.target.offsetHeight;
-	
-	const mouseH = mouseX / canvasWidth - 0.5;
-	const mouseV = mouseY / canvasHeight - 0.5;
-	
-	cameraRot[0] = mouseV * camrangeV;
-	cameraRot[1] = -Math.PI * 90 / 180 + mouseH * camRangeH;
-	
-	update_cameraDir();
-});

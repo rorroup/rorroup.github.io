@@ -1,5 +1,5 @@
 
-function drawScene(gl, programInfo, bodies, timeDelta){
+function drawScene(gl, programInfo, camera, Light, bodies, timeDelta){
 	gl.clearColor(0.0, 1.0, 7.0, 1.0); // Background color
 	gl.clearDepth(1.0); // Clear everything
 	gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -13,11 +13,15 @@ function drawScene(gl, programInfo, bodies, timeDelta){
 	gl.useProgram(programInfo.program);
 	
 	
+	const mProjection = camera.projection;
+	const cameraPos = camera.position;
+	const cameraRot = camera.rotation;
+	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.projectionMatrix,
 		false,
-		new Float32Array(myProjectionMatrix.el[0].concat(myProjectionMatrix.el[1]).concat(myProjectionMatrix.el[2]).concat(myProjectionMatrix.el[3]))
+		new Float32Array(mProjection.el[0].concat(mProjection.el[1]).concat(mProjection.el[2]).concat(mProjection.el[3]))
 	);
 	
 	gl.uniformMatrix4fv(
@@ -43,9 +47,9 @@ function drawScene(gl, programInfo, bodies, timeDelta){
 	);
 	
 	// Pass Lighting conditions
-	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, LightAmbient);
-	gl.uniform3fv(programInfo.uniformLocations.LightDirection, LightDirection);
-	gl.uniform3fv(programInfo.uniformLocations.LightColor, LightColor);
+	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, Light.Ambient);
+	gl.uniform3fv(programInfo.uniformLocations.LightDirection, Light.Direction);
+	gl.uniform3fv(programInfo.uniformLocations.LightColor, Light.Color);
 	
 	bodies.forEach((body) => {body.update(timeDelta);});
 	bodies.forEach((body) => {body.draw(gl, programInfo);});

@@ -1,16 +1,35 @@
 
-var cameraPos = new Float32Array([0.2, -0.4, -1.2, 1.0]);
-var cameraRot = new Float32Array([0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
-var cameraDir = new Float32Array([0.0, 0.0, -1.0, 1.0]);
-
-var camRangeH = Math.PI * 25 / 180;
-var camrangeV = Math.PI * 25 / 180;
-
-
-var LightAmbient = new Float32Array([0.3, 0.3, 0.3]);
-var LightDirection = new Float32Array([-0.09759000729485333, -0.9759000729485332, -0.19518001458970666]);
-var LightColor = new Float32Array([1.0, 1.0, 1.0]);
-
+class Vector3{
+	constructor(x, y, z){
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
+	
+	scale(scalar){
+		return new Vector3(scalar * this.x, scalar * this.y, scalar * this.z);
+	}
+	
+	dot(v3){
+		return this.x * v3.x + this.y * v3.y + this.z * v3.z;
+	}
+	
+	cross(v3){
+		return new Vector3(
+			this.y * v3.z - v3.y * this.z,
+			-(this.x * v3.z - v3.x * this.z),
+			this.x * v3.y - v3.x * this.y
+		);
+	}
+	
+	add(v3){
+		return new Vector3(this.x + v3.x, this.y + v3.y, this.z + v3.z);
+	}
+	
+	magnitude(){
+		return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
+	}
+}
 
 class Matrix{
 	constructor(rows, columns){
@@ -24,33 +43,15 @@ class Matrix{
 	}
 }
 
-let myProjectionMatrix = new Matrix(4, 4);
 
-
-const webglcanvas = document.querySelector("#glcanvas");
-const canvasWidth = webglcanvas.offsetWidth;
-const canvasHeight = webglcanvas.offsetHeight;
-
-
-let fNear = 0.1;
-let fFar = 100.0;
-let fFov = 45.0;
-let fAspectRatio = canvasHeight / canvasWidth;
-let fFovRad = 1.0 / Math.tan(fFov * 0.5 / 180.0 * Math.PI);
-
-
-
-function build_ProjectionMatrix(fNear, fFar, fFovRad, fAspectRatio){
-myProjectionMatrix.el[0][0] = fAspectRatio * fFovRad;
-myProjectionMatrix.el[1][1] = fFovRad;
-myProjectionMatrix.el[2][2] = fFar / (fFar - fNear)            * -1 ;  //// ????????????
-myProjectionMatrix.el[3][2] = (-fFar * fNear) / (fFar - fNear)  * 2;  /// ???????
-myProjectionMatrix.el[2][3] = 1.0                              * -1;  /// ??????????????
+function build_ProjectionMatrix(myProjectionMatrix, fNear, fFar, fFovRad, fAspectRatio){
+	myProjectionMatrix.el[0][0] = fAspectRatio * fFovRad;
+	myProjectionMatrix.el[1][1] = fFovRad;
+	myProjectionMatrix.el[2][2] = fFar / (fFar - fNear)            * -1 ;  //// ????????????
+	myProjectionMatrix.el[3][2] = (-fFar * fNear) / (fFar - fNear)  * 2;  /// ???????
+	myProjectionMatrix.el[2][3] = 1.0                              * -1;  /// ??????????????
+	return myProjectionMatrix;
 }
-
-
-build_ProjectionMatrix(fNear, fFar, fFovRad, fAspectRatio);
-
 
 
 class Body{
