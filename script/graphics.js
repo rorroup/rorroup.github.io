@@ -129,11 +129,6 @@ function main(){
 		console.error(e);
 	});
 	
-	if(bodies.length <= 0){
-		alert("Failed to load 3d scene.");
-		return;
-	}
-	
 	[cameraPos, camRangeH, camrangeV, myProjectionMatrix] = update_canvasResize(cameraPos, myProjectionMatrix, fNear, fFar, fFovRad);
 	window.addEventListener("resize", function(event_){
 		[cameraPos, camRangeH, camrangeV, myProjectionMatrix] = update_canvasResize(cameraPos, myProjectionMatrix, fNear, fFar, fFovRad);
