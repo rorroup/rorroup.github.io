@@ -12,57 +12,18 @@ function main(){
 		return;
 	}
 	
-	// Vertex shader program
-	const vsSource = `
-		attribute vec4 aVertexPosition;
-		attribute vec3 aVertexNormal;
-		attribute vec2 aTextureCoord;
-
-		uniform mat4 uRotationMatrix;
-
-		uniform mat4 uModelViewMatrix;
-		uniform mat4 uProjectionMatrix;
-
-		uniform mat4 uCameraPosition;
-		uniform mat4 uCameraRotation;
-
-		uniform vec3 uVertexColor;
-		varying lowp vec4 vColor;
-
-		uniform vec3 uLightAmbient;
-		uniform vec3 uLightDirection;
-		uniform vec3 uLightColor;
-
-		varying highp vec2 vTextureCoord;
-		varying highp vec3 vLighting;
-
-		void main(void){
-			gl_Position = uProjectionMatrix * uCameraRotation * uCameraPosition * uModelViewMatrix * uRotationMatrix * aVertexPosition;
-			vTextureCoord = aTextureCoord;
-
-			vColor = vec4(uVertexColor, 1.0);
-
-			// Apply lighting effect
-
-			vLighting = uLightAmbient + max(-dot(aVertexNormal, uLightDirection), 0.0) * uLightColor;
-		}
-	`;
-	
-	const fsSource = `
-		varying highp vec2 vTextureCoord;
-		varying highp vec3 vLighting;
-
-		uniform sampler2D uSampler;
-
-		varying lowp vec4 vColor;
-
-		void main(void){
-			// highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
-			highp vec4 texelColor = vColor;
-
-			gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
-		}
-	`;
+	Promise.all([
+		Promise.all([
+			fetch("script/shader/vertexColor.vs").then((resp) => resp.text()),
+			fetch("script/shader/vertexColor.fs").then((resp) => resp.text()),
+		]),
+		Promise.all([
+			fetch("asset/scene3.obj").then((resp) => resp.text()).then((objs) => pen_obj.obj_load(objs)),
+		]),
+	]).then((responses) => {
+		[shaders, models] = responses;
+		
+		[vsSource, fsSource] = shaders;
 	
 	// Initialize a shader program; this is where all the lighting
 	// for the vertices and so forth is established.
@@ -117,17 +78,10 @@ function main(){
 	// objects we'll be drawing.
 	let bodies = [];
 	
-	fetch("asset/scene3.obj").then((res) =>
-		res.text()
-	).then((text) =>
-		pen_obj.obj_load(text)
-	).then((loaded) => {
+		const loaded = models[0];
 		for(let i = 0; i < loaded.length; i++){
 			bodies.push(new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), loaded[i], gl));
 		}
-	}).catch((e) => {
-		console.error(e);
-	});
 	
 	[cameraPos, camRangeH, camrangeV, myProjectionMatrix] = update_canvasResize(cameraPos, myProjectionMatrix, fNear, fFar, fFovRad);
 	window.addEventListener("resize", function(event_){
@@ -223,6 +177,9 @@ function main(){
 	}
 	requestAnimationFrame(render);
 	
+	}).catch((e) => {
+		console.error(e);
+	});
 }
 
 
