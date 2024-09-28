@@ -13,16 +13,15 @@ function main(){
 	}
 	
 	Promise.all([
-		Promise.all([
-			fetch("script/shader/vertexColor.vs").then((resp) => resp.text()),
-			fetch("script/shader/vertexColor.fs").then((resp) => resp.text()),
-		]),
-		Promise.all([
-			fetch("asset/scene3.obj").then((resp) => resp.text()).then((objs) => pen_obj.obj_load(objs)),
-		]),
+		fetch("script/shader/vertexColor.vs"),
+		fetch("script/shader/vertexColor.fs"),
 	]).then((responses) => {
-		[shaders, models] = responses;
-		
+		[vs, fs] = responses;
+		return Promise.all([
+			vs.text(),
+			fs.text(),
+		]);
+	}).then((shaders) => {
 		[vsSource, fsSource] = shaders;
 	
 	// Initialize a shader program; this is where all the lighting
@@ -78,10 +77,17 @@ function main(){
 	// objects we'll be drawing.
 	let bodies = [];
 	
-		const loaded = models[0];
+	fetch("asset/scene3.obj").then((res) =>
+		res.text()
+	).then((text) =>
+		pen_obj.obj_load(text)
+	).then((loaded) => {
 		for(let i = 0; i < loaded.length; i++){
 			bodies.push(new Body(new Float32Array([0.0, 0.0, 0.0, 1.0]), new Float32Array([0.0, 0.0, 0.0, 1.0]), loaded[i], gl));
 		}
+	}).catch((e) => {
+		console.error(e);
+	});
 	
 	[cameraPos, camRangeH, camrangeV, myProjectionMatrix] = update_canvasResize(cameraPos, myProjectionMatrix, fNear, fFar, fFovRad);
 	window.addEventListener("resize", function(event_){
