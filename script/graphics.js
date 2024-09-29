@@ -118,17 +118,16 @@ function main(){
 		const canvasWidth = event_.target.offsetWidth;
 		const canvasHeight = event_.target.offsetHeight;
 		
-		const campos = new Vector3(-cameraPos[0], -cameraPos[1], -cameraPos[2]);
-		const camdir = new Vector3(-cameraDir[0], -cameraDir[1], cameraDir[2]);
+		const campos = new F32Vector(3, [-cameraPos[0], -cameraPos[1], -cameraPos[2]]);
+		const camdir = new F32Vector(3, [-cameraDir[0], -cameraDir[1], cameraDir[2]]);
 		
-		let vecRight = camdir.cross(new Vector3(0.0, 1.0, 0.0));
-		vecRight = vecRight.scale(1 / vecRight.magnitude()); // Normalize.
-		let vecUpwards = vecRight.cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
+		let vecRight = camdir.copy().cross(pen_F32Matrix.Y1).normalize();
+		let vecUpwards = vecRight.copy().cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
 		
-		let cam2mouse = camdir.scale(fNear).add(vecRight.scale(2 * (canvasWidth / canvasHeight) * fNear / fFovRad * ((mouseX - canvasWidth / 2) / canvasWidth))).add(vecUpwards.scale(2 * fNear / fFovRad * ((canvasHeight / 2 - mouseY) / canvasHeight)));
-		let mouse3d = campos.add(cam2mouse);
+		let cam2mouse = camdir.copy().scale(fNear).add(vecRight.copy().scale(2 * (canvasWidth / canvasHeight) * fNear / fFovRad * ((mouseX - canvasWidth / 2) / canvasWidth))).add(vecUpwards.copy().scale(2 * fNear / fFovRad * ((canvasHeight / 2 - mouseY) / canvasHeight)));
+		let mouse3d = campos.copy().add(cam2mouse);
 		
-		let cam2mouseNormalized = cam2mouse.scale(1 / cam2mouse.magnitude());
+		let cam2mouseNormalized = cam2mouse.copy().normalize();
 		
 		let intersections = [];
 		
@@ -136,25 +135,25 @@ function main(){
 			let body = bodies[i];
 			body.selected = false;
 			for(let j = 0; j < body.model.vertexCount / 3; j++){
-				let v1 = new Vector3(...body.model.vertices.slice(9 * j + 0, 9 * j + 3));
-				let v2 = new Vector3(...body.model.vertices.slice(9 * j + 3, 9 * j + 6));
-				let v3 = new Vector3(...body.model.vertices.slice(9 * j + 6, 9 * j + 9));
+				let v1 = new F32Vector(3, [...body.model.vertices.slice(9 * j + 0, 9 * j + 3)]);
+				let v2 = new F32Vector(3, [...body.model.vertices.slice(9 * j + 3, 9 * j + 6)]);
+				let v3 = new F32Vector(3, [...body.model.vertices.slice(9 * j + 6, 9 * j + 9)]);
 				
-				let vec1 = v1.add(v2.scale(-1.0));
-				let vec2 = v2.add(v3.scale(-1.0));
-				let vec3 = v3.add(v1.scale(-1.0));
+				let vec1 = v1.copy().substract(v2);
+				let vec2 = v2.copy().substract(v3);
+				let vec3 = v3.copy().substract(v1);
 				
-				let n1 = v1.add(campos.scale(-1.0)).cross(vec1);
-				let n2 = v2.add(campos.scale(-1.0)).cross(vec2);
-				let n3 = v3.add(campos.scale(-1.0)).cross(vec3);
+				let n1 = v1.copy().substract(campos).cross(vec1);
+				let n2 = v2.copy().substract(campos).cross(vec2);
+				let n3 = v3.copy().substract(campos).cross(vec3);
 				
-				if(cam2mouse.dot(n1) > 0 && cam2mouse.dot(n2) > 0 && cam2mouse.dot(n3) > 0 && cam2mouse.dot(vec1.cross(vec2)) < 0){
+				if(cam2mouse.dot(n1) > 0 && cam2mouse.dot(n2) > 0 && cam2mouse.dot(n3) > 0 && cam2mouse.dot(vec1.copy().cross(vec2)) < 0){
 					// https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
-					let n = vec1.cross(vec2);
+					let n = vec1.copy().cross(vec2);
 					let parallel = cam2mouse.dot(n);
 					if(parallel != 0){
-						let d = v1.add(campos.scale(-1.0)).dot(n) / parallel;
-						// let intersection = campos.add(cam2mouse.scale(d));
+						let d = v1.copy().substract(campos).dot(n) / parallel;
+						// let intersection = campos.copy().add(cam2mouse.copy().scale(d));
 						intersections.push([i, d]);
 					}
 					break;
