@@ -122,9 +122,11 @@ function main(){
 				);
 				
 				if(d != null){
-					intersections.push([i, d]);
-					// let intersection = campos.copy().add(cam2mouse.copy().scale(d));
-					break;
+					if(d > 0){
+						intersections.push([i, d]);
+						// let intersection = campos.copy().add(cam2mouse.copy().scale(d));
+						break;
+					}
 				}
 			}
 		}
