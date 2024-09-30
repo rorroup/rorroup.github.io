@@ -93,15 +93,7 @@ function main(){
 		let mouseX = event_.offsetX;
 		let mouseY = event_.offsetY;
 		
-		const mouseH = mouseX / canvasSize[0] - 0.5;
-		const mouseV = mouseY / canvasSize[1] - 0.5;
-		
-		camera.rotate([mouseV * camrangeV, -Math.PI * 90 / 180 + mouseH * camRangeH, 0.0, 1.0]);
-	});
-	
-	canvas.addEventListener("mousemove", function(event_){
-		let mouseX = event_.offsetX;
-		let mouseY = event_.offsetY;
+		camera.rotate([(mouseY / canvasSize[1] - 0.5) * camrangeV, -Math.PI * 90 / 180 + (mouseX / canvasSize[0] - 0.5) * camRangeH, 0.0, 1.0]);
 		
 		const campos = new F32Vector(3, [-camera.position[0], -camera.position[1], -camera.position[2]]);
 		const camdir = new F32Vector(3, [-camera.direction[0], -camera.direction[1], camera.direction[2]]);
