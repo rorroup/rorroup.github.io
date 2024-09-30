@@ -82,17 +82,17 @@ function main(){
 		console.error(e);
 	});
 	
-	[camRangeH, camrangeV] = update_canvasResize(camera);
+	[camRangeH, camrangeV] = update_canvasResize(canvas, camera);
 	window.addEventListener("resize", function(event_){
-		[camRangeH, camrangeV] = update_canvasResize(camera);
+		[camRangeH, camrangeV] = update_canvasResize(canvas, camera);
 	});
 	
-	document.getElementById("glcanvas").addEventListener("mousemove", function(event_){
+	canvas.addEventListener("mousemove", function(event_){
 		let mouseX = event_.offsetX;
 		let mouseY = event_.offsetY;
 		
-		const canvasWidth = event_.target.offsetWidth;
-		const canvasHeight = event_.target.offsetHeight;
+		const canvasWidth = canvas.offsetWidth;
+		const canvasHeight = canvas.offsetHeight;
 		
 		const mouseH = mouseX / canvasWidth - 0.5;
 		const mouseV = mouseY / canvasHeight - 0.5;
@@ -100,12 +100,12 @@ function main(){
 		camera.rotate([mouseV * camrangeV, -Math.PI * 90 / 180 + mouseH * camRangeH, 0.0, 1.0]);
 	});
 	
-	document.getElementById("glcanvas").addEventListener("mousemove", function(event_){
+	canvas.addEventListener("mousemove", function(event_){
 		let mouseX = event_.offsetX;
 		let mouseY = event_.offsetY;
 		
-		const canvasWidth = event_.target.offsetWidth;
-		const canvasHeight = event_.target.offsetHeight;
+		const canvasWidth = canvas.offsetWidth;
+		const canvasHeight = canvas.offsetHeight;
 		
 		const campos = new F32Vector(3, [-camera.position[0], -camera.position[1], -camera.position[2]]);
 		const camdir = new F32Vector(3, [-camera.direction[0], -camera.direction[1], camera.direction[2]]);
@@ -180,9 +180,8 @@ function main(){
 main();
 
 
-function update_canvasResize(camera)
+function update_canvasResize(glcanvas, camera)
 {
-	const glcanvas = document.getElementById("glcanvas");
 	const gl = glcanvas.getContext("webgl");
 	
 	const canvasWidth = glcanvas.offsetWidth;
