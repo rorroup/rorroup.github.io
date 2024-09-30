@@ -1,11 +1,4 @@
 
-function build_ProjectionMatrix(matrixProjection, Znear, Zfar, FoVratio, aspectRatio){
-	matrixProjection[0] = FoVratio * aspectRatio;
-	matrixProjection[5] = FoVratio;
-	matrixProjection[10] = (Znear + Zfar) / (Znear - Zfar);
-	matrixProjection[14] = 2.0 * (Znear * Zfar) / (Znear - Zfar);
-	matrixProjection[11] = -1.0;
-	return matrixProjection;
 class Camera
 {
 	constructor(FoV, Znear, Zfar, aspectRatio, position = false, rotation = false)
@@ -50,8 +43,6 @@ class Camera
 		this.rotation[1] = Math.atan2(-x, -z);
 	}
 }
-}
-
 
 class Body{
 	constructor(position, rotation, model, gl){

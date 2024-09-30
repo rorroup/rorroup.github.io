@@ -56,15 +56,8 @@ function main(){
 		},
 	};
 	
-	let fNear = 0.1;
-	let fFar = 100.0;
-	let fFov = 45.0;
-	let fFovRad = 1.0 / Math.tan(fFov * 0.5 / 180.0 * Math.PI);
-	let myProjectionMatrix = new F32Matrix(4);
 	
-	let cameraPos = new Float32Array([0.2, -0.4, -1.2, 1.0]);
-	let cameraRot = new Float32Array([0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
-	let cameraDir = new Float32Array([0.0, 0.0, -1.0, 1.0]);
+	let camera = new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
 	
 	let camRangeH = Math.PI * 25 / 180;
 	let camrangeV = Math.PI * 25 / 180;
@@ -89,12 +82,11 @@ function main(){
 		console.error(e);
 	});
 	
-	[cameraPos, camRangeH, camrangeV, myProjectionMatrix] = update_canvasResize(cameraPos, myProjectionMatrix, fNear, fFar, fFovRad);
+	[camRangeH, camrangeV] = update_canvasResize(camera);
 	window.addEventListener("resize", function(event_){
-		[cameraPos, camRangeH, camrangeV, myProjectionMatrix] = update_canvasResize(cameraPos, myProjectionMatrix, fNear, fFar, fFovRad);
+		[camRangeH, camrangeV] = update_canvasResize(camera);
 	});
 	
-	cameraDir = update_cameraDir(cameraDir, cameraRot);
 	document.getElementById("glcanvas").addEventListener("mousemove", function(event_){
 		let mouseX = event_.offsetX;
 		let mouseY = event_.offsetY;
@@ -105,10 +97,7 @@ function main(){
 		const mouseH = mouseX / canvasWidth - 0.5;
 		const mouseV = mouseY / canvasHeight - 0.5;
 		
-		cameraRot[0] = mouseV * camrangeV;
-		cameraRot[1] = -Math.PI * 90 / 180 + mouseH * camRangeH;
-		
-		cameraDir = update_cameraDir(cameraDir, cameraRot);
+		camera.rotate([mouseV * camrangeV, -Math.PI * 90 / 180 + mouseH * camRangeH, 0.0, 1.0]);
 	});
 	
 	document.getElementById("glcanvas").addEventListener("mousemove", function(event_){
@@ -118,13 +107,13 @@ function main(){
 		const canvasWidth = event_.target.offsetWidth;
 		const canvasHeight = event_.target.offsetHeight;
 		
-		const campos = new F32Vector(3, [-cameraPos[0], -cameraPos[1], -cameraPos[2]]);
-		const camdir = new F32Vector(3, [-cameraDir[0], -cameraDir[1], cameraDir[2]]);
+		const campos = new F32Vector(3, [-camera.position[0], -camera.position[1], -camera.position[2]]);
+		const camdir = new F32Vector(3, [-camera.direction[0], -camera.direction[1], camera.direction[2]]);
 		
 		let vecRight = camdir.copy().cross(pen_F32Matrix.Y1).normalize();
 		let vecUpwards = vecRight.copy().cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
 		
-		let cam2mouse = camdir.copy().scale(fNear).add(vecRight.copy().scale(2 * (canvasWidth / canvasHeight) * fNear / fFovRad * ((mouseX - canvasWidth / 2) / canvasWidth))).add(vecUpwards.copy().scale(2 * fNear / fFovRad * ((canvasHeight / 2 - mouseY) / canvasHeight)));
+		let cam2mouse = camdir.copy().scale(camera.Znear).add(vecRight.copy().scale(2 * (canvasWidth / canvasHeight) * camera.Znear * camera.FoVratio * ((mouseX - canvasWidth / 2) / canvasWidth))).add(vecUpwards.copy().scale(2 * camera.Znear * camera.FoVratio * ((canvasHeight / 2 - mouseY) / canvasHeight)));
 		let mouse3d = campos.copy().add(cam2mouse);
 		
 		let cam2mouseNormalized = cam2mouse.copy().normalize();
@@ -176,7 +165,7 @@ function main(){
 		let deltaTime = now - then;
 		then = now;
 		
-		drawScene(gl, programInfo, {projection: myProjectionMatrix, position: cameraPos, rotation: cameraRot}, {Ambient: LightAmbient, Direction: LightDirection, Color: LightColor}, bodies, deltaTime);
+		drawScene(gl, programInfo, camera, {Ambient: LightAmbient, Direction: LightDirection, Color: LightColor}, bodies, deltaTime);
 
 		requestAnimationFrame(render);
 	}
@@ -191,22 +180,7 @@ function main(){
 main();
 
 
-function update_cameraDir(cameraDir, cameraRot){
-	let r = 1;
-	
-	let x = -r * Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]);
-	let z = -r * Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]);
-	let y = r * Math.sin(cameraRot[0]);
-	
-	cameraDir = [x, y, z, 1.0];
-	
-	// let phi = Math.asin(y / r);
-	// let theta = Math.atan2(-x, -z);
-	
-	return cameraDir;
-}
-
-function update_canvasResize(cameraPos, mProjection, fNear, fFar, fFovRad)
+function update_canvasResize(camera)
 {
 	const glcanvas = document.getElementById("glcanvas");
 	const gl = glcanvas.getContext("webgl");
@@ -221,15 +195,16 @@ function update_canvasResize(cameraPos, mProjection, fNear, fFar, fFovRad)
 	// Apply viewport resolution.
 	gl.viewport(0, 0, canvasWidth, canvasHeight);
 	
-	// Move camera position.
-	cameraPos[0] = 0.0 - 0.8 * ((canvasHeight / canvasWidth) - (9 / 16));
-	
 	// Adjust horizontal and vertical camera direction ranges.
 	camRangeH = Math.PI * (37 + 32 * ((canvasHeight / canvasWidth) - (9 / 16))) / 180;
 	camrangeV = Math.PI * (35 - 22 * ((canvasHeight / canvasWidth) - (9 / 16))) / 180;
 	
-	// Update projection matrix.
-	build_ProjectionMatrix(mProjection, fNear, fFar, fFovRad, canvasHeight / canvasWidth);
+	// Move camera position.
+	camera.position[0] = 0.0 - 0.8 * ((canvasHeight / canvasWidth) - (9 / 16));
 	
-	return [cameraPos, camRangeH, camrangeV, mProjection];
+	// Update projection matrix.
+	camera.aspectRatio = canvasHeight / canvasWidth;
+	camera.project();
+	
+	return [camRangeH, camrangeV];
 }
