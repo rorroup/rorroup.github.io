@@ -191,24 +191,24 @@ function collision_LineTriangle(line, triangle)
 	const linePoint = F32Vector(3, line[0]);
 	const lineDirection = F32Vector(3, line[1]);
 	
-	const triangleP0 = F32Vector(3, triangle[0]);
-	const triangleP1 = F32Vector(3, triangle[1]);
-	const triangleP2 = F32Vector(3, triangle[2]);
+	const triangleV0 = F32Vector(3, triangle[0]);
+	const triangleV1 = F32Vector(3, triangle[1]);
+	const triangleV2 = F32Vector(3, triangle[2]);
 	
-	const triangleSide0 = triangleP0.copy().substract(triangleP1);
-	const triangleSide1 = triangleP1.copy().substract(triangleP2);
-	const triangleSide2 = triangleP2.copy().substract(triangleP0);
+	const triangleSide0 = triangleV0.copy().substract(triangleV1);
+	const triangleSide1 = triangleV1.copy().substract(triangleV2);
+	const triangleSide2 = triangleV2.copy().substract(triangleV0);
 	
-	const normal0 = triangleP0.copy().substract(linePoint).cross(triangleSide0);
-	const normal1 = triangleP1.copy().substract(linePoint).cross(triangleSide1);
-	const normal2 = triangleP2.copy().substract(linePoint).cross(triangleSide2);
+	const normal0 = lineDirection.copy().cross(triangleSide0);
+	const normal1 = lineDirection.copy().cross(triangleSide1);
+	const normal2 = lineDirection.copy().cross(triangleSide2);
 	
-	if(lineDirection.dot(normal0) > 0 && lineDirection.dot(normal1) > 0 && lineDirection.dot(normal2) > 0 && lineDirection.dot(triangleSide0.copy().cross(triangleSide1)) < 0){
+	if(linePoint.copy().substract(triangleV0).dot(normal0) > 0 && linePoint.copy().substract(triangleV1).dot(normal1) > 0 && linePoint.copy().substract(triangleV2).dot(normal2) > 0){
 		// https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
-		const n = triangleSide0.copy().cross(triangleSide1);
-		const parallel = lineDirection.copy().dot(n);
+		const planeNormal = triangleSide0.copy().cross(triangleSide1);
+		const parallel = lineDirection.copy().dot(planeNormal);
 		if(parallel != 0){
-			return triangleP0.copy().substract(linePoint).dot(n) / parallel;
+			return triangleV0.copy().substract(linePoint).dot(planeNormal) / parallel;
 		}
 	}
 	return null;
