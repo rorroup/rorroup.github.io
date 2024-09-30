@@ -12,6 +12,8 @@ function main(){
 		return;
 	}
 	
+	let canvasSize = F32Vector(2, [canvas.offsetWidth, canvas.offsetHeight]);
+	
 	Promise.all([
 		fetch("script/shader/vertexColor.vs"),
 		fetch("script/shader/vertexColor.fs"),
@@ -57,7 +59,7 @@ function main(){
 	};
 	
 	
-	let camera = new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
+	let camera = new Camera(45.0, 0.1, 100.0, canvasSize[1] / canvasSize[0], [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
 	
 	let camRangeH = Math.PI * 25 / 180;
 	let camrangeV = Math.PI * 25 / 180;
@@ -82,20 +84,17 @@ function main(){
 		console.error(e);
 	});
 	
-	[camRangeH, camrangeV] = update_canvasResize(canvas, camera);
+	[camRangeH, camrangeV] = update_canvasResize(canvas, camera, canvasSize);
 	window.addEventListener("resize", function(event_){
-		[camRangeH, camrangeV] = update_canvasResize(canvas, camera);
+		[camRangeH, camrangeV] = update_canvasResize(canvas, camera, canvasSize);
 	});
 	
 	canvas.addEventListener("mousemove", function(event_){
 		let mouseX = event_.offsetX;
 		let mouseY = event_.offsetY;
 		
-		const canvasWidth = canvas.offsetWidth;
-		const canvasHeight = canvas.offsetHeight;
-		
-		const mouseH = mouseX / canvasWidth - 0.5;
-		const mouseV = mouseY / canvasHeight - 0.5;
+		const mouseH = mouseX / canvasSize[0] - 0.5;
+		const mouseV = mouseY / canvasSize[1] - 0.5;
 		
 		camera.rotate([mouseV * camrangeV, -Math.PI * 90 / 180 + mouseH * camRangeH, 0.0, 1.0]);
 	});
@@ -104,16 +103,13 @@ function main(){
 		let mouseX = event_.offsetX;
 		let mouseY = event_.offsetY;
 		
-		const canvasWidth = canvas.offsetWidth;
-		const canvasHeight = canvas.offsetHeight;
-		
 		const campos = new F32Vector(3, [-camera.position[0], -camera.position[1], -camera.position[2]]);
 		const camdir = new F32Vector(3, [-camera.direction[0], -camera.direction[1], camera.direction[2]]);
 		
 		let vecRight = camdir.copy().cross(pen_F32Matrix.Y1).normalize();
 		let vecUpwards = vecRight.copy().cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
 		
-		let cam2mouse = camdir.copy().scale(camera.Znear).add(vecRight.copy().scale(2 * (canvasWidth / canvasHeight) * camera.Znear * camera.FoVratio * ((mouseX - canvasWidth / 2) / canvasWidth))).add(vecUpwards.copy().scale(2 * camera.Znear * camera.FoVratio * ((canvasHeight / 2 - mouseY) / canvasHeight)));
+		let cam2mouse = camdir.copy().scale(camera.Znear).add(vecRight.copy().scale(2 * (canvasSize[0] / canvasSize[1]) * camera.Znear * camera.FoVratio * ((mouseX - canvasSize[0] / 2) / canvasSize[0]))).add(vecUpwards.copy().scale(2 * camera.Znear * camera.FoVratio * ((canvasSize[1] / 2 - mouseY) / canvasSize[1])));
 		let mouse3d = campos.copy().add(cam2mouse);
 		
 		let cam2mouseNormalized = cam2mouse.copy().normalize();
@@ -180,29 +176,29 @@ function main(){
 main();
 
 
-function update_canvasResize(glcanvas, camera)
+function update_canvasResize(glcanvas, camera, canvasSize)
 {
 	const gl = glcanvas.getContext("webgl");
 	
-	const canvasWidth = glcanvas.offsetWidth;
-	const canvasHeight = glcanvas.offsetHeight;
+	canvasSize[0] = glcanvas.offsetWidth;
+	canvasSize[1] = glcanvas.offsetHeight;
 	
 	// Update canvas size.
-	glcanvas.width = canvasWidth;
-	glcanvas.height = canvasHeight;
+	glcanvas.width = canvasSize[0];
+	glcanvas.height = canvasSize[1];
 	
 	// Apply viewport resolution.
-	gl.viewport(0, 0, canvasWidth, canvasHeight);
+	gl.viewport(0, 0, canvasSize[0], canvasSize[1]);
 	
 	// Adjust horizontal and vertical camera direction ranges.
-	camRangeH = Math.PI * (37 + 32 * ((canvasHeight / canvasWidth) - (9 / 16))) / 180;
-	camrangeV = Math.PI * (35 - 22 * ((canvasHeight / canvasWidth) - (9 / 16))) / 180;
+	camRangeH = Math.PI * (37 + 32 * ((canvasSize[1] / canvasSize[0]) - (9 / 16))) / 180;
+	camrangeV = Math.PI * (35 - 22 * ((canvasSize[1] / canvasSize[0]) - (9 / 16))) / 180;
 	
 	// Move camera position.
-	camera.position[0] = 0.0 - 0.8 * ((canvasHeight / canvasWidth) - (9 / 16));
+	camera.position[0] = 0.0 - 0.8 * ((canvasSize[1] / canvasSize[0]) - (9 / 16));
 	
 	// Update projection matrix.
-	camera.aspectRatio = canvasHeight / canvasWidth;
+	camera.aspectRatio = canvasSize[1] / canvasSize[0];
 	camera.project();
 	
 	return [camRangeH, camrangeV];
