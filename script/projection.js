@@ -1,24 +1,11 @@
 
-class Matrix{
-	constructor(rows, columns){
-		this.row = rows;
-		this.col = columns;
-		this.el = Array(rows);
-		for(let i = 0; i < rows; i++){
-			this.el[i] = Array(columns);
-			this.el[i].fill(0);
-		}
-	}
-}
-
-
-function build_ProjectionMatrix(myProjectionMatrix, fNear, fFar, fFovRad, fAspectRatio){
-	myProjectionMatrix.el[0][0] = fAspectRatio * fFovRad;
-	myProjectionMatrix.el[1][1] = fFovRad;
-	myProjectionMatrix.el[2][2] = fFar / (fFar - fNear)            * -1 ;  //// ????????????
-	myProjectionMatrix.el[3][2] = (-fFar * fNear) / (fFar - fNear)  * 2;  /// ???????
-	myProjectionMatrix.el[2][3] = 1.0                              * -1;  /// ??????????????
-	return myProjectionMatrix;
+function build_ProjectionMatrix(matrixProjection, Znear, Zfar, FoVratio, aspectRatio){
+	matrixProjection[0] = FoVratio * aspectRatio;
+	matrixProjection[5] = FoVratio;
+	matrixProjection[10] = (Znear + Zfar) / (Znear - Zfar);
+	matrixProjection[14] = 2.0 * (Znear * Zfar) / (Znear - Zfar);
+	matrixProjection[11] = -1.0;
+	return matrixProjection;
 }
 
 

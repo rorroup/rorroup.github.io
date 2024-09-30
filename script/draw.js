@@ -21,7 +21,7 @@ function drawScene(gl, programInfo, camera, Light, bodies, timeDelta){
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.projectionMatrix,
 		false,
-		new Float32Array(mProjection.el[0].concat(mProjection.el[1]).concat(mProjection.el[2]).concat(mProjection.el[3]))
+		new Float32Array(mProjection)
 	);
 	
 	gl.uniformMatrix4fv(

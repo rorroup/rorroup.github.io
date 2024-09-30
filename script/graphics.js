@@ -60,7 +60,7 @@ function main(){
 	let fFar = 100.0;
 	let fFov = 45.0;
 	let fFovRad = 1.0 / Math.tan(fFov * 0.5 / 180.0 * Math.PI);
-	let myProjectionMatrix = new Matrix(4, 4);
+	let myProjectionMatrix = new F32Matrix(4);
 	
 	let cameraPos = new Float32Array([0.2, -0.4, -1.2, 1.0]);
 	let cameraRot = new Float32Array([0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
