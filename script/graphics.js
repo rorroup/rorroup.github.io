@@ -120,27 +120,18 @@ function main(){
 			let body = bodies[i];
 			body.selected = false;
 			for(let j = 0; j < body.model.vertexCount / 3; j++){
-				let v1 = new F32Vector(3, [...body.model.vertices.slice(9 * j + 0, 9 * j + 3)]);
-				let v2 = new F32Vector(3, [...body.model.vertices.slice(9 * j + 3, 9 * j + 6)]);
-				let v3 = new F32Vector(3, [...body.model.vertices.slice(9 * j + 6, 9 * j + 9)]);
+				const d = collision_LineTriangle(
+					[campos, cam2mouse],
+					[
+						body.model.vertices.subarray(9 * j + 0, 9 * j + 3),
+						body.model.vertices.subarray(9 * j + 3, 9 * j + 6),
+						body.model.vertices.subarray(9 * j + 6, 9 * j + 9),
+					]
+				);
 				
-				let vec1 = v1.copy().substract(v2);
-				let vec2 = v2.copy().substract(v3);
-				let vec3 = v3.copy().substract(v1);
-				
-				let n1 = v1.copy().substract(campos).cross(vec1);
-				let n2 = v2.copy().substract(campos).cross(vec2);
-				let n3 = v3.copy().substract(campos).cross(vec3);
-				
-				if(cam2mouse.dot(n1) > 0 && cam2mouse.dot(n2) > 0 && cam2mouse.dot(n3) > 0 && cam2mouse.dot(vec1.copy().cross(vec2)) < 0){
-					// https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
-					let n = vec1.copy().cross(vec2);
-					let parallel = cam2mouse.dot(n);
-					if(parallel != 0){
-						let d = v1.copy().substract(campos).dot(n) / parallel;
-						// let intersection = campos.copy().add(cam2mouse.copy().scale(d));
-						intersections.push([i, d]);
-					}
+				if(d != null){
+					intersections.push([i, d]);
+					// let intersection = campos.copy().add(cam2mouse.copy().scale(d));
 					break;
 				}
 			}
