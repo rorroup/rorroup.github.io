@@ -130,7 +130,8 @@ class Material{
 const Material_DEFAULT = new Material();
 
 class Model{
-	constructor(v, vt, vn, vc, material){
+	constructor(name, v, vt, vn, vc, material){
+		this.name = name;
 		this.vertices = new Float32Array(v);
 		this.texCoordinates = new Float32Array(vt);
 		this.normals = new Float32Array(vn);
