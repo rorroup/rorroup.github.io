@@ -31,7 +31,7 @@ function drawScene(gl, programInfo, camera, light, bodies, timeDelta){
 			1.0, 0.0, 0.0, 0.0,
 			0.0, 1.0, 0.0, 0.0,
 			0.0, 0.0, 1.0, 0.0,
-			cameraPos[0], cameraPos[1], cameraPos[2], 1.0,
+			...cameraPos
 		])
 	);
 	
