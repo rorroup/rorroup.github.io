@@ -78,6 +78,13 @@ function main(){
 					container.push(new Body(F32Vector(4, pen_F32Matrix.W1), F32Vector(4, pen_F32Matrix.W1), models[i], this.gl));
 				}
 			},
+			update(){
+				this.scenery.forEach((body) => {body.update(this.deltaTime);});
+				this.bodies.forEach((body) => {body.update(this.deltaTime);});
+			},
+			draw(){
+				drawScene(this.gl, this, this.camera, this.lightGlobal, this.scenery.concat(this.bodies));
+			},
 		};
 		
 		// Here's where we call the routine that builds all the
@@ -164,17 +171,16 @@ function main(){
 		// Flip image pixels into the bottom-to-top order that WebGL expects.
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		
-		let then = 0;
 		// Draw the scene repeatedly
-		function render(now){
-			let deltaTime = now - then;
-			then = now;
+		function Animated_Play(){
+			// Update
+			this.deltaTime = this.timeFrameCurrent - this.timeFrameLast;
+			this.update();
 			
-			drawScene(gl, Animated, Animated.camera, Animated.lightGlobal, Animated.scenery.concat(Animated.bodies), deltaTime);
-
-			requestAnimationFrame(render);
+			// Draw
+			this.draw();
 		}
-		requestAnimationFrame(render);
+		animation_initAnimationComponent(Animated, Animated_Play);
 		
 	}).catch((e) => {
 		console.error(e);
