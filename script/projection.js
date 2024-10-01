@@ -93,7 +93,7 @@ class Body{
 				1, 0, 0, 0,
 				0, 1, 0, 0,
 				0, 0, 1, 0,
-				this.position[0], this.position[1], this.position[2], this.position[3],
+				...this.position
 			])
 		);
 		gl.uniformMatrix4fv(
