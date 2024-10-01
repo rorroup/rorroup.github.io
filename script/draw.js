@@ -1,5 +1,5 @@
 
-function drawScene(gl, programInfo, camera, Light, bodies, timeDelta){
+function drawScene(gl, programInfo, camera, light, bodies, timeDelta){
 	gl.clearColor(0.0, 1.0, 7.0, 1.0); // Background color
 	gl.clearDepth(1.0); // Clear everything
 	gl.enable(gl.DEPTH_TEST); // Enable depth testing
@@ -47,9 +47,9 @@ function drawScene(gl, programInfo, camera, Light, bodies, timeDelta){
 	);
 	
 	// Pass Lighting conditions
-	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, Light.Ambient);
-	gl.uniform3fv(programInfo.uniformLocations.LightDirection, Light.Direction);
-	gl.uniform3fv(programInfo.uniformLocations.LightColor, Light.Color);
+	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, new Float32Array(light.diffuse));
+	gl.uniform3fv(programInfo.uniformLocations.LightDirection, new Float32Array(light.directional.direction));
+	gl.uniform3fv(programInfo.uniformLocations.LightColor, new Float32Array(light.directional.color));
 	
 	bodies.forEach((body) => {body.update(timeDelta);});
 	bodies.forEach((body) => {body.draw(gl, programInfo);});

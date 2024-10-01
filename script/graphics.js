@@ -64,9 +64,13 @@ function main(){
 	let camRangeH = Math.PI * 25 / 180;
 	let camrangeV = Math.PI * 25 / 180;
 	
-	let LightAmbient = new Float32Array([0.3, 0.3, 0.3]);
-	let LightDirection = new Float32Array([-0.09759000729485333, -0.9759000729485332, -0.19518001458970666]);
-	let LightColor = new Float32Array([1.0, 1.0, 1.0]);
+	let LightGlobal = {
+		diffuse: F32Vector(3, [0.3, 0.3, 0.3]),
+		directional: {
+			direction: F32Vector(3, [-1.0, -10.0, -2.0]).normalize(),
+			color: F32Vector(3, [1.0, 1.0, 1.0]),
+		},
+	};
 	
 	// Here's where we call the routine that builds all the
 	// objects we'll be drawing.
@@ -146,7 +150,7 @@ function main(){
 		let deltaTime = now - then;
 		then = now;
 		
-		drawScene(gl, programInfo, camera, {Ambient: LightAmbient, Direction: LightDirection, Color: LightColor}, bodies, deltaTime);
+		drawScene(gl, programInfo, camera, LightGlobal, bodies, deltaTime);
 
 		requestAnimationFrame(render);
 	}
