@@ -18,6 +18,11 @@ function main(){
 		fetch("script/shader/vertexColor.vs"),
 		fetch("script/shader/vertexColor.fs"),
 	]).then((responses) => {
+		responses.forEach((response) => {
+			if(!response.ok){
+				throw new Error(`Response status: ${response.status}`);
+			}
+		});
 		[vs, fs] = responses;
 		return Promise.all([
 			vs.text(),
