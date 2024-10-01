@@ -81,9 +81,12 @@ function main(){
 		// objects we'll be drawing.
 		let bodies = [];
 		
-		fetch("asset/scene3.obj").then((res) =>
-			res.text()
-		).then((text) =>
+		fetch("asset/scene3.obj").then((response) => {
+			if(!response.ok){
+				throw new Error(`Response status: ${response.status}`);
+			}
+			return response.text();
+		}).then((text) =>
 			pen_obj.obj_load(text)
 		).then((loaded) => {
 			for(let i = 0; i < loaded.length; i++){
