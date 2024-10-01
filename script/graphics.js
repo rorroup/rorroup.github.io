@@ -78,6 +78,26 @@ function main(){
 					container.push(new Body(F32Vector(4, pen_F32Matrix.W1), F32Vector(4, pen_F32Matrix.W1), models[i], this.gl));
 				}
 			},
+			resize(){
+				this.canvasSize = [this.canvas.offsetWidth, this.canvas.offsetHeight];
+				
+				// Update canvas size.
+				this.canvas.width = this.canvasSize[0];
+				this.canvas.height = this.canvasSize[1];
+				
+				// Apply viewport resolution.
+				this.gl.viewport(0, 0, this.canvasSize[0], this.canvasSize[1]);
+				
+				// Adjust horizontal and vertical camera direction ranges.
+				this.cameraThreshold = [Math.PI * (37 + 32 * ((this.canvasSize[1] / this.canvasSize[0]) - (9 / 16))) / 180, Math.PI * (35 - 22 * ((this.canvasSize[1] / this.canvasSize[0]) - (9 / 16))) / 180];
+				
+				// Move camera position.
+				this.camera.position[0] = 0.0 - 0.8 * ((this.canvasSize[1] / this.canvasSize[0]) - (9 / 16));
+				
+				// Update projection matrix.
+				this.camera.aspectRatio = this.canvasSize[1] / this.canvasSize[0];
+				this.camera.project();
+			},
 			update(){
 				this.scenery.forEach((body) => {body.update(this.deltaTime);});
 				this.bodies.forEach((body) => {body.update(this.deltaTime);});
@@ -115,10 +135,8 @@ function main(){
 			console.error(e);
 		});
 		
-		update_canvasResize(Animated);
-		window.addEventListener("resize", function(event_){
-			update_canvasResize(Animated);
-		});
+		Animated.resize();
+		window.addEventListener("resize", () => {Animated.resize();});
 		
 		canvas.addEventListener("mousemove", function(event_){
 			let mouseX = event_.offsetX;
@@ -189,27 +207,3 @@ function main(){
 
 
 main();
-
-
-function update_canvasResize(Animated)
-{
-	Animated.canvasSize[0] = Animated.canvas.offsetWidth;
-	Animated.canvasSize[1] = Animated.canvas.offsetHeight;
-	
-	// Update canvas size.
-	Animated.canvas.width = Animated.canvasSize[0];
-	Animated.canvas.height = Animated.canvasSize[1];
-	
-	// Apply viewport resolution.
-	Animated.gl.viewport(0, 0, Animated.canvasSize[0], Animated.canvasSize[1]);
-	
-	// Adjust horizontal and vertical camera direction ranges.
-	Animated.cameraThreshold = [Math.PI * (37 + 32 * ((Animated.canvasSize[1] / Animated.canvasSize[0]) - (9 / 16))) / 180, Math.PI * (35 - 22 * ((Animated.canvasSize[1] / Animated.canvasSize[0]) - (9 / 16))) / 180];
-	
-	// Move camera position.
-	Animated.camera.position[0] = 0.0 - 0.8 * ((Animated.canvasSize[1] / Animated.canvasSize[0]) - (9 / 16));
-	
-	// Update projection matrix.
-	Animated.camera.aspectRatio = Animated.canvasSize[1] / Animated.canvasSize[0];
-	Animated.camera.project();
-}
