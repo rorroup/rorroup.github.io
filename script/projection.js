@@ -189,27 +189,28 @@ class Body{
 function collision_LineTriangle(line, triangle)
 {
 	const linePoint = F32Vector(3, line[0]);
-	const lineDirection = F32Vector(3, line[1]);
+	const lineDirection = F32Vector(3, line[1]).normalize();
 	
-	const triangleV0 = F32Vector(3, triangle[0]);
-	const triangleV1 = F32Vector(3, triangle[1]);
-	const triangleV2 = F32Vector(3, triangle[2]);
+	const triangleVertex0 = F32Vector(3, triangle[0]);
+	const triangleVertex1 = F32Vector(3, triangle[1]);
+	const triangleVertex2 = F32Vector(3, triangle[2]);
 	
-	const triangleSide0 = triangleV0.copy().substract(triangleV1);
-	const triangleSide1 = triangleV1.copy().substract(triangleV2);
-	const triangleSide2 = triangleV2.copy().substract(triangleV0);
+	const triangleSide0 = triangleVertex0.copy().substract(triangleVertex1);
+	const triangleSide1 = triangleVertex1.copy().substract(triangleVertex2);
+	const triangleSide2 = triangleVertex2.copy().substract(triangleVertex0);
 	
-	const normal0 = lineDirection.copy().cross(triangleSide0);
-	const normal1 = lineDirection.copy().cross(triangleSide1);
-	const normal2 = lineDirection.copy().cross(triangleSide2);
-	
-	if(linePoint.copy().substract(triangleV0).dot(normal0) > 0 && linePoint.copy().substract(triangleV1).dot(normal1) > 0 && linePoint.copy().substract(triangleV2).dot(normal2) > 0){
-		// https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
-		const planeNormal = triangleSide0.copy().cross(triangleSide1);
-		const parallel = lineDirection.copy().dot(planeNormal);
-		if(parallel != 0){
-			return triangleV0.copy().substract(linePoint).dot(planeNormal) / parallel;
-		}
+	// https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+	const planeNormal = triangleSide0.copy().cross(triangleSide1);
+	const parallel = lineDirection.dot(planeNormal);
+	if(parallel == 0){
+		return null;
 	}
+	const d = triangleVertex0.copy().substract(linePoint).dot(planeNormal) / parallel;
+	const intersection = linePoint.copy().add(lineDirection.copy().scale(d));
+	
+	if(intersection.copy().substract(triangleVertex0).cross(triangleSide0).dot(planeNormal) > 0 && intersection.copy().substract(triangleVertex1).cross(triangleSide1).dot(planeNormal) > 0 && intersection.copy().substract(triangleVertex2).cross(triangleSide2).dot(planeNormal) > 0){
+		return d;
+	}
+	
 	return null;
 }
