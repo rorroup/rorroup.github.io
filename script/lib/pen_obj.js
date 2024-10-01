@@ -292,7 +292,7 @@ var pen_obj = {
 						console.log(`[Warning] Material '${object_.usemtl}' for object '${object_.o}' not found. Assigning default material.`);
 					}
 				}
-				models.push(new Model(model_v, model_vt, model_vn, model_vc, model_usemtl));
+				models.push(new Model(object_.o, model_v, model_vt, model_vn, model_vc, model_usemtl));
 			}
 		}
 		return models;
