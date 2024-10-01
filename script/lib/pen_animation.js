@@ -38,4 +38,4 @@ const pen_animation = {
 			animationComponent.animationID = requestAnimationFrame(animationComponent.animationStart);
 		}
 	},
-}
+};
