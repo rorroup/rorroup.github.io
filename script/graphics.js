@@ -79,23 +79,23 @@ function main(){
 				}
 			},
 			resize(){
-				this.canvasSize = [this.canvas.offsetWidth, this.canvas.offsetHeight];
+				this.canvasSize.set([this.canvas.offsetWidth, this.canvas.offsetHeight]);
 				
 				// Update canvas size.
-				this.canvas.width = this.canvasSize[0];
-				this.canvas.height = this.canvasSize[1];
+				this.canvas.width = this.canvasSize.x;
+				this.canvas.height = this.canvasSize.y;
 				
 				// Apply viewport resolution.
-				this.gl.viewport(0, 0, this.canvasSize[0], this.canvasSize[1]);
+				this.gl.viewport(0, 0, this.canvasSize.x, this.canvasSize.y);
 				
 				// Adjust horizontal and vertical camera direction ranges.
-				this.cameraThreshold = [Math.PI * (37 + 32 * ((this.canvasSize[1] / this.canvasSize[0]) - (9 / 16))) / 180, Math.PI * (35 - 22 * ((this.canvasSize[1] / this.canvasSize[0]) - (9 / 16))) / 180];
+				this.cameraThreshold = [Math.PI * (37 + 32 * ((this.canvasSize.y / this.canvasSize.x) - (9 / 16))) / 180, Math.PI * (35 - 22 * ((this.canvasSize.y / this.canvasSize.x) - (9 / 16))) / 180];
 				
 				// Move camera position.
-				this.camera.position[0] = 0.0 - 0.8 * ((this.canvasSize[1] / this.canvasSize[0]) - (9 / 16));
+				this.camera.position.x = 0.0 - 0.8 * ((this.canvasSize.y / this.canvasSize.x) - (9 / 16));
 				
 				// Update projection matrix.
-				this.camera.aspectRatio = this.canvasSize[1] / this.canvasSize[0];
+				this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
 				this.camera.project();
 			},
 			update(){
@@ -142,15 +142,15 @@ function main(){
 			let mouseX = event_.offsetX;
 			let mouseY = event_.offsetY;
 			
-			Animated.camera.rotate([(mouseY / Animated.canvasSize[1] - 0.5) * Animated.cameraThreshold[1], -Math.PI * 90 / 180 + (mouseX / Animated.canvasSize[0] - 0.5) * Animated.cameraThreshold[0], 0.0, 1.0]);
+			Animated.camera.rotate([(mouseY / Animated.canvasSize.y - 0.5) * Animated.cameraThreshold[1], -Math.PI * 90 / 180 + (mouseX / Animated.canvasSize.x - 0.5) * Animated.cameraThreshold[0], 0.0, 1.0]);
 			
-			const campos = new Vector3([-Animated.camera.position[0], -Animated.camera.position[1], -Animated.camera.position[2]]);
-			const camdir = new Vector3([-Animated.camera.direction[0], -Animated.camera.direction[1], Animated.camera.direction[2]]);
+			const campos = Vector3([-Animated.camera.position.x, -Animated.camera.position.y, -Animated.camera.position.z]);
+			const camdir = Vector3([-Animated.camera.direction.x, -Animated.camera.direction.y, Animated.camera.direction.z]);
 			
 			let vecRight = camdir.copy().cross(pen_Matrix.Y1).normalize();
 			let vecUpwards = vecRight.copy().cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
 			
-			let cam2mouse = camdir.copy().scale(Animated.camera.Znear).add(vecRight.copy().scale(2 * (Animated.canvasSize[0] / Animated.canvasSize[1]) * Animated.camera.Znear * Animated.camera.FoVratio * ((mouseX - Animated.canvasSize[0] / 2) / Animated.canvasSize[0]))).add(vecUpwards.copy().scale(2 * Animated.camera.Znear * Animated.camera.FoVratio * ((Animated.canvasSize[1] / 2 - mouseY) / Animated.canvasSize[1])));
+			let cam2mouse = camdir.copy().scale(Animated.camera.Znear).add(vecRight.copy().scale(2 * (Animated.canvasSize.x / Animated.canvasSize.y) * Animated.camera.Znear * Animated.camera.FoVratio * ((mouseX - Animated.canvasSize.x / 2) / Animated.canvasSize.x))).add(vecUpwards.copy().scale(2 * Animated.camera.Znear * Animated.camera.FoVratio * ((Animated.canvasSize.y / 2 - mouseY) / Animated.canvasSize.y)));
 			let mouse3d = campos.copy().add(cam2mouse);
 			
 			let cam2mouseNormalized = cam2mouse.copy().normalize();
