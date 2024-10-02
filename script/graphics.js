@@ -61,21 +61,21 @@ function main(){
 				LightDirection: gl.getUniformLocation(shaderProgram, "uLightDirection"),
 				LightColor: gl.getUniformLocation(shaderProgram, "uLightColor"),
 			},
-			canvasSize: F32Vector(2, [canvas.offsetWidth, canvas.offsetHeight]),
+			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
 			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]),
 			cameraThreshold: [],
 			lightGlobal: {
-				diffuse: F32Vector(3, [0.3, 0.3, 0.3]),
+				diffuse: Vector3([0.3, 0.3, 0.3]),
 				directional: {
-					direction: F32Vector(3, [-1.0, -10.0, -2.0]).normalize(),
-					color: F32Vector(3, [1.0, 1.0, 1.0]),
+					direction: Vector3([-1.0, -10.0, -2.0]).normalize(),
+					color: Vector3([1.0, 1.0, 1.0]),
 				},
 			},
 			scenery: [],
 			bodies: [],
 			modelLoad(models, container){
 				for(let i = 0; i < models.length; i++){
-					container.push(new Body(F32Vector(4, pen_F32Matrix.W1), F32Vector(4, pen_F32Matrix.W1), models[i], this.gl));
+					container.push(new Body(Vector4(pen_Matrix.W1), Vector4(pen_Matrix.W1), models[i], this.gl));
 				}
 			},
 			resize(){
@@ -144,10 +144,10 @@ function main(){
 			
 			Animated.camera.rotate([(mouseY / Animated.canvasSize[1] - 0.5) * Animated.cameraThreshold[1], -Math.PI * 90 / 180 + (mouseX / Animated.canvasSize[0] - 0.5) * Animated.cameraThreshold[0], 0.0, 1.0]);
 			
-			const campos = new F32Vector(3, [-Animated.camera.position[0], -Animated.camera.position[1], -Animated.camera.position[2]]);
-			const camdir = new F32Vector(3, [-Animated.camera.direction[0], -Animated.camera.direction[1], Animated.camera.direction[2]]);
+			const campos = new Vector3([-Animated.camera.position[0], -Animated.camera.position[1], -Animated.camera.position[2]]);
+			const camdir = new Vector3([-Animated.camera.direction[0], -Animated.camera.direction[1], Animated.camera.direction[2]]);
 			
-			let vecRight = camdir.copy().cross(pen_F32Matrix.Y1).normalize();
+			let vecRight = camdir.copy().cross(pen_Matrix.Y1).normalize();
 			let vecUpwards = vecRight.copy().cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
 			
 			let cam2mouse = camdir.copy().scale(Animated.camera.Znear).add(vecRight.copy().scale(2 * (Animated.canvasSize[0] / Animated.canvasSize[1]) * Animated.camera.Znear * Animated.camera.FoVratio * ((mouseX - Animated.canvasSize[0] / 2) / Animated.canvasSize[0]))).add(vecUpwards.copy().scale(2 * Animated.camera.Znear * Animated.camera.FoVratio * ((Animated.canvasSize[1] / 2 - mouseY) / Animated.canvasSize[1])));

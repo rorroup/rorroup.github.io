@@ -8,13 +8,13 @@ class Camera
 		this.Zfar = Zfar;
 		this.aspectRatio = aspectRatio;
 		this.FoVratio = Math.tan(FoV * 0.5 / 180.0 * Math.PI);
-		this.projection = new F32Matrix(4);
+		this.projection = new Matrix(4);
 		this.project();
-		this.position = F32Vector(4, position);
+		this.position = Vector4(position);
 		this.position[3] = 1.0;
-		this.rotation = F32Vector(4, rotation);
+		this.rotation = Vector4(rotation);
 		this.rotation[3] = 1.0;
-		this.direction = F32Vector(4);
+		this.direction = Vector(4);
 		this.rotate(this.rotation);
 	}
 	
@@ -188,12 +188,12 @@ class Body{
 
 function collision_LineTriangle(line, triangle)
 {
-	const linePoint = F32Vector(3, line[0]);
-	const lineDirection = F32Vector(3, line[1]).normalize();
+	const linePoint = Vector3(line[0]);
+	const lineDirection = Vector3(line[1]).normalize();
 	
-	const triangleVertex0 = F32Vector(3, triangle[0]);
-	const triangleVertex1 = F32Vector(3, triangle[1]);
-	const triangleVertex2 = F32Vector(3, triangle[2]);
+	const triangleVertex0 = Vector3(triangle[0]);
+	const triangleVertex1 = Vector3(triangle[1]);
+	const triangleVertex2 = Vector3(triangle[2]);
 	
 	const triangleSide0 = triangleVertex0.copy().substract(triangleVertex1);
 	const triangleSide1 = triangleVertex1.copy().substract(triangleVertex2);
