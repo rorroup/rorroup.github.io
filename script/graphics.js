@@ -71,6 +71,7 @@ function main(){
 					color: Vector3([1.0, 1.0, 1.0]),
 				},
 			},
+			skybox: Vector3([0.0, 1.0, 7.0]),
 			scenery: [],
 			bodies: [],
 			modelLoad(models, container){
@@ -103,7 +104,7 @@ function main(){
 				this.bodies.forEach((body) => {body.update(this.deltaTime);});
 			},
 			draw(){
-				drawScene(this.gl, this, this.camera, this.lightGlobal, this.scenery.concat(this.bodies));
+				drawScene(this.gl, this, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
 			},
 		};
 		
