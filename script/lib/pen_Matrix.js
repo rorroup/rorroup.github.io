@@ -28,6 +28,13 @@ class Matrix extends Array
 		return this;
 	}
 	
+	setTo(data){
+		// Modifies array length.
+		this.length = 0;
+		this.push(...data);
+		return this;
+	}
+	
 	copy(){
 		return new Matrix([this.rows, this.columns], this);
 	}
