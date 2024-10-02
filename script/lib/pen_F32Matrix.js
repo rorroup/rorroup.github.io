@@ -1,13 +1,8 @@
 
-const pen_F32Matrix = {
-	MAX_ELEMENTS: 64,
-};
-
-class F32Matrix extends Float32Array
+class F32Matrix extends Array
 {
 	/*
-		Simple and flexible fixed size Float32 Matrix class in column-main-order.
-		Can hold up to 'pen_F32Matrix.MAX_ELEMENTS' elements.
+		Simple and flexible Matrix class in column-main-order.
 		All matrix operations are done in-place as they modify the caller (left-hand) operand.
 		Error checking has been omitted to enhance performance.
 	*/
@@ -21,10 +16,15 @@ class F32Matrix extends Float32Array
 		}else{
 			rows = columns = Number(size);
 		}
-		super(new ArrayBuffer(4 * rows * columns, {maxByteLength: 4 * pen_F32Matrix.MAX_ELEMENTS}));
-		if(data != false) this.set(data);
+		super(rows * columns);
+		this.fill(0.0);
 		this.rows = rows;
 		this.columns = columns;
+		if(data != false) this.set(data);
+	}
+	
+	set(data){
+		this.splice(0, data.length, ...data.slice(0, this.rows * this.columns));
 	}
 	
 	copy(){
@@ -66,7 +66,6 @@ class F32Matrix extends Float32Array
 			}
 		}
 		this.columns = other.columns;
-		this.buffer.resize(4 * this.rows * this.columns);
 		this.set(matrix);
 		return this;
 	}
@@ -116,8 +115,10 @@ function F32Vector(size, data = false)
 	return new F32Matrix([size, 1], data);
 }
 
-pen_F32Matrix.X1 = F32Vector(4, [1.0, 0.0, 0.0, 1.0]);
-pen_F32Matrix.Y1 = F32Vector(4, [0.0, 1.0, 0.0, 1.0]);
-pen_F32Matrix.Z1 = F32Vector(4, [0.0, 0.0, 1.0, 1.0]);
-pen_F32Matrix.W1 = F32Vector(4, [0.0, 0.0, 0.0, 1.0]);
-pen_F32Matrix.ZERO = F32Vector(4, [0.0, 0.0, 0.0, 0.0]);
+const pen_F32Matrix = {
+	X1: F32Vector(4, [1.0, 0.0, 0.0, 1.0]),
+	Y1: F32Vector(4, [0.0, 1.0, 0.0, 1.0]),
+	Z1: F32Vector(4, [0.0, 0.0, 1.0, 1.0]),
+	W1: F32Vector(4, [0.0, 0.0, 0.0, 1.0]),
+	ZERO: F32Vector(4, [0.0, 0.0, 0.0, 0.0]),
+};
