@@ -64,7 +64,7 @@ function main(){
 		};
 		
 		
-		let camera = new Camera(45.0, 0.1, 100.0, canvasSize[1] / canvasSize[0], [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
+		let camera = new Camera(45.0, 0.1, 100.0, canvasSize.y / canvasSize.x, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]);
 		
 		let camRangeH = Math.PI * 25 / 180;
 		let camrangeV = Math.PI * 25 / 180;
@@ -105,15 +105,16 @@ function main(){
 			let mouseX = event_.offsetX;
 			let mouseY = event_.offsetY;
 			
-			camera.rotate([(mouseY / canvasSize[1] - 0.5) * camrangeV, -Math.PI * 90 / 180 + (mouseX / canvasSize[0] - 0.5) * camRangeH, 0.0, 1.0]);
+			camera.rotate([(mouseY / canvasSize.y - 0.5) * camrangeV, -Math.PI * 90 / 180 + (mouseX / canvasSize.x - 0.5) * camRangeH, 0.0, 1.0]);
 			
-			const campos = new F32Vector(3, [-camera.position[0], -camera.position[1], -camera.position[2]]);
-			const camdir = new F32Vector(3, [-camera.direction[0], -camera.direction[1], camera.direction[2]]);
+			const campos = new F32Vector(3, [-camera.position.x, -camera.position.y, -camera.position.z]);
+			const camdir = new F32Vector(3, [-camera.direction.x, -camera.direction.y, camera.direction.z]);
 			
 			let vecRight = camdir.copy().cross(pen_F32Matrix.Y1).normalize();
 			let vecUpwards = vecRight.copy().cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
 			
-			let cam2mouse = camdir.copy().scale(camera.Znear).add(vecRight.copy().scale(2 * (canvasSize[0] / canvasSize[1]) * camera.Znear * camera.FoVratio * ((mouseX - canvasSize[0] / 2) / canvasSize[0]))).add(vecUpwards.copy().scale(2 * camera.Znear * camera.FoVratio * ((canvasSize[1] / 2 - mouseY) / canvasSize[1])));
+			let cam2mouse = camdir.copy().scale(camera.Znear).add(vecRight.copy().scale(2 * (canvasSize.x / canvasSize.y) * camera.Znear * camera.FoVratio * ((mouseX - canvasSize.x / 2) / canvasSize.x))).add(vecUpwards.copy().scale(2 * camera.Znear * camera.FoVratio * ((canvasSize.y / 2 - mouseY) / canvasSize.y)));
+			
 			let mouse3d = campos.copy().add(cam2mouse);
 			
 			let cam2mouseNormalized = cam2mouse.copy().normalize();
@@ -125,7 +126,7 @@ function main(){
 				body.selected = false;
 				for(let j = 0; j < body.model.vertexCount / 3; j++){
 					const d = collision_LineTriangle(
-						[campos, cam2mouse],
+						[campos.data, cam2mouse.data],
 						[
 							body.model.vertices.subarray(9 * j + 0, 9 * j + 3),
 							body.model.vertices.subarray(9 * j + 3, 9 * j + 6),
@@ -177,25 +178,25 @@ function update_canvasResize(glcanvas, camera, canvasSize)
 {
 	const gl = glcanvas.getContext("webgl");
 	
-	canvasSize[0] = glcanvas.offsetWidth;
-	canvasSize[1] = glcanvas.offsetHeight;
+	canvasSize.x = glcanvas.offsetWidth;
+	canvasSize.y = glcanvas.offsetHeight;
 	
 	// Update canvas size.
-	glcanvas.width = canvasSize[0];
-	glcanvas.height = canvasSize[1];
+	glcanvas.width = canvasSize.x;
+	glcanvas.height = canvasSize.y;
 	
 	// Apply viewport resolution.
-	gl.viewport(0, 0, canvasSize[0], canvasSize[1]);
+	gl.viewport(0, 0, canvasSize.x, canvasSize.y);
 	
 	// Adjust horizontal and vertical camera direction ranges.
-	camRangeH = Math.PI * (37 + 32 * ((canvasSize[1] / canvasSize[0]) - (9 / 16))) / 180;
-	camrangeV = Math.PI * (35 - 22 * ((canvasSize[1] / canvasSize[0]) - (9 / 16))) / 180;
+	camRangeH = Math.PI * (37 + 32 * ((canvasSize.y / canvasSize.x) - (9 / 16))) / 180;
+	camrangeV = Math.PI * (35 - 22 * ((canvasSize.y / canvasSize.x) - (9 / 16))) / 180;
 	
 	// Move camera position.
-	camera.position[0] = 0.0 - 0.8 * ((canvasSize[1] / canvasSize[0]) - (9 / 16));
+	camera.position.data.x = 0.0 - 0.8 * ((canvasSize.y / canvasSize.x) - (9 / 16));
 	
 	// Update projection matrix.
-	camera.aspectRatio = canvasSize[1] / canvasSize[0];
+	camera.aspectRatio = canvasSize.y / canvasSize.x;
 	camera.project();
 	
 	return [camRangeH, camrangeV];

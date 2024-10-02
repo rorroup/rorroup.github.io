@@ -13,9 +13,9 @@ function drawScene(gl, programInfo, camera, light, bodies, timeDelta){
 	gl.useProgram(programInfo.program);
 	
 	
-	const mProjection = camera.projection;
-	const cameraPos = camera.position;
-	const cameraRot = camera.rotation;
+	const mProjection = camera.projection.data;
+	const cameraPos = camera.position.data;
+	const cameraRot = camera.rotation.data;
 	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
@@ -47,9 +47,9 @@ function drawScene(gl, programInfo, camera, light, bodies, timeDelta){
 	);
 	
 	// Pass Lighting conditions
-	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, new Float32Array(light.diffuse));
-	gl.uniform3fv(programInfo.uniformLocations.LightDirection, new Float32Array(light.directional.direction));
-	gl.uniform3fv(programInfo.uniformLocations.LightColor, new Float32Array(light.directional.color));
+	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, new Float32Array(light.diffuse.data));
+	gl.uniform3fv(programInfo.uniformLocations.LightDirection, new Float32Array(light.directional.direction.data));
+	gl.uniform3fv(programInfo.uniformLocations.LightColor, new Float32Array(light.directional.color.data));
 	
 	bodies.forEach((body) => {body.update(timeDelta);});
 	bodies.forEach((body) => {body.draw(gl, programInfo);});

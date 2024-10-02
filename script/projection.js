@@ -15,32 +15,32 @@ class Camera
 		this.rotation = F32Vector(4, rotation);
 		this.rotation[3] = 1.0;
 		this.direction = F32Vector(4);
-		this.rotate(this.rotation);
+		this.rotate(this.rotation.data);
 	}
 	
 	project(){
-		this.projection[0] = 1 / this.FoVratio * this.aspectRatio;
-		this.projection[5] = 1 / this.FoVratio;
-		this.projection[10] = (this.Znear + this.Zfar) / (this.Znear - this.Zfar);
-		this.projection[14] = 2.0 * (this.Znear * this.Zfar) / (this.Znear - this.Zfar);
-		this.projection[11] = -1.0;
+		this.projection.data[0] = 1 / this.FoVratio * this.aspectRatio;
+		this.projection.data[5] = 1 / this.FoVratio;
+		this.projection.data[10] = (this.Znear + this.Zfar) / (this.Znear - this.Zfar);
+		this.projection.data[14] = 2.0 * (this.Znear * this.Zfar) / (this.Znear - this.Zfar);
+		this.projection.data[11] = -1.0;
 	}
 	
 	rotate(rotation){
-		this.rotation.set(rotation);
+		this.rotation.data.splice(0, rotation.length, ...rotation);
 		for(let i = 0; i < 3; i++){
-			this.rotation[i] = ((this.rotation[i] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
+			this.rotation.data[i] = ((this.rotation.data[i] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
 		}
-		this.direction.set([-Math.sin(this.rotation[1]) * Math.cos(this.rotation[0]), Math.sin(this.rotation[0]), -Math.cos(this.rotation[1]) * Math.cos(this.rotation[0]), 1.0]);
+		this.direction.data = [-Math.sin(this.rotation.data[1]) * Math.cos(this.rotation.data[0]), Math.sin(this.rotation.data[0]), -Math.cos(this.rotation.data[1]) * Math.cos(this.rotation.data[0]), 1.0];
 	}
 	
 	direct(direction){
-		this.direction.set(direction);
-		this.direction[3] = 0.0;
+		this.direction.data.splice(0, direction.length, ...direction);
+		this.direction.data[3] = 0.0;
 		this.direction.normalize();
-		this.direction[3] = 1.0;
-		this.rotation[0] = Math.asin(y);
-		this.rotation[1] = Math.atan2(-x, -z);
+		this.direction.data[3] = 1.0;
+		this.rotation.data[0] = Math.asin(y);
+		this.rotation.data[1] = Math.atan2(-x, -z);
 	}
 }
 
