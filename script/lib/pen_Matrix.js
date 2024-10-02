@@ -74,8 +74,7 @@ class Matrix extends Array
 			}
 		}
 		this.columns = other.columns;
-		this.set(matrix);
-		return this;
+		return this.setTo(matrix);
 	}
 	
 	// Vector (1-column matrix) operations.
@@ -85,8 +84,7 @@ class Matrix extends Array
 	}
 	
 	normalize(){
-		this.scale(1.0 / this.magnitude);
-		return this;
+		return this.scale(1.0 / this.magnitude);
 	}
 	
 	dot(other){
@@ -98,12 +96,11 @@ class Matrix extends Array
 	}
 	
 	cross(other){
-		this.set([
+		return this.set([
 			this[1] * other[2] - other[1] * this[2],
 			this[2] * other[0] - other[2] * this[0],
 			this[0] * other[1] - other[0] * this[1],
 		]);
-		return this;
 	}
 	
 	// 4D Vector component access.
