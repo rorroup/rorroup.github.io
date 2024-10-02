@@ -1,5 +1,5 @@
 
-class F32Matrix extends Array
+class Matrix extends Array
 {
 	/*
 		Simple and flexible Matrix class in column-main-order.
@@ -28,7 +28,7 @@ class F32Matrix extends Array
 	}
 	
 	copy(){
-		return new F32Matrix([this.rows, this.columns], this);
+		return new Matrix([this.rows, this.columns], this);
 	}
 	
 	// General linear algebra operations.
@@ -110,15 +110,30 @@ class F32Matrix extends Array
 	set w(val){this[3] = val;}
 }
 
-function F32Vector(size, data = false)
+function Vector(size, data = false)
 {
-	return new F32Matrix([size, 1], data);
+	return new Matrix([size, 1], data);
 }
 
-const pen_F32Matrix = {
-	X1: F32Vector(4, [1.0, 0.0, 0.0, 1.0]),
-	Y1: F32Vector(4, [0.0, 1.0, 0.0, 1.0]),
-	Z1: F32Vector(4, [0.0, 0.0, 1.0, 1.0]),
-	W1: F32Vector(4, [0.0, 0.0, 0.0, 1.0]),
-	ZERO: F32Vector(4, [0.0, 0.0, 0.0, 0.0]),
+function Vector2(data = false)
+{
+	return Vector(2, data);
+}
+
+function Vector3(data = false)
+{
+	return Vector(3, data);
+}
+
+function Vector4(data = false)
+{
+	return Vector(4, data);
+}
+
+const pen_Matrix = {
+	X1: Vector4([1.0, 0.0, 0.0, 1.0]),
+	Y1: Vector4([0.0, 1.0, 0.0, 1.0]),
+	Z1: Vector4([0.0, 0.0, 1.0, 1.0]),
+	W1: Vector4([0.0, 0.0, 0.0, 1.0]),
+	ZERO: Vector4([0.0, 0.0, 0.0, 0.0]),
 };
