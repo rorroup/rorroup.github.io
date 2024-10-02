@@ -25,6 +25,7 @@ class Matrix extends Array
 	
 	set(data){
 		this.splice(0, data.length, ...data.slice(0, this.rows * this.columns));
+		return this;
 	}
 	
 	copy(){
