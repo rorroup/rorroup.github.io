@@ -65,13 +65,14 @@ function main(){
 			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]),
 			cameraThreshold: [],
 			lightGlobal: {
-				diffuse: Vector3([0.3, 0.3, 0.3]),
+				diffuse: Vector3(),
 				directional: {
-					direction: Vector3([-1.0, -10.0, -2.0]).normalize(),
-					color: Vector3([1.0, 1.0, 1.0]),
+					direction: Vector3(),
+					color: Vector3(),
 				},
 			},
-			skybox: Vector3([0.0, 1.0, 7.0]),
+			skybox: Vector3(),
+			cycleDayNight: 6000,
 			scenery: [],
 			bodies: [],
 			modelLoad(models, container){
@@ -100,6 +101,17 @@ function main(){
 				this.camera.project();
 			},
 			update(){
+				// Day-Night cycle
+				this.lightGlobal.diffuse.fill(0.2 + 2 * 0.1 * Math.abs(((this.timeFrameCurrent % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)) - 0.5));
+				
+				this.lightGlobal.directional.direction.set([8.0 - 10.0 * (((this.timeFrameCurrent + this.cycleDayNight * Math.PI) % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)), -10.0, -2.0]).normalize();
+				this.lightGlobal.directional.color.fill(0.2 + 2 * 0.8 * Math.abs(((this.timeFrameCurrent % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)) - 0.5));
+				
+				this.skybox.x = 0.50 - 0.50 * Math.cos(this.timeFrameCurrent / this.cycleDayNight * 2); // r
+				this.skybox.y = 0.45 + 0.45 * Math.cos(this.timeFrameCurrent / this.cycleDayNight); // g
+				this.skybox.z = 0.55 + 0.45 * Math.cos(this.timeFrameCurrent / this.cycleDayNight); // b
+				
+				
 				this.scenery.forEach((body) => {body.update(this.deltaTime);});
 				this.bodies.forEach((body) => {body.update(this.deltaTime);});
 			},
