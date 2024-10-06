@@ -72,10 +72,11 @@ function main(){
 					color: Vector3(),
 				},
 			},
-			skybox: Vector3(),
+			skybox: Vector4(pen_Matrix.W1),
 			cycleDayNight: 6000,
 			scenery: [],
 			bodies: [],
+			selected: false,
 			modelLoad(models, container){
 				for(let i = 0; i < models.length; i++){
 					container.push(new Body(Vector4(pen_Matrix.W1), Vector4(pen_Matrix.W1), models[i], this.gl));
@@ -120,26 +121,39 @@ function main(){
 				
 				
 				  {
-    // render to our targetTexture by binding the framebuffer
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+    // render to the canvas
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
  
     // Tell WebGL how to convert from clip space to pixels
-    gl.viewport(0, 0, targetTextureWidth, targetTextureHeight);
-	this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
+    gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
+	this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
 	this.camera.project();
 				
 				drawScene(this.gl, this, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
 				  }
 				  
 				  
-				    {
-    // render to the canvas
+				    if(this.selected != false){
+	// render to our targetTexture by binding the framebuffer
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+ 
+    // Tell WebGL how to convert from clip space to pixels
+    gl.viewport(0, 0, targetTextureWidth, targetTextureHeight);
+	this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
+	this.camera.project();
+	
+	drawScene(this.gl, this, this.camera, this.lightGlobal, [this.selected], [0.0, 0.0, 0.0, 0.0]);
+	
+	
+	// render to the canvas
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
  
     // Tell WebGL how to convert from clip space to pixels
     gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
+	this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
+	this.camera.project();
 	
-	DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, shaderProgram2, glProgramInfo2, this.gl, targetTexture);
+	DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, shaderProgram2, glProgramInfo2, this.gl, targetTexture, targetTextureWidth, targetTextureHeight);
   }
 			},
 		};
@@ -219,10 +233,12 @@ function main(){
 			}
 			
 			hover.style.display = "none";
+			Animated.selected = false;
 			
 			if(intersections.length > 0){
 				intersections.sort((a, b) => {return a[1] - b[1];});
 				Animated.bodies[intersections[0][0]].selected = true;
+				Animated.selected = Animated.bodies[intersections[0][0]];
 				
 				hover.style.display = "block";
 				hover.textContent = Animated.bodies[intersections[0][0]].model.name;
@@ -243,7 +259,7 @@ const vsSource2 = `
 	varying highp vec2 vTextureCoord;
 	
     void main() {
-      gl_Position = vec4(aVertexPosition.xy, 0.0, 1.0);
+      gl_Position = vec4(aVertexPosition.xy, -1.0, 1.0);
 	  vTextureCoord = aTextureCoord;
     }
   `;
@@ -252,8 +268,34 @@ const vsSource2 = `
 		uniform sampler2D uSampler;
 		varying highp vec2 vTextureCoord;
 		
+		uniform highp vec2 uTextureSize;
+		
+		uniform lowp vec4 uOutlineColor;
+		uniform lowp float uOutlineSize;
+		
     void main(void) {
-      gl_FragColor = texture2D(uSampler, vTextureCoord);
+		lowp vec2 texelScale = vec2(uOutlineSize, uOutlineSize) / uTextureSize;
+		
+		lowp vec4 texel = texture2D(uSampler, vTextureCoord);   // Get texel color
+		
+		lowp vec4 sides = vec4(0.0);
+    sides.x = texture2D(uSampler, vTextureCoord + vec2(0, texelScale.y)).a;
+    sides.y = texture2D(uSampler, vTextureCoord + vec2(0, -texelScale.y)).a;
+    sides.z = texture2D(uSampler, vTextureCoord + vec2(texelScale.x, 0)).a;
+    sides.w = texture2D(uSampler, vTextureCoord + vec2(-texelScale.x, 0)).a;
+		
+			lowp vec4 corners = vec4(0.0);
+    corners.x = texture2D(uSampler, vTextureCoord + vec2(texelScale.x, texelScale.y)).a;
+    corners.y = texture2D(uSampler, vTextureCoord + vec2(texelScale.x, -texelScale.y)).a;
+    corners.z = texture2D(uSampler, vTextureCoord + vec2(-texelScale.x, texelScale.y)).a;
+    corners.w = texture2D(uSampler, vTextureCoord + vec2(-texelScale.x, -texelScale.y)).a;
+	
+	if(texel.a == 0.0 && (dot(sides, vec4(1.0)) > 0.0 || dot(corners, vec4(1.0)) > 0.0)){
+    gl_FragColor = uOutlineColor;
+		}
+		else{
+			discard;
+		}
     }
   `;
 
@@ -272,6 +314,9 @@ const vsSource2 = `
 			},
 			uniformLocations: {
 				uSampler: gl.getUniformLocation(shaderProgram2, "uSampler"),
+				textureSize: gl.getUniformLocation(shaderProgram2, "uTextureSize"),
+				outlineColor: gl.getUniformLocation(shaderProgram2, "uOutlineColor"),
+				outlineSize: gl.getUniformLocation(shaderProgram2, "uOutlineSize"),
 			},
 		};
 		
@@ -368,11 +413,11 @@ const vsSource2 = `
 
 main();
 
-function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, shaderProgram2, programInfo, gl, targetTexture)
+function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, shaderProgram2, programInfo, gl, targetTexture, targetTextureWidth, targetTextureHeight)
 {
 	// Clear the canvas AND the depth buffer.
-    gl.clearColor(1, 0, 1, 1);   // clear to magenta
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    // gl.clearColor(1, 0, 1, 1);   // clear to magenta
+    // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
 	// Tell WebGL to use our program when drawing
 	gl.useProgram(shaderProgram2);
@@ -386,6 +431,9 @@ gl.bindTexture(gl.TEXTURE_2D, targetTexture);
 // Tell the shader we bound the texture to texture unit 0
 gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 
+	gl.uniform4fv(programInfo.uniformLocations.outlineColor, new Float32Array([1.0, 1.0, 1.0, 1.0]));
+	gl.uniform1f(programInfo.uniformLocations.outlineSize, 3.0);
+	gl.uniform2fv(programInfo.uniformLocations.textureSize, new Float32Array([targetTextureWidth, targetTextureHeight]));
 	
 	{
 	const numComponents = 2; // pull out 2 values per iteration
