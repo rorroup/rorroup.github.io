@@ -334,7 +334,7 @@ const vsSource2 = `
     corners.z = texture2D(uSampler, vTextureCoord + vec2(-texelScale.x, texelScale.y)).a;
     corners.w = texture2D(uSampler, vTextureCoord + vec2(-texelScale.x, -texelScale.y)).a;
 	
-	if(texel.a == 0.0 && (dot(sides, vec4(1.0)) > 0.0 || dot(corners, vec4(1.0)) > 0.0)){
+	if(texel.a == 0.0 && dot(sides + corners, vec4(1.0)) > 0.0 ){
     gl_FragColor = uOutlineColor;
 		}
 		else{
