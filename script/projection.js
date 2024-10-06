@@ -118,8 +118,9 @@ class Body{
 		
 		
 		
-		gl.uniform3fv(programInfo.uniformLocations.VertexColor, this.selected ? Material_DEFAULT.Kd : this.model.material.Kd);
+		gl.uniform3fv(programInfo.uniformLocations.VertexColor, this.model.material.Kd);
 		
+		gl.uniform3fv(programInfo.uniformLocations.selected, this.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
 		
 		gl.drawArrays(gl.TRIANGLES, this.model.offset, this.model.vertexCount);
 	}

@@ -17,6 +17,8 @@ uniform vec3 uLightAmbient;
 uniform vec3 uLightDirection;
 uniform vec3 uLightColor;
 
+uniform vec3 uSelected;
+
 varying highp vec2 vTextureCoord;
 varying highp vec3 vLighting;
 
@@ -28,5 +30,5 @@ void main(void){
 	
 	// Apply lighting effect
 	
-	vLighting = uLightAmbient + max(-dot(aVertexNormal, uLightDirection), 0.0) * uLightColor;
+	vLighting = uLightAmbient + max(-dot(aVertexNormal, uLightDirection), 0.0) * uLightColor + uSelected;
 }
