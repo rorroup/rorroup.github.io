@@ -376,7 +376,7 @@ const vsSource2 = `
       const internalFormat = gl.RGBA;
       const border = 0;
       const format = gl.RGBA;
-      const type = gl.UNSIGNED_BYTE;
+      const type = gl.UNSIGNED_SHORT_4_4_4_4;
       const data = null;
       gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
                     targetTextureWidth, targetTextureHeight, border,
