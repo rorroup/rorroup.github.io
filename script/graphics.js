@@ -152,6 +152,7 @@ function main(){
 		Animated.resize();
 		window.addEventListener("resize", () => {Animated.resize();});
 		
+		const hover = document.getElementById("hover");
 		canvas.addEventListener("mousemove", function(event_){
 			let mouseX = event_.offsetX;
 			let mouseY = event_.offsetY;
@@ -194,9 +195,16 @@ function main(){
 				}
 			}
 			
+			hover.style.display = "none";
+			
 			if(intersections.length > 0){
 				intersections.sort((a, b) => {return a[1] - b[1];});
 				Animated.bodies[intersections[0][0]].selected = true;
+				
+				hover.style.display = "block";
+				hover.textContent = Animated.bodies[intersections[0][0]].model.name;
+				hover.style.left = (mouseX - 20).toString() + "px";
+				hover.style.bottom = (Animated.canvasSize.y - mouseY + 20).toString() + "px";
 			}
 		});
 		

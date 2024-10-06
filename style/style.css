@@ -98,6 +98,14 @@ section{
 	text-align: right;
 }
 
+#hover{
+	display: none;
+	position: absolute;
+	background-color: black;
+	color: white;
+	padding: 8px;
+}
+
 #INFO{
 	display: block;
 	position: fixed;
