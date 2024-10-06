@@ -142,7 +142,7 @@ function main(){
 	this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
 	this.camera.project();
 	
-	drawScene(this.gl, this, this.camera, this.lightGlobal, [this.selected], [0.0, 0.0, 0.0, 0.0]);
+	drawSilhouette(this.gl, glProgramInfoSilhouette, this.camera, this.selected);
 	
 	
 	// render to the canvas
@@ -249,6 +249,50 @@ function main(){
 		
 		// Flip image pixels into the bottom-to-top order that WebGL expects.
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+		
+		
+		const vsSilhouette = `
+		attribute vec4 aVertexPosition;
+		
+		uniform mat4 uRotationMatrix;
+		uniform mat4 uModelViewMatrix;
+		
+		uniform mat4 uCameraPosition;
+		uniform mat4 uCameraRotation;
+		uniform mat4 uProjectionMatrix;
+		
+		void main(){
+			gl_Position = uProjectionMatrix * uCameraRotation * uCameraPosition * uModelViewMatrix * uRotationMatrix * aVertexPosition;
+		}
+		`;
+		
+		const fsSilhouette = `
+		void main(){
+			gl_FragColor = vec4(1.0);
+		}
+		`;
+		
+		// Initialize a shader program; this is where all the lighting
+		// for the vertices and so forth is established.
+		const shaderProgramSilhouette = initShaderProgram(gl, vsSilhouette, fsSilhouette);
+		
+		if(shaderProgramSilhouette === null){
+			return;
+		}
+		
+		const glProgramInfoSilhouette = {
+			program: shaderProgramSilhouette,
+			attribLocations: {
+				vertexPosition: gl.getAttribLocation(shaderProgramSilhouette, "aVertexPosition"),
+			},
+			uniformLocations: {
+				projectionMatrix: gl.getUniformLocation(shaderProgramSilhouette, "uProjectionMatrix"),
+				modelViewMatrix: gl.getUniformLocation(shaderProgramSilhouette, "uModelViewMatrix"),
+				rotationMatrix: gl.getUniformLocation(shaderProgramSilhouette, "uRotationMatrix"),
+				cameraPosition: gl.getUniformLocation(shaderProgramSilhouette, "uCameraPosition"),
+				cameraRotation: gl.getUniformLocation(shaderProgramSilhouette, "uCameraRotation"),
+			},
+		};
 		
 		
 		// Vertex shader program
@@ -473,4 +517,81 @@ gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 	}
 	
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+}
+
+
+
+function drawSilhouette(gl, programInfo, camera, bodySelected){
+	gl.clearColor(0.0, 0.0, 0.0, 0.0); // Background color
+	gl.clearDepth(1.0); // Clear everything
+	
+	// Clear the canvas before we start drawing on it.
+	
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	
+	// Tell WebGL to use our program when drawing
+	gl.useProgram(programInfo.program);
+	
+	
+	const mProjection = camera.projection;
+	const cameraPos = camera.position;
+	const cameraRot = camera.rotation;
+	
+	// Set the shader uniforms
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.projectionMatrix,
+		false,
+		new Float32Array(mProjection)
+	);
+	
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.cameraPosition,
+		false,
+		new Float32Array([
+			1.0, 0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			...cameraPos
+		])
+	);
+	
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.cameraRotation,
+		false,
+		new Float32Array([
+			Math.cos(cameraRot[1]), Math.sin(cameraRot[1]) * Math.sin(cameraRot[0]), -Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+			0.0, Math.cos(cameraRot[0]), Math.sin(cameraRot[0]), 0.0,
+			Math.sin(cameraRot[1]), -Math.cos(cameraRot[1]) * Math.sin(cameraRot[0]), Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+			0.0, 0.0, 0.0, 1.0,
+		])
+	);
+	
+	
+	// Tell WebGL how to pull out the positions from the position
+	// buffer into the vertexPosition attribute.
+	bodySelected.setPositionAttribute(gl, programInfo);
+	
+	// Set the shader uniforms
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.modelViewMatrix,
+		false,
+		new Float32Array([
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			...bodySelected.position
+		])
+	);
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.rotationMatrix,
+		false,
+		new Float32Array([
+			Math.cos(bodySelected.rotation[0]), 0, -Math.sin(bodySelected.rotation[0]), 0,
+			0, 1, 0, 0,
+			Math.sin(bodySelected.rotation[0]), 0, Math.cos(bodySelected.rotation[0]), 0,
+			0, 0, 0, 1,
+		])
+	);
+	
+	gl.drawArrays(gl.TRIANGLES, bodySelected.model.offset, bodySelected.model.vertexCount);
 }
