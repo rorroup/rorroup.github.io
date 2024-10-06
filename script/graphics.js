@@ -117,7 +117,30 @@ function main(){
 				this.bodies.forEach((body) => {body.update(this.deltaTime);});
 			},
 			draw(){
+				
+				
+				  {
+    // render to our targetTexture by binding the framebuffer
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+ 
+    // Tell WebGL how to convert from clip space to pixels
+    gl.viewport(0, 0, targetTextureWidth, targetTextureHeight);
+	this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
+	this.camera.project();
+				
 				drawScene(this.gl, this, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
+				  }
+				  
+				  
+				    {
+    // render to the canvas
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+ 
+    // Tell WebGL how to convert from clip space to pixels
+    gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
+	
+	DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, shaderProgram2, glProgramInfo2, this.gl, targetTexture);
+  }
 			},
 		};
 		
@@ -211,6 +234,121 @@ function main(){
 		// Flip image pixels into the bottom-to-top order that WebGL expects.
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		
+		
+		// Vertex shader program
+const vsSource2 = `
+    attribute vec4 aVertexPosition;
+	attribute vec2 aTextureCoord;
+	
+	varying highp vec2 vTextureCoord;
+	
+    void main() {
+      gl_Position = vec4(aVertexPosition.xy, 0.0, 1.0);
+	  vTextureCoord = aTextureCoord;
+    }
+  `;
+		
+		const fsSource2 = `
+		uniform sampler2D uSampler;
+		varying highp vec2 vTextureCoord;
+		
+    void main(void) {
+      gl_FragColor = texture2D(uSampler, vTextureCoord);
+    }
+  `;
+
+		// Initialize a shader program; this is where all the lighting
+		// for the vertices and so forth is established.
+		const shaderProgram2 = initShaderProgram(gl, vsSource2, fsSource2);
+		
+		if(shaderProgram2 === null){
+			return;
+		}
+		
+		const glProgramInfo2 = {
+			attribLocations: {
+				vertexPosition: gl.getAttribLocation(shaderProgram2, "aVertexPosition"),
+				textureCoord: gl.getAttribLocation(shaderProgram2, "aTextureCoord"),
+			},
+			uniformLocations: {
+				uSampler: gl.getUniformLocation(shaderProgram2, "uSampler"),
+			},
+		};
+		
+		    // create to render to
+    const targetTextureWidth = canvas.offsetWidth;
+    const targetTextureHeight = canvas.offsetHeight;
+    const targetTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, targetTexture);
+     
+    
+      // define size and format of level 0
+      const level = 0;
+      const internalFormat = gl.RGBA;
+      const border = 0;
+      const format = gl.RGBA;
+      const type = gl.UNSIGNED_BYTE;
+      const data = null;
+      gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
+                    targetTextureWidth, targetTextureHeight, border,
+                    format, type, data);
+     
+      // set the filtering so we don't need mips
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    
+		
+		    // Create and bind the framebuffer
+    const fb = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+     
+    // attach the texture as the first color attachment
+    const attachmentPoint = gl.COLOR_ATTACHMENT0;
+    gl.framebufferTexture2D(
+        gl.FRAMEBUFFER, attachmentPoint, gl.TEXTURE_2D, targetTexture, level);
+		
+		
+		    // create a depth renderbuffer
+    const depthBuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, depthBuffer);
+     
+    // make a depth buffer and the same size as the targetTexture
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, targetTextureWidth, targetTextureHeight);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, depthBuffer);
+		
+		// Create a buffer for the square's positions.
+  const positionBuffer = gl.createBuffer();
+
+  // Select the positionBuffer as the one to apply buffer
+  // operations to from here out.
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+  // Now create an array of positions for the square.
+  const positions = [-1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0];
+
+  // Now pass the list of positions into WebGL to build the
+  // shape. We do this by creating a Float32Array from the
+  // JavaScript array, then use it to fill the current buffer.
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+		
+		
+		const textureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+
+  const textureCoordinates = [
+    // Front
+    0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+	0.0, 0.0, 1.0, 1.0, 0.0, 1.0
+  ];
+
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array(textureCoordinates),
+    gl.STATIC_DRAW,
+  );
+		
+		
 		// Draw the scene repeatedly
 		function Animated_Play(){
 			// Update
@@ -229,3 +367,62 @@ function main(){
 
 
 main();
+
+function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, shaderProgram2, programInfo, gl, targetTexture)
+{
+	// Clear the canvas AND the depth buffer.
+    gl.clearColor(1, 0, 1, 1);   // clear to magenta
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	
+	// Tell WebGL to use our program when drawing
+	gl.useProgram(shaderProgram2);
+	
+	// Tell WebGL we want to affect texture unit 0
+gl.activeTexture(gl.TEXTURE0);
+
+// Bind the texture to texture unit 0
+gl.bindTexture(gl.TEXTURE_2D, targetTexture);
+
+// Tell the shader we bound the texture to texture unit 0
+gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
+
+	
+	{
+	const numComponents = 2; // pull out 2 values per iteration
+  const type = gl.FLOAT; // the data in the buffer is 32bit floats
+  const normalize = false; // don't normalize
+  const stride = 0; // how many bytes to get from one set of values to the next
+  // 0 = use type and numComponents above
+  const offset = 0; // how many bytes inside the buffer to start from
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareBuffer);
+  gl.vertexAttribPointer(
+    programInfo.attribLocations.vertexPosition,
+    numComponents,
+    type,
+    normalize,
+    stride,
+    offset,
+  );
+  gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+	}
+	
+	{
+	const num = 2; // every coordinate composed of 2 values
+  const type = gl.FLOAT; // the data in the buffer is 32-bit float
+  const normalize = false; // don't normalize
+  const stride = 0; // how many bytes to get from one set to the next
+  const offset = 0; // how many bytes inside the buffer to start from
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareTexel);
+  gl.vertexAttribPointer(
+    programInfo.attribLocations.textureCoord,
+    num,
+    type,
+    normalize,
+    stride,
+    offset,
+  );
+  gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+	}
+	
+    gl.drawArrays(gl.TRIANGLES, 0, 6);
+}
