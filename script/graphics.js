@@ -72,7 +72,7 @@ function main(){
 					color: Vector3(),
 				},
 			},
-			skybox: Vector4(pen_Matrix.W1),
+			skybox: Vector3(),
 			cycleDayNight: 6000,
 			scenery: [],
 			bodies: [],
