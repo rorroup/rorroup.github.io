@@ -31,9 +31,9 @@ function main(){
 		
 		// Initialize a shader program; this is where all the lighting
 		// for the vertices and so forth is established.
-		const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+		const shaderProgram_vertexColor = initShaderProgram(gl, vsSource, fsSource);
+		if(shaderProgram_vertexColor === null){
 		
-		if(shaderProgram === null){
 			return;
 		}
 		
@@ -44,24 +44,24 @@ function main(){
 			canvas: canvas,
 			gl: gl,
 			glProgramInfo_vertexColor: {
-				program: shaderProgram,
+				program: shaderProgram_vertexColor,
 				attribLocations: {
-					vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
-					vertexNormal: gl.getAttribLocation(shaderProgram, "aVertexNormal"),
-					textureCoord: gl.getAttribLocation(shaderProgram, "aTextureCoord"),
+					vertexPosition: gl.getAttribLocation(shaderProgram_vertexColor, "aVertexPosition"),
+					vertexNormal: gl.getAttribLocation(shaderProgram_vertexColor, "aVertexNormal"),
+					textureCoord: gl.getAttribLocation(shaderProgram_vertexColor, "aTextureCoord"),
 				},
 				uniformLocations: {
-					projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-					modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
-					rotationMatrix: gl.getUniformLocation(shaderProgram, "uRotationMatrix"),
-					cameraPosition: gl.getUniformLocation(shaderProgram, "uCameraPosition"),
-					cameraRotation: gl.getUniformLocation(shaderProgram, "uCameraRotation"),
-					uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
-					VertexColor: gl.getUniformLocation(shaderProgram, "uVertexColor"),
-					LightAmbient: gl.getUniformLocation(shaderProgram, "uLightAmbient"),
-					LightDirection: gl.getUniformLocation(shaderProgram, "uLightDirection"),
-					LightColor: gl.getUniformLocation(shaderProgram, "uLightColor"),
-					selected: gl.getUniformLocation(shaderProgram, "uSelected"),
+					projectionMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uProjectionMatrix"),
+					modelViewMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uModelViewMatrix"),
+					rotationMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uRotationMatrix"),
+					cameraPosition: gl.getUniformLocation(shaderProgram_vertexColor, "uCameraPosition"),
+					cameraRotation: gl.getUniformLocation(shaderProgram_vertexColor, "uCameraRotation"),
+					uSampler: gl.getUniformLocation(shaderProgram_vertexColor, "uSampler"),
+					VertexColor: gl.getUniformLocation(shaderProgram_vertexColor, "uVertexColor"),
+					LightAmbient: gl.getUniformLocation(shaderProgram_vertexColor, "uLightAmbient"),
+					LightDirection: gl.getUniformLocation(shaderProgram_vertexColor, "uLightDirection"),
+					LightColor: gl.getUniformLocation(shaderProgram_vertexColor, "uLightColor"),
+					selected: gl.getUniformLocation(shaderProgram_vertexColor, "uSelected"),
 				},
 			},
 			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
