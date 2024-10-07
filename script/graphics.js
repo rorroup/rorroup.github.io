@@ -128,6 +128,7 @@ function main(){
 			},
 			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
 			silhouetteFramebuffer: createFramebuffer(gl, screenSize),
+			silhouetteAttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
 			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]),
 			cameraThreshold: [],
 			lightGlobal: {
@@ -197,10 +198,43 @@ function main(){
 					// render to the canvas
 					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 					
-					DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, this.glProgramInfo_outline, this.gl, this.silhouetteFramebuffer.texture[0], this.canvasSize, screenSize);
+					DRAW_TEX_TO_SCREEN(Animated.silhouetteAttributeBuffer[0], Animated.silhouetteAttributeBuffer[1], this.glProgramInfo_outline, this.gl, this.silhouetteFramebuffer.texture[0], this.canvasSize, screenSize);
 				}
 			},
 		};
+		
+		{
+			const positionBuffer = Animated.silhouetteAttributeBuffer[0];
+			
+			// Select the positionBuffer as the one to apply buffer
+			// operations to from here out.
+			gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+			
+			// Now create an array of positions for the square.
+			const positions = [-1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0];
+			
+			// Now pass the list of positions into WebGL to build the
+			// shape. We do this by creating a Float32Array from the
+			// JavaScript array, then use it to fill the current buffer.
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+		}
+		
+		{
+			const textureCoordBuffer = Animated.silhouetteAttributeBuffer[1];
+			gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+			
+			const textureCoordinates = [
+				// Front
+				0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+				0.0, 0.0, 1.0, 1.0, 0.0, 1.0
+			];
+			
+			gl.bufferData(
+				gl.ARRAY_BUFFER,
+				new Float32Array(textureCoordinates),
+				gl.STATIC_DRAW,
+			);
+		}
 		
 		// Here's where we call the routine that builds all the
 		// objects we'll be drawing.
@@ -293,39 +327,6 @@ function main(){
 		
 		// Flip image pixels into the bottom-to-top order that WebGL expects.
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-		
-		
-		// Create a buffer for the square's positions.
-  const positionBuffer = gl.createBuffer();
-
-  // Select the positionBuffer as the one to apply buffer
-  // operations to from here out.
-  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-
-  // Now create an array of positions for the square.
-  const positions = [-1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0];
-
-  // Now pass the list of positions into WebGL to build the
-  // shape. We do this by creating a Float32Array from the
-  // JavaScript array, then use it to fill the current buffer.
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-		
-		
-		const textureCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-
-  const textureCoordinates = [
-    // Front
-    0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-	0.0, 0.0, 1.0, 1.0, 0.0, 1.0
-  ];
-
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    new Float32Array(textureCoordinates),
-    gl.STATIC_DRAW,
-  );
-		
 		
 		// Draw the scene repeatedly
 		function Animated_Play(){
