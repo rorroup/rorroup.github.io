@@ -43,24 +43,26 @@ function main(){
 		const Animated = {
 			canvas: canvas,
 			gl: gl,
-			program: shaderProgram,
-			attribLocations: {
-				vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
-				vertexNormal: gl.getAttribLocation(shaderProgram, "aVertexNormal"),
-				textureCoord: gl.getAttribLocation(shaderProgram, "aTextureCoord"),
-			},
-			uniformLocations: {
-				projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-				modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
-				rotationMatrix: gl.getUniformLocation(shaderProgram, "uRotationMatrix"),
-				cameraPosition: gl.getUniformLocation(shaderProgram, "uCameraPosition"),
-				cameraRotation: gl.getUniformLocation(shaderProgram, "uCameraRotation"),
-				uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
-				VertexColor: gl.getUniformLocation(shaderProgram, "uVertexColor"),
-				LightAmbient: gl.getUniformLocation(shaderProgram, "uLightAmbient"),
-				LightDirection: gl.getUniformLocation(shaderProgram, "uLightDirection"),
-				LightColor: gl.getUniformLocation(shaderProgram, "uLightColor"),
-				selected: gl.getUniformLocation(shaderProgram, "uSelected"),
+			glProgramInfo_vertexColor: {
+				program: shaderProgram,
+				attribLocations: {
+					vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+					vertexNormal: gl.getAttribLocation(shaderProgram, "aVertexNormal"),
+					textureCoord: gl.getAttribLocation(shaderProgram, "aTextureCoord"),
+				},
+				uniformLocations: {
+					projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+					modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+					rotationMatrix: gl.getUniformLocation(shaderProgram, "uRotationMatrix"),
+					cameraPosition: gl.getUniformLocation(shaderProgram, "uCameraPosition"),
+					cameraRotation: gl.getUniformLocation(shaderProgram, "uCameraRotation"),
+					uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
+					VertexColor: gl.getUniformLocation(shaderProgram, "uVertexColor"),
+					LightAmbient: gl.getUniformLocation(shaderProgram, "uLightAmbient"),
+					LightDirection: gl.getUniformLocation(shaderProgram, "uLightDirection"),
+					LightColor: gl.getUniformLocation(shaderProgram, "uLightColor"),
+					selected: gl.getUniformLocation(shaderProgram, "uSelected"),
+				},
 			},
 			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
 			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]),
@@ -129,7 +131,7 @@ function main(){
 	this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
 	this.camera.project();
 				
-				drawScene(this.gl, this, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
+				drawScene(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
 				  }
 				  
 				  
