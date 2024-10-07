@@ -71,35 +71,7 @@ function main(){
 			return;
 		}
 		
-		// create to render to
 		const screenSize = [parseInt(window.screen.width), parseInt(window.screen.height)];
-		const targetTextureWidth = screenSize[0];
-		const targetTextureHeight = screenSize[1];
-		const targetTexture = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, targetTexture);
-		
-		// define size and format of level 0
-		const level = 0;
-		const internalFormat = gl.RGBA;
-		const border = 0;
-		const format = gl.RGBA;
-		const type = gl.UNSIGNED_SHORT_4_4_4_4;
-		const data = null;
-		gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
-			targetTextureWidth, targetTextureHeight, border,
-			format, type, data);
-		
-		// set the filtering so we don't need mips
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-		
-		// Create and bind the framebuffer
-		const fb = gl.createFramebuffer();
-		gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
-		
-		// attach the texture as the first color attachment
-		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, targetTexture, level);
 		
 		// Collect all the info needed to use the shader program.
 		// Look up which attribute our shader program is using
@@ -155,6 +127,7 @@ function main(){
 				},
 			},
 			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
+			silhouetteFramebuffer: createFramebuffer(gl, screenSize),
 			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]),
 			cameraThreshold: [],
 			lightGlobal: {
@@ -217,14 +190,14 @@ function main(){
 				
 				if(this.selected != false){
 					// render to our targetTexture by binding the framebuffer
-					gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+					gl.bindFramebuffer(gl.FRAMEBUFFER, this.silhouetteFramebuffer.framebuffer);
 					
 					draw_silhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
 					
 					// render to the canvas
 					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 					
-					DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, this.glProgramInfo_outline, this.gl, targetTexture, this.canvasSize, screenSize);
+					DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, this.glProgramInfo_outline, this.gl, this.silhouetteFramebuffer.texture[0], this.canvasSize, screenSize);
 				}
 			},
 		};
@@ -372,6 +345,43 @@ function main(){
 
 
 main();
+
+function createFramebuffer(gl, size)
+{
+	// create to render to
+	const targetTextureWidth = size[0];
+	const targetTextureHeight = size[1];
+	const targetTexture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, targetTexture);
+	
+	// define size and format of level 0
+	const level = 0;
+	const internalFormat = gl.RGBA;
+	const border = 0;
+	const format = gl.RGBA;
+	const type = gl.UNSIGNED_SHORT_4_4_4_4;
+	const data = null;
+	gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
+		targetTextureWidth, targetTextureHeight, border,
+		format, type, data);
+	
+	// set the filtering so we don't need mips
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	
+	// Create and bind the framebuffer
+	const fb = gl.createFramebuffer();
+	gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+	
+	// attach the texture as the first color attachment
+	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, targetTexture, level);
+	
+	return {
+		framebuffer: fb,
+		texture: [targetTexture],
+	};
+}
 
 function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, programInfo, gl, targetTexture, canvasSize, screenSize)
 {
