@@ -180,43 +180,37 @@ function main(){
 				this.bodies.forEach((body) => {body.update(this.deltaTime);});
 			},
 			draw(){
+				// render to the canvas
+				gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 				
-				
-				  {
-    // render to the canvas
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
- 
-    // Tell WebGL how to convert from clip space to pixels
-    gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
-	this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
-	this.camera.project();
+				// Tell WebGL how to convert from clip space to pixels
+				gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
+				this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
+				this.camera.project();
 				
 				draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
-				  }
-				  
-				  
-				    if(this.selected != false){
-	// render to our targetTexture by binding the framebuffer
-    gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
- 
-    // Tell WebGL how to convert from clip space to pixels
-    gl.viewport(0, 0, targetTextureWidth, targetTextureHeight);
-	this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
-	this.camera.project();
-	
-	drawSilhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
-	
-	
-	// render to the canvas
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
- 
-    // Tell WebGL how to convert from clip space to pixels
-    gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
-	this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
-	this.camera.project();
-	
-	DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, this.glProgramInfo_outline, this.gl, targetTexture, targetTextureWidth, targetTextureHeight);
-  }
+				
+				if(this.selected != false){
+					// render to our targetTexture by binding the framebuffer
+					gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+					
+					// Tell WebGL how to convert from clip space to pixels
+					gl.viewport(0, 0, targetTextureWidth, targetTextureHeight);
+					this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
+					this.camera.project();
+					
+					drawSilhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
+					
+					// render to the canvas
+					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+					
+					// Tell WebGL how to convert from clip space to pixels
+					gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
+					this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
+					this.camera.project();
+					
+					DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, this.glProgramInfo_outline, this.gl, targetTexture, targetTextureWidth, targetTextureHeight);
+				}
 			},
 		};
 		
