@@ -78,53 +78,6 @@ class Body{
 		return true;
 	}
 	
-	draw(gl, programInfo){
-		// Tell WebGL how to pull out the positions from the position
-		// buffer into the vertexPosition attribute.
-		this.setPositionAttribute(gl, programInfo);
-		this.setTextureAttribute(gl, programInfo);
-		this.setNormalAttribute(gl, programInfo);
-		
-		// Set the shader uniforms
-		gl.uniformMatrix4fv(
-			programInfo.uniformLocations.modelViewMatrix,
-			false,
-			new Float32Array([
-				1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1, 0,
-				...this.position
-			])
-		);
-		gl.uniformMatrix4fv(
-			programInfo.uniformLocations.rotationMatrix,
-			false,
-			new Float32Array([
-				Math.cos(this.rotation[0]), 0, -Math.sin(this.rotation[0]), 0,
-				0, 1, 0, 0,
-				Math.sin(this.rotation[0]), 0, Math.cos(this.rotation[0]), 0,
-				0, 0, 0, 1,
-			])
-		);
-		
-		// Tell WebGL we want to affect texture unit 0
-		gl.activeTexture(gl.TEXTURE0);
-
-		// Bind the texture to texture unit 0
-		gl.bindTexture(gl.TEXTURE_2D, this.texture);
-
-		// Tell the shader we bound the texture to texture unit 0
-		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
-		
-		
-		
-		gl.uniform3fv(programInfo.uniformLocations.VertexColor, this.model.material.Kd);
-		
-		gl.uniform3fv(programInfo.uniformLocations.selected, this.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
-		
-		gl.drawArrays(gl.TRIANGLES, this.model.offset, this.model.vertexCount);
-	}
-	
 	// Tell WebGL how to pull out the positions from the position
 	// buffer into the vertexPosition attribute.
 	setPositionAttribute(gl, programInfo){
