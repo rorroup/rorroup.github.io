@@ -53,7 +53,7 @@ class Body{
 		this.selected = false;
 		
 		// Load texture
-		this.texture = loadTexture(gl, this.model.textureSrc);
+		this.texture = false;
 		
 		// Create a buffer for the square's positions.
 		this.positionBuffer = gl.createBuffer();

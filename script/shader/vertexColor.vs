@@ -1,3 +1,4 @@
+
 attribute vec4 aVertexPosition;
 attribute vec3 aVertexNormal;
 attribute vec2 aTextureCoord;

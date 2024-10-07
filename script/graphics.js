@@ -90,7 +90,6 @@ function main(){
 					rotationMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uRotationMatrix"),
 					cameraPosition: gl.getUniformLocation(shaderProgram_vertexColor, "uCameraPosition"),
 					cameraRotation: gl.getUniformLocation(shaderProgram_vertexColor, "uCameraRotation"),
-					uSampler: gl.getUniformLocation(shaderProgram_vertexColor, "uSampler"),
 					VertexColor: gl.getUniformLocation(shaderProgram_vertexColor, "uVertexColor"),
 					LightAmbient: gl.getUniformLocation(shaderProgram_vertexColor, "uLightAmbient"),
 					LightDirection: gl.getUniformLocation(shaderProgram_vertexColor, "uLightDirection"),

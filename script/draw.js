@@ -80,15 +80,6 @@ function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
 			])
 		);
 		
-		// Tell WebGL we want to affect texture unit 0
-		gl.activeTexture(gl.TEXTURE0);
-
-		// Bind the texture to texture unit 0
-		gl.bindTexture(gl.TEXTURE_2D, body.texture);
-
-		// Tell the shader we bound the texture to texture unit 0
-		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
-		
 		
 		gl.uniform3fv(programInfo.uniformLocations.VertexColor, body.model.material.Kd);
 		
