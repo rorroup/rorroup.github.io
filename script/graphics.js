@@ -13,27 +13,61 @@ function main(){
 	}
 	
 	Promise.all([
-		fetch("script/shader/vertexColor.vs"),
-		fetch("script/shader/vertexColor.fs"),
+		Promise.all([
+			fetch("script/shader/vertexColor.vs"),
+			fetch("script/shader/vertexColor.fs"),
+		]),
+		Promise.all([
+			fetch("script/shader/silhouette.vs"),
+			fetch("script/shader/silhouette.fs"),
+		]),
+		Promise.all([
+			fetch("script/shader/outline.vs"),
+			fetch("script/shader/outline.fs"),
+		]),
 	]).then((responses) => {
 		responses.forEach((response) => {
-			if(!response.ok){
-				throw new Error(`Response status: ${response.status}`);
-			}
+			response.forEach((shaderFile) => {
+				if(!shaderFile.ok){
+					throw new Error(`Response status: ${shaderFile.status}`);
+				}
+			});
 		});
-		[vs, fs] = responses;
+		[vertexColor, silhouette, outline] = responses;
 		return Promise.all([
-			vs.text(),
-			fs.text(),
+			Promise.all([
+				vertexColor[0].text(),
+				vertexColor[1].text(),
+			]),
+			Promise.all([
+				silhouette[0].text(),
+				silhouette[1].text(),
+			]),
+			Promise.all([
+				outline[0].text(),
+				outline[1].text(),
+			]),
 		]);
 	}).then((shaders) => {
-		[vsSource, fsSource] = shaders;
+		[vertexColor, silhouette, outline] = shaders;
 		
 		// Initialize a shader program; this is where all the lighting
 		// for the vertices and so forth is established.
-		const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+		const shaderProgram_vertexColor = initShaderProgram(gl, vertexColor[0], vertexColor[1]);
 		
-		if(shaderProgram === null){
+		if(shaderProgram_vertexColor === null){
+			return;
+		}
+		
+		const shaderProgram_silhouette = initShaderProgram(gl, silhouette[0], silhouette[1]);
+		
+		if(shaderProgram_silhouette === null){
+			return;
+		}
+		
+		const shaderProgram_outline = initShaderProgram(gl, outline[0], outline[1]);
+		
+		if(shaderProgram_outline === null){
 			return;
 		}
 		
@@ -43,26 +77,58 @@ function main(){
 		const Animated = {
 			canvas: canvas,
 			gl: gl,
-			program: shaderProgram,
-			attribLocations: {
-				vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
-				vertexNormal: gl.getAttribLocation(shaderProgram, "aVertexNormal"),
-				textureCoord: gl.getAttribLocation(shaderProgram, "aTextureCoord"),
+			glProgramInfo_vertexColor: {
+				program: shaderProgram_vertexColor,
+				attribLocations: {
+					vertexPosition: gl.getAttribLocation(shaderProgram_vertexColor, "aVertexPosition"),
+					vertexNormal: gl.getAttribLocation(shaderProgram_vertexColor, "aVertexNormal"),
+					textureCoord: gl.getAttribLocation(shaderProgram_vertexColor, "aTextureCoord"),
+				},
+				uniformLocations: {
+					projectionMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uProjectionMatrix"),
+					modelViewMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uModelViewMatrix"),
+					rotationMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uRotationMatrix"),
+					cameraPosition: gl.getUniformLocation(shaderProgram_vertexColor, "uCameraPosition"),
+					cameraRotation: gl.getUniformLocation(shaderProgram_vertexColor, "uCameraRotation"),
+					uSampler: gl.getUniformLocation(shaderProgram_vertexColor, "uSampler"),
+					VertexColor: gl.getUniformLocation(shaderProgram_vertexColor, "uVertexColor"),
+					LightAmbient: gl.getUniformLocation(shaderProgram_vertexColor, "uLightAmbient"),
+					LightDirection: gl.getUniformLocation(shaderProgram_vertexColor, "uLightDirection"),
+					LightColor: gl.getUniformLocation(shaderProgram_vertexColor, "uLightColor"),
+					selected: gl.getUniformLocation(shaderProgram_vertexColor, "uSelected"),
+				},
 			},
-			uniformLocations: {
-				projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-				modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
-				rotationMatrix: gl.getUniformLocation(shaderProgram, "uRotationMatrix"),
-				cameraPosition: gl.getUniformLocation(shaderProgram, "uCameraPosition"),
-				cameraRotation: gl.getUniformLocation(shaderProgram, "uCameraRotation"),
-				uSampler: gl.getUniformLocation(shaderProgram, "uSampler"),
-				VertexColor: gl.getUniformLocation(shaderProgram, "uVertexColor"),
-				LightAmbient: gl.getUniformLocation(shaderProgram, "uLightAmbient"),
-				LightDirection: gl.getUniformLocation(shaderProgram, "uLightDirection"),
-				LightColor: gl.getUniformLocation(shaderProgram, "uLightColor"),
-				selected: gl.getUniformLocation(shaderProgram, "uSelected"),
+			glProgramInfo_silhouette: {
+				program: shaderProgram_silhouette,
+				attribLocations: {
+					vertexPosition: gl.getAttribLocation(shaderProgram_silhouette, "aVertexPosition"),
+				},
+				uniformLocations: {
+					projectionMatrix: gl.getUniformLocation(shaderProgram_silhouette, "uProjectionMatrix"),
+					modelViewMatrix: gl.getUniformLocation(shaderProgram_silhouette, "uModelViewMatrix"),
+					rotationMatrix: gl.getUniformLocation(shaderProgram_silhouette, "uRotationMatrix"),
+					cameraPosition: gl.getUniformLocation(shaderProgram_silhouette, "uCameraPosition"),
+					cameraRotation: gl.getUniformLocation(shaderProgram_silhouette, "uCameraRotation"),
+				},
+			},
+			glProgramInfo_outline: {
+				program: shaderProgram_outline,
+				attribLocations: {
+					vertexPosition: gl.getAttribLocation(shaderProgram_outline, "aVertexPosition"),
+					textureCoord: gl.getAttribLocation(shaderProgram_outline, "aTextureCoord"),
+				},
+				uniformLocations: {
+					uSampler: gl.getUniformLocation(shaderProgram_outline, "uSampler"),
+					textureSize: gl.getUniformLocation(shaderProgram_outline, "uTextureSize"),
+					outlineColor: gl.getUniformLocation(shaderProgram_outline, "uOutlineColor"),
+					outlineSize: gl.getUniformLocation(shaderProgram_outline, "uOutlineSize"),
+				},
 			},
 			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
+			screenSize: [parseInt(window.screen.width), parseInt(window.screen.height)],
+			relativeSize: [1.0, 1.0],
+			silhouetteFramebuffer: createFramebuffer(gl, [parseInt(window.screen.width), parseInt(window.screen.height)]),
+			silhouetteAttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
 			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]),
 			cameraThreshold: [],
 			lightGlobal: {
@@ -76,6 +142,7 @@ function main(){
 			cycleDayNight: 6000,
 			scenery: [],
 			bodies: [],
+			selected: false,
 			modelLoad(models, container){
 				for(let i = 0; i < models.length; i++){
 					container.push(new Body(Vector4(pen_Matrix.W1), Vector4(pen_Matrix.W1), models[i], this.gl));
@@ -100,6 +167,8 @@ function main(){
 				// Update projection matrix.
 				this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
 				this.camera.project();
+				
+				this.relativeSize = [this.canvasSize.x / this.screenSize[0], this.canvasSize.y / this.screenSize[1]];
 			},
 			update(){
 				// Day-Night cycle
@@ -117,9 +186,57 @@ function main(){
 				this.bodies.forEach((body) => {body.update(this.deltaTime);});
 			},
 			draw(){
-				drawScene(this.gl, this, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
+				// render to the canvas
+				gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+				
+				draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
+				
+				if(this.selected != false){
+					// render to our targetTexture by binding the framebuffer
+					gl.bindFramebuffer(gl.FRAMEBUFFER, this.silhouetteFramebuffer.framebuffer);
+					
+					draw_silhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
+					
+					// render to the canvas
+					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+					
+					draw_outline(this.gl, this.glProgramInfo_outline, this.relativeSize, this.screenSize, this.silhouetteAttributeBuffer, this.silhouetteFramebuffer.texture[0]);
+				}
 			},
 		};
+		
+		{
+			const positionBuffer = Animated.silhouetteAttributeBuffer[0];
+			
+			// Select the positionBuffer as the one to apply buffer
+			// operations to from here out.
+			gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+			
+			// Now create an array of positions for the square.
+			const positions = [-1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, 1.0, 1.0, -1.0, 1.0];
+			
+			// Now pass the list of positions into WebGL to build the
+			// shape. We do this by creating a Float32Array from the
+			// JavaScript array, then use it to fill the current buffer.
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+		}
+		
+		{
+			const textureCoordBuffer = Animated.silhouetteAttributeBuffer[1];
+			gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
+			
+			const textureCoordinates = [
+				// Front
+				0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+				0.0, 0.0, 1.0, 1.0, 0.0, 1.0
+			];
+			
+			gl.bufferData(
+				gl.ARRAY_BUFFER,
+				new Float32Array(textureCoordinates),
+				gl.STATIC_DRAW,
+			);
+		}
 		
 		// Here's where we call the routine that builds all the
 		// objects we'll be drawing.
@@ -196,10 +313,12 @@ function main(){
 			}
 			
 			hover.style.display = "none";
+			Animated.selected = false;
 			
 			if(intersections.length > 0){
 				intersections.sort((a, b) => {return a[1] - b[1];});
 				Animated.bodies[intersections[0][0]].selected = true;
+				Animated.selected = Animated.bodies[intersections[0][0]];
 				
 				hover.style.display = "block";
 				hover.textContent = Animated.bodies[intersections[0][0]].model.name;
@@ -229,3 +348,189 @@ function main(){
 
 
 main();
+
+function createFramebuffer(gl, size)
+{
+	// create to render to
+	const targetTextureWidth = size[0];
+	const targetTextureHeight = size[1];
+	const targetTexture = gl.createTexture();
+	gl.bindTexture(gl.TEXTURE_2D, targetTexture);
+	
+	// define size and format of level 0
+	const level = 0;
+	const internalFormat = gl.RGBA;
+	const border = 0;
+	const format = gl.RGBA;
+	const type = gl.UNSIGNED_SHORT_4_4_4_4;
+	const data = null;
+	gl.texImage2D(gl.TEXTURE_2D, level, internalFormat,
+		targetTextureWidth, targetTextureHeight, border,
+		format, type, data);
+	
+	// set the filtering so we don't need mips
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+	
+	// Create and bind the framebuffer
+	const fb = gl.createFramebuffer();
+	gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+	
+	// attach the texture as the first color attachment
+	gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, targetTexture, level);
+	
+	return {
+		framebuffer: fb,
+		texture: [targetTexture],
+	};
+}
+
+function draw_outline(gl, programInfo, relativeSize, screenSize, attribBuffer, targetTexture)
+{
+	// Clear the canvas AND the depth buffer.
+	// gl.clearColor(1, 0, 1, 1);   // clear to magenta
+	// gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	
+	// Tell WebGL to use our program when drawing
+	gl.useProgram(programInfo.program);
+	
+	// Tell WebGL we want to affect texture unit 0
+	gl.activeTexture(gl.TEXTURE0);
+	
+	// Bind the texture to texture unit 0
+	gl.bindTexture(gl.TEXTURE_2D, targetTexture);
+	
+	// Tell the shader we bound the texture to texture unit 0
+	gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
+	
+	gl.uniform4fv(programInfo.uniformLocations.outlineColor, new Float32Array([1.0, 1.0, 1.0, 1.0]));
+	gl.uniform1f(programInfo.uniformLocations.outlineSize, 3.0);
+	gl.uniform2fv(programInfo.uniformLocations.textureSize, new Float32Array(screenSize));
+	
+	{
+		const numComponents = 2; // pull out 2 values per iteration
+		const type = gl.FLOAT; // the data in the buffer is 32bit floats
+		const normalize = false; // don't normalize
+		const stride = 0; // how many bytes to get from one set of values to the next
+		// 0 = use type and numComponents above
+		const offset = 0; // how many bytes inside the buffer to start from
+		gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer[0]);
+		gl.vertexAttribPointer(
+			programInfo.attribLocations.vertexPosition,
+			numComponents,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+		gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+	}
+	
+	{
+		const num = 2; // every coordinate composed of 2 values
+		const type = gl.FLOAT; // the data in the buffer is 32-bit float
+		const normalize = false; // don't normalize
+		const stride = 0; // how many bytes to get from one set to the next
+		const offset = 0; // how many bytes inside the buffer to start from
+		gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer[1]);
+		
+		gl.bufferData(
+			gl.ARRAY_BUFFER,
+			new Float32Array([
+				0.0, 0.0, relativeSize[0], 0.0, relativeSize[0], relativeSize[1],
+				0.0, 0.0, relativeSize[0], relativeSize[1], 0.0, relativeSize[1]
+			]),
+			gl.STATIC_DRAW,
+		);
+		
+		gl.vertexAttribPointer(
+			programInfo.attribLocations.textureCoord,
+			num,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+		gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+	}
+	
+	gl.drawArrays(gl.TRIANGLES, 0, 6);
+}
+
+
+
+function draw_silhouette(gl, programInfo, camera, bodySelected){
+	gl.clearColor(0.0, 0.0, 0.0, 0.0); // Background color
+	gl.clearDepth(1.0); // Clear everything
+	
+	// Clear the canvas before we start drawing on it.
+	
+	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	
+	// Tell WebGL to use our program when drawing
+	gl.useProgram(programInfo.program);
+	
+	
+	const mProjection = camera.projection;
+	const cameraPos = camera.position;
+	const cameraRot = camera.rotation;
+	
+	// Set the shader uniforms
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.projectionMatrix,
+		false,
+		new Float32Array(mProjection)
+	);
+	
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.cameraPosition,
+		false,
+		new Float32Array([
+			1.0, 0.0, 0.0, 0.0,
+			0.0, 1.0, 0.0, 0.0,
+			0.0, 0.0, 1.0, 0.0,
+			...cameraPos
+		])
+	);
+	
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.cameraRotation,
+		false,
+		new Float32Array([
+			Math.cos(cameraRot[1]), Math.sin(cameraRot[1]) * Math.sin(cameraRot[0]), -Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+			0.0, Math.cos(cameraRot[0]), Math.sin(cameraRot[0]), 0.0,
+			Math.sin(cameraRot[1]), -Math.cos(cameraRot[1]) * Math.sin(cameraRot[0]), Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+			0.0, 0.0, 0.0, 1.0,
+		])
+	);
+	
+	
+	// Tell WebGL how to pull out the positions from the position
+	// buffer into the vertexPosition attribute.
+	bodySelected.setPositionAttribute(gl, programInfo);
+	
+	// Set the shader uniforms
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.modelViewMatrix,
+		false,
+		new Float32Array([
+			1, 0, 0, 0,
+			0, 1, 0, 0,
+			0, 0, 1, 0,
+			...bodySelected.position
+		])
+	);
+	gl.uniformMatrix4fv(
+		programInfo.uniformLocations.rotationMatrix,
+		false,
+		new Float32Array([
+			Math.cos(bodySelected.rotation[0]), 0, -Math.sin(bodySelected.rotation[0]), 0,
+			0, 1, 0, 0,
+			Math.sin(bodySelected.rotation[0]), 0, Math.cos(bodySelected.rotation[0]), 0,
+			0, 0, 0, 1,
+		])
+	);
+	
+	gl.drawArrays(gl.TRIANGLES, bodySelected.model.offset, bodySelected.model.vertexCount);
+}

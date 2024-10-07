@@ -1,5 +1,5 @@
 
-function drawScene(gl, programInfo, camera, light, bodies, skybox){
+function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
 	gl.clearColor(...skybox, 1.0); // Background color
 	gl.clearDepth(1.0); // Clear everything
 	gl.enable(gl.DEPTH_TEST); // Enable depth testing
