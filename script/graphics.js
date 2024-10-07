@@ -13,27 +13,61 @@ function main(){
 	}
 	
 	Promise.all([
-		fetch("script/shader/vertexColor.vs"),
-		fetch("script/shader/vertexColor.fs"),
+		Promise.all([
+			fetch("script/shader/vertexColor.vs"),
+			fetch("script/shader/vertexColor.fs"),
+		]),
+		Promise.all([
+			fetch("script/shader/silhouette.vs"),
+			fetch("script/shader/silhouette.fs"),
+		]),
+		Promise.all([
+			fetch("script/shader/outline.vs"),
+			fetch("script/shader/outline.fs"),
+		]),
 	]).then((responses) => {
 		responses.forEach((response) => {
-			if(!response.ok){
-				throw new Error(`Response status: ${response.status}`);
-			}
+			response.forEach((shaderFile) => {
+				if(!shaderFile.ok){
+					throw new Error(`Response status: ${shaderFile.status}`);
+				}
+			});
 		});
-		[vs, fs] = responses;
+		[vertexColor, silhouette, outline] = responses;
 		return Promise.all([
-			vs.text(),
-			fs.text(),
+			Promise.all([
+				vertexColor[0].text(),
+				vertexColor[1].text(),
+			]),
+			Promise.all([
+				silhouette[0].text(),
+				silhouette[1].text(),
+			]),
+			Promise.all([
+				outline[0].text(),
+				outline[1].text(),
+			]),
 		]);
 	}).then((shaders) => {
-		[vsSource, fsSource] = shaders;
+		[vertexColor, silhouette, outline] = shaders;
 		
 		// Initialize a shader program; this is where all the lighting
 		// for the vertices and so forth is established.
-		const shaderProgram_vertexColor = initShaderProgram(gl, vsSource, fsSource);
-		if(shaderProgram_vertexColor === null){
+		const shaderProgram_vertexColor = initShaderProgram(gl, vertexColor[0], vertexColor[1]);
 		
+		if(shaderProgram_vertexColor === null){
+			return;
+		}
+		
+		const shaderProgram_silhouette = initShaderProgram(gl, silhouette[0], silhouette[1]);
+		
+		if(shaderProgram_silhouette === null){
+			return;
+		}
+		
+		const shaderProgram_outline = initShaderProgram(gl, outline[0], outline[1]);
+		
+		if(shaderProgram_outline === null){
 			return;
 		}
 		
@@ -62,6 +96,32 @@ function main(){
 					LightDirection: gl.getUniformLocation(shaderProgram_vertexColor, "uLightDirection"),
 					LightColor: gl.getUniformLocation(shaderProgram_vertexColor, "uLightColor"),
 					selected: gl.getUniformLocation(shaderProgram_vertexColor, "uSelected"),
+				},
+			},
+			glProgramInfo_silhouette : {
+				program: shaderProgram_silhouette,
+				attribLocations: {
+					vertexPosition: gl.getAttribLocation(shaderProgram_silhouette, "aVertexPosition"),
+				},
+				uniformLocations: {
+					projectionMatrix: gl.getUniformLocation(shaderProgram_silhouette, "uProjectionMatrix"),
+					modelViewMatrix: gl.getUniformLocation(shaderProgram_silhouette, "uModelViewMatrix"),
+					rotationMatrix: gl.getUniformLocation(shaderProgram_silhouette, "uRotationMatrix"),
+					cameraPosition: gl.getUniformLocation(shaderProgram_silhouette, "uCameraPosition"),
+					cameraRotation: gl.getUniformLocation(shaderProgram_silhouette, "uCameraRotation"),
+				},
+			},
+			glProgramInfo_outline : {
+				program: shaderProgram_outline,
+				attribLocations: {
+					vertexPosition: gl.getAttribLocation(shaderProgram_outline, "aVertexPosition"),
+					textureCoord: gl.getAttribLocation(shaderProgram_outline, "aTextureCoord"),
+				},
+				uniformLocations: {
+					uSampler: gl.getUniformLocation(shaderProgram_outline, "uSampler"),
+					textureSize: gl.getUniformLocation(shaderProgram_outline, "uTextureSize"),
+					outlineColor: gl.getUniformLocation(shaderProgram_outline, "uOutlineColor"),
+					outlineSize: gl.getUniformLocation(shaderProgram_outline, "uOutlineSize"),
 				},
 			},
 			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
@@ -144,7 +204,7 @@ function main(){
 	this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
 	this.camera.project();
 	
-	drawSilhouette(this.gl, glProgramInfoSilhouette, this.camera, this.selected);
+	drawSilhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
 	
 	
 	// render to the canvas
@@ -155,7 +215,7 @@ function main(){
 	this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
 	this.camera.project();
 	
-	DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, shaderProgram2, glProgramInfo2, this.gl, targetTexture, targetTextureWidth, targetTextureHeight);
+	DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, this.glProgramInfo_outline, this.gl, targetTexture, targetTextureWidth, targetTextureHeight);
   }
 			},
 		};
@@ -253,119 +313,6 @@ function main(){
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		
 		
-		const vsSilhouette = `
-		attribute vec4 aVertexPosition;
-		
-		uniform mat4 uRotationMatrix;
-		uniform mat4 uModelViewMatrix;
-		
-		uniform mat4 uCameraPosition;
-		uniform mat4 uCameraRotation;
-		uniform mat4 uProjectionMatrix;
-		
-		void main(){
-			gl_Position = uProjectionMatrix * uCameraRotation * uCameraPosition * uModelViewMatrix * uRotationMatrix * aVertexPosition;
-		}
-		`;
-		
-		const fsSilhouette = `
-		void main(){
-			gl_FragColor = vec4(1.0);
-		}
-		`;
-		
-		// Initialize a shader program; this is where all the lighting
-		// for the vertices and so forth is established.
-		const shaderProgramSilhouette = initShaderProgram(gl, vsSilhouette, fsSilhouette);
-		
-		if(shaderProgramSilhouette === null){
-			return;
-		}
-		
-		const glProgramInfoSilhouette = {
-			program: shaderProgramSilhouette,
-			attribLocations: {
-				vertexPosition: gl.getAttribLocation(shaderProgramSilhouette, "aVertexPosition"),
-			},
-			uniformLocations: {
-				projectionMatrix: gl.getUniformLocation(shaderProgramSilhouette, "uProjectionMatrix"),
-				modelViewMatrix: gl.getUniformLocation(shaderProgramSilhouette, "uModelViewMatrix"),
-				rotationMatrix: gl.getUniformLocation(shaderProgramSilhouette, "uRotationMatrix"),
-				cameraPosition: gl.getUniformLocation(shaderProgramSilhouette, "uCameraPosition"),
-				cameraRotation: gl.getUniformLocation(shaderProgramSilhouette, "uCameraRotation"),
-			},
-		};
-		
-		
-		// Vertex shader program
-const vsSource2 = `
-    attribute vec4 aVertexPosition;
-	attribute vec2 aTextureCoord;
-	
-	varying highp vec2 vTextureCoord;
-	
-    void main() {
-      gl_Position = vec4(aVertexPosition.xy, -1.0, 1.0);
-	  vTextureCoord = aTextureCoord;
-    }
-  `;
-		
-		const fsSource2 = `
-		uniform sampler2D uSampler;
-		varying highp vec2 vTextureCoord;
-		
-		uniform highp vec2 uTextureSize;
-		
-		uniform lowp vec4 uOutlineColor;
-		uniform lowp float uOutlineSize;
-		
-    void main(void) {
-		lowp vec2 texelScale = vec2(uOutlineSize, uOutlineSize) / uTextureSize;
-		
-		lowp vec4 texel = texture2D(uSampler, vTextureCoord);   // Get texel color
-		
-		lowp vec4 sides = vec4(0.0);
-    sides.x = texture2D(uSampler, vTextureCoord + vec2(0, texelScale.y)).a;
-    sides.y = texture2D(uSampler, vTextureCoord + vec2(0, -texelScale.y)).a;
-    sides.z = texture2D(uSampler, vTextureCoord + vec2(texelScale.x, 0)).a;
-    sides.w = texture2D(uSampler, vTextureCoord + vec2(-texelScale.x, 0)).a;
-		
-			lowp vec4 corners = vec4(0.0);
-    corners.x = texture2D(uSampler, vTextureCoord + vec2(texelScale.x, texelScale.y)).a;
-    corners.y = texture2D(uSampler, vTextureCoord + vec2(texelScale.x, -texelScale.y)).a;
-    corners.z = texture2D(uSampler, vTextureCoord + vec2(-texelScale.x, texelScale.y)).a;
-    corners.w = texture2D(uSampler, vTextureCoord + vec2(-texelScale.x, -texelScale.y)).a;
-	
-	if(texel.a == 0.0 && dot(sides + corners, vec4(1.0)) > 0.0 ){
-    gl_FragColor = uOutlineColor;
-		}
-		else{
-			discard;
-		}
-    }
-  `;
-
-		// Initialize a shader program; this is where all the lighting
-		// for the vertices and so forth is established.
-		const shaderProgram2 = initShaderProgram(gl, vsSource2, fsSource2);
-		
-		if(shaderProgram2 === null){
-			return;
-		}
-		
-		const glProgramInfo2 = {
-			attribLocations: {
-				vertexPosition: gl.getAttribLocation(shaderProgram2, "aVertexPosition"),
-				textureCoord: gl.getAttribLocation(shaderProgram2, "aTextureCoord"),
-			},
-			uniformLocations: {
-				uSampler: gl.getUniformLocation(shaderProgram2, "uSampler"),
-				textureSize: gl.getUniformLocation(shaderProgram2, "uTextureSize"),
-				outlineColor: gl.getUniformLocation(shaderProgram2, "uOutlineColor"),
-				outlineSize: gl.getUniformLocation(shaderProgram2, "uOutlineSize"),
-			},
-		};
-		
 		    // create to render to
     const targetTextureWidth = canvas.offsetWidth;
     const targetTextureHeight = canvas.offsetHeight;
@@ -450,14 +397,14 @@ const vsSource2 = `
 
 main();
 
-function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, shaderProgram2, programInfo, gl, targetTexture, targetTextureWidth, targetTextureHeight)
+function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, programInfo, gl, targetTexture, targetTextureWidth, targetTextureHeight)
 {
 	// Clear the canvas AND the depth buffer.
     // gl.clearColor(1, 0, 1, 1);   // clear to magenta
     // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
 	// Tell WebGL to use our program when drawing
-	gl.useProgram(shaderProgram2);
+	gl.useProgram(programInfo.program);
 	
 	// Tell WebGL we want to affect texture unit 0
 gl.activeTexture(gl.TEXTURE0);
