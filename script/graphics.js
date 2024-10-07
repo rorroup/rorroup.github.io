@@ -98,7 +98,7 @@ function main(){
 					selected: gl.getUniformLocation(shaderProgram_vertexColor, "uSelected"),
 				},
 			},
-			glProgramInfo_silhouette : {
+			glProgramInfo_silhouette: {
 				program: shaderProgram_silhouette,
 				attribLocations: {
 					vertexPosition: gl.getAttribLocation(shaderProgram_silhouette, "aVertexPosition"),
@@ -111,7 +111,7 @@ function main(){
 					cameraRotation: gl.getUniformLocation(shaderProgram_silhouette, "uCameraRotation"),
 				},
 			},
-			glProgramInfo_outline : {
+			glProgramInfo_outline: {
 				program: shaderProgram_outline,
 				attribLocations: {
 					vertexPosition: gl.getAttribLocation(shaderProgram_outline, "aVertexPosition"),
