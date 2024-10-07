@@ -72,8 +72,9 @@ function main(){
 		}
 		
 		// create to render to
-		const targetTextureWidth = canvas.offsetWidth;
-		const targetTextureHeight = canvas.offsetHeight;
+		const screenSize = [parseInt(window.screen.width), parseInt(window.screen.height)];
+		const targetTextureWidth = screenSize[0];
+		const targetTextureHeight = screenSize[1];
 		const targetTexture = gl.createTexture();
 		gl.bindTexture(gl.TEXTURE_2D, targetTexture);
 		
@@ -212,33 +213,18 @@ function main(){
 				// render to the canvas
 				gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 				
-				// Tell WebGL how to convert from clip space to pixels
-				gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
-				this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
-				this.camera.project();
-				
 				draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
 				
 				if(this.selected != false){
 					// render to our targetTexture by binding the framebuffer
 					gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
 					
-					// Tell WebGL how to convert from clip space to pixels
-					gl.viewport(0, 0, targetTextureWidth, targetTextureHeight);
-					this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
-					this.camera.project();
-					
 					draw_silhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
 					
 					// render to the canvas
 					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 					
-					// Tell WebGL how to convert from clip space to pixels
-					gl.viewport(0, 0, this.canvasSize.x , this.canvasSize.y);
-					this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
-					this.camera.project();
-					
-					DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, this.glProgramInfo_outline, this.gl, targetTexture, targetTextureWidth, targetTextureHeight);
+					DRAW_TEX_TO_SCREEN(positionBuffer, textureCoordBuffer, this.glProgramInfo_outline, this.gl, targetTexture, this.canvasSize, screenSize);
 				}
 			},
 		};
@@ -387,7 +373,7 @@ function main(){
 
 main();
 
-function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, programInfo, gl, targetTexture, targetTextureWidth, targetTextureHeight)
+function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, programInfo, gl, targetTexture, canvasSize, screenSize)
 {
 	// Clear the canvas AND the depth buffer.
     // gl.clearColor(1, 0, 1, 1);   // clear to magenta
@@ -407,7 +393,7 @@ gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 
 	gl.uniform4fv(programInfo.uniformLocations.outlineColor, new Float32Array([1.0, 1.0, 1.0, 1.0]));
 	gl.uniform1f(programInfo.uniformLocations.outlineSize, 3.0);
-	gl.uniform2fv(programInfo.uniformLocations.textureSize, new Float32Array([targetTextureWidth, targetTextureHeight]));
+	gl.uniform2fv(programInfo.uniformLocations.textureSize, new Float32Array(screenSize));
 	
 	{
 	const numComponents = 2; // pull out 2 values per iteration
@@ -435,6 +421,19 @@ gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
   const stride = 0; // how many bytes to get from one set to the next
   const offset = 0; // how many bytes inside the buffer to start from
   gl.bindBuffer(gl.ARRAY_BUFFER, squareTexel);
+  
+    const relativeWidth = canvasSize.x / screenSize[0];
+  const relativeHeight = canvasSize.y / screenSize[1];
+
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([
+		0.0, 0.0, relativeWidth, 0.0, relativeWidth, relativeHeight,
+		0.0, 0.0, relativeWidth, relativeHeight, 0.0, relativeHeight
+	]),
+    gl.STATIC_DRAW,
+  );
+  
   gl.vertexAttribPointer(
     programInfo.attribLocations.textureCoord,
     num,
