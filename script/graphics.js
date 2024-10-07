@@ -71,8 +71,6 @@ function main(){
 			return;
 		}
 		
-		const screenSize = [parseInt(window.screen.width), parseInt(window.screen.height)];
-		
 		// Collect all the info needed to use the shader program.
 		// Look up which attribute our shader program is using
 		// for aVertexPosition and look up uniform locations.
@@ -127,7 +125,8 @@ function main(){
 				},
 			},
 			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
-			silhouetteFramebuffer: createFramebuffer(gl, screenSize),
+			screenSize: [parseInt(window.screen.width), parseInt(window.screen.height)],
+			silhouetteFramebuffer: createFramebuffer(gl, [parseInt(window.screen.width), parseInt(window.screen.height)]),
 			silhouetteAttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
 			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]),
 			cameraThreshold: [],
@@ -198,7 +197,7 @@ function main(){
 					// render to the canvas
 					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 					
-					DRAW_TEX_TO_SCREEN(Animated.silhouetteAttributeBuffer[0], Animated.silhouetteAttributeBuffer[1], this.glProgramInfo_outline, this.gl, this.silhouetteFramebuffer.texture[0], this.canvasSize, screenSize);
+					DRAW_TEX_TO_SCREEN(Animated.silhouetteAttributeBuffer[0], Animated.silhouetteAttributeBuffer[1], this.glProgramInfo_outline, this.gl, this.silhouetteFramebuffer.texture[0], this.canvasSize, this.screenSize);
 				}
 			},
 		};
