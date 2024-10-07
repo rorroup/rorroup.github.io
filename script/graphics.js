@@ -199,7 +199,7 @@ function main(){
 					this.camera.aspectRatio = targetTextureHeight / targetTextureWidth;
 					this.camera.project();
 					
-					drawSilhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
+					draw_silhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
 					
 					// render to the canvas
 					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -455,7 +455,7 @@ gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 
 
 
-function drawSilhouette(gl, programInfo, camera, bodySelected){
+function draw_silhouette(gl, programInfo, camera, bodySelected){
 	gl.clearColor(0.0, 0.0, 0.0, 0.0); // Background color
 	gl.clearDepth(1.0); // Clear everything
 	
