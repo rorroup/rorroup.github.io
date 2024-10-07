@@ -131,7 +131,7 @@ function main(){
 	this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
 	this.camera.project();
 				
-				drawScene(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
+				draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
 				  }
 				  
 				  
