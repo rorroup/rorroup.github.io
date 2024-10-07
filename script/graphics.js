@@ -387,76 +387,76 @@ function createFramebuffer(gl, size)
 function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, programInfo, gl, targetTexture, canvasSize, screenSize)
 {
 	// Clear the canvas AND the depth buffer.
-    // gl.clearColor(1, 0, 1, 1);   // clear to magenta
-    // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	// gl.clearColor(1, 0, 1, 1);   // clear to magenta
+	// gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	
 	// Tell WebGL to use our program when drawing
 	gl.useProgram(programInfo.program);
 	
 	// Tell WebGL we want to affect texture unit 0
-gl.activeTexture(gl.TEXTURE0);
-
-// Bind the texture to texture unit 0
-gl.bindTexture(gl.TEXTURE_2D, targetTexture);
-
-// Tell the shader we bound the texture to texture unit 0
-gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
-
+	gl.activeTexture(gl.TEXTURE0);
+	
+	// Bind the texture to texture unit 0
+	gl.bindTexture(gl.TEXTURE_2D, targetTexture);
+	
+	// Tell the shader we bound the texture to texture unit 0
+	gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
+	
 	gl.uniform4fv(programInfo.uniformLocations.outlineColor, new Float32Array([1.0, 1.0, 1.0, 1.0]));
 	gl.uniform1f(programInfo.uniformLocations.outlineSize, 3.0);
 	gl.uniform2fv(programInfo.uniformLocations.textureSize, new Float32Array(screenSize));
 	
 	{
-	const numComponents = 2; // pull out 2 values per iteration
-  const type = gl.FLOAT; // the data in the buffer is 32bit floats
-  const normalize = false; // don't normalize
-  const stride = 0; // how many bytes to get from one set of values to the next
-  // 0 = use type and numComponents above
-  const offset = 0; // how many bytes inside the buffer to start from
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareBuffer);
-  gl.vertexAttribPointer(
-    programInfo.attribLocations.vertexPosition,
-    numComponents,
-    type,
-    normalize,
-    stride,
-    offset,
-  );
-  gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+		const numComponents = 2; // pull out 2 values per iteration
+		const type = gl.FLOAT; // the data in the buffer is 32bit floats
+		const normalize = false; // don't normalize
+		const stride = 0; // how many bytes to get from one set of values to the next
+		// 0 = use type and numComponents above
+		const offset = 0; // how many bytes inside the buffer to start from
+		gl.bindBuffer(gl.ARRAY_BUFFER, squareBuffer);
+		gl.vertexAttribPointer(
+			programInfo.attribLocations.vertexPosition,
+			numComponents,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+		gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
 	}
 	
 	{
-	const num = 2; // every coordinate composed of 2 values
-  const type = gl.FLOAT; // the data in the buffer is 32-bit float
-  const normalize = false; // don't normalize
-  const stride = 0; // how many bytes to get from one set to the next
-  const offset = 0; // how many bytes inside the buffer to start from
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareTexel);
-  
-    const relativeWidth = canvasSize.x / screenSize[0];
-  const relativeHeight = canvasSize.y / screenSize[1];
-
-  gl.bufferData(
-    gl.ARRAY_BUFFER,
-    new Float32Array([
-		0.0, 0.0, relativeWidth, 0.0, relativeWidth, relativeHeight,
-		0.0, 0.0, relativeWidth, relativeHeight, 0.0, relativeHeight
-	]),
-    gl.STATIC_DRAW,
-  );
-  
-  gl.vertexAttribPointer(
-    programInfo.attribLocations.textureCoord,
-    num,
-    type,
-    normalize,
-    stride,
-    offset,
-  );
-  gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+		const num = 2; // every coordinate composed of 2 values
+		const type = gl.FLOAT; // the data in the buffer is 32-bit float
+		const normalize = false; // don't normalize
+		const stride = 0; // how many bytes to get from one set to the next
+		const offset = 0; // how many bytes inside the buffer to start from
+		gl.bindBuffer(gl.ARRAY_BUFFER, squareTexel);
+		
+		const relativeWidth = canvasSize.x / screenSize[0];
+		const relativeHeight = canvasSize.y / screenSize[1];
+		
+		gl.bufferData(
+			gl.ARRAY_BUFFER,
+			new Float32Array([
+				0.0, 0.0, relativeWidth, 0.0, relativeWidth, relativeHeight,
+				0.0, 0.0, relativeWidth, relativeHeight, 0.0, relativeHeight
+			]),
+			gl.STATIC_DRAW,
+		);
+		
+		gl.vertexAttribPointer(
+			programInfo.attribLocations.textureCoord,
+			num,
+			type,
+			normalize,
+			stride,
+			offset,
+		);
+		gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
 	}
 	
-    gl.drawArrays(gl.TRIANGLES, 0, 6);
+	gl.drawArrays(gl.TRIANGLES, 0, 6);
 }
 
 
