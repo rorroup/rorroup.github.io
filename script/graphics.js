@@ -197,7 +197,7 @@ function main(){
 					// render to the canvas
 					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 					
-					DRAW_TEX_TO_SCREEN(Animated.silhouetteAttributeBuffer[0], Animated.silhouetteAttributeBuffer[1], this.glProgramInfo_outline, this.gl, this.silhouetteFramebuffer.texture[0], this.canvasSize, this.screenSize);
+					draw_outline(this.gl, this.glProgramInfo_outline, this.canvasSize, this.screenSize, this.silhouetteAttributeBuffer, this.silhouetteFramebuffer.texture[0]);
 				}
 			},
 		};
@@ -383,7 +383,7 @@ function createFramebuffer(gl, size)
 	};
 }
 
-function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, programInfo, gl, targetTexture, canvasSize, screenSize)
+function draw_outline(gl, programInfo, canvasSize, screenSize, attribBuffer, targetTexture)
 {
 	// Clear the canvas AND the depth buffer.
 	// gl.clearColor(1, 0, 1, 1);   // clear to magenta
@@ -412,7 +412,7 @@ function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, programInfo, gl, targetTe
 		const stride = 0; // how many bytes to get from one set of values to the next
 		// 0 = use type and numComponents above
 		const offset = 0; // how many bytes inside the buffer to start from
-		gl.bindBuffer(gl.ARRAY_BUFFER, squareBuffer);
+		gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer[0]);
 		gl.vertexAttribPointer(
 			programInfo.attribLocations.vertexPosition,
 			numComponents,
@@ -430,7 +430,7 @@ function DRAW_TEX_TO_SCREEN(squareBuffer, squareTexel, programInfo, gl, targetTe
 		const normalize = false; // don't normalize
 		const stride = 0; // how many bytes to get from one set to the next
 		const offset = 0; // how many bytes inside the buffer to start from
-		gl.bindBuffer(gl.ARRAY_BUFFER, squareTexel);
+		gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer[1]);
 		
 		const relativeWidth = canvasSize.x / screenSize[0];
 		const relativeHeight = canvasSize.y / screenSize[1];
