@@ -126,6 +126,7 @@ function main(){
 			},
 			canvasSize: Vector2([canvas.offsetWidth, canvas.offsetHeight]),
 			screenSize: [parseInt(window.screen.width), parseInt(window.screen.height)],
+			relativeSize: [1.0, 1.0],
 			silhouetteFramebuffer: createFramebuffer(gl, [parseInt(window.screen.width), parseInt(window.screen.height)]),
 			silhouetteAttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
 			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.2, -0.4, -1.2, 1.0], [0.0, -Math.PI * 90 / 180, 0.0, 1.0]),
@@ -166,6 +167,8 @@ function main(){
 				// Update projection matrix.
 				this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
 				this.camera.project();
+				
+				this.relativeSize = [this.canvasSize.x / this.screenSize[0], this.canvasSize.y / this.screenSize[1]];
 			},
 			update(){
 				// Day-Night cycle
@@ -197,7 +200,7 @@ function main(){
 					// render to the canvas
 					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 					
-					draw_outline(this.gl, this.glProgramInfo_outline, this.canvasSize, this.screenSize, this.silhouetteAttributeBuffer, this.silhouetteFramebuffer.texture[0]);
+					draw_outline(this.gl, this.glProgramInfo_outline, this.relativeSize, this.screenSize, this.silhouetteAttributeBuffer, this.silhouetteFramebuffer.texture[0]);
 				}
 			},
 		};
@@ -383,7 +386,7 @@ function createFramebuffer(gl, size)
 	};
 }
 
-function draw_outline(gl, programInfo, canvasSize, screenSize, attribBuffer, targetTexture)
+function draw_outline(gl, programInfo, relativeSize, screenSize, attribBuffer, targetTexture)
 {
 	// Clear the canvas AND the depth buffer.
 	// gl.clearColor(1, 0, 1, 1);   // clear to magenta
@@ -432,14 +435,11 @@ function draw_outline(gl, programInfo, canvasSize, screenSize, attribBuffer, tar
 		const offset = 0; // how many bytes inside the buffer to start from
 		gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer[1]);
 		
-		const relativeWidth = canvasSize.x / screenSize[0];
-		const relativeHeight = canvasSize.y / screenSize[1];
-		
 		gl.bufferData(
 			gl.ARRAY_BUFFER,
 			new Float32Array([
-				0.0, 0.0, relativeWidth, 0.0, relativeWidth, relativeHeight,
-				0.0, 0.0, relativeWidth, relativeHeight, 0.0, relativeHeight
+				0.0, 0.0, relativeSize[0], 0.0, relativeSize[0], relativeSize[1],
+				0.0, 0.0, relativeSize[0], relativeSize[1], 0.0, relativeSize[1]
 			]),
 			gl.STATIC_DRAW,
 		);
