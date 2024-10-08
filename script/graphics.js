@@ -128,7 +128,7 @@ function main(){
 			relativeSize: [1.0, 1.0],
 			silhouetteFramebuffer: createFramebuffer(gl, [parseInt(window.screen.width), parseInt(window.screen.height)]),
 			silhouetteAttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
-			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth),
+			camera: new Camera(45.0, 0.1, 100.0, canvas.offsetHeight / canvas.offsetWidth, [0.0, 1.4, 0.5, 1.0], [0.0, 0.0, 0.0, 1.0]),
 			cameraThreshold: [],
 			lightGlobal: {
 				diffuse: Vector3(),
