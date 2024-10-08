@@ -239,7 +239,7 @@ function main(){
 		
 		// Here's where we call the routine that builds all the
 		// objects we'll be drawing.
-		fetch("asset/bodies.obj").then((response) => {
+		fetch("asset/libraryItems.obj").then((response) => {
 			if(!response.ok){
 				throw new Error(`Response status: ${response.status}`);
 			}
@@ -252,7 +252,7 @@ function main(){
 			console.error(e);
 		});
 		
-		fetch("asset/scenery.obj").then((response) => {
+		fetch("asset/libraryBG.obj").then((response) => {
 			if(!response.ok){
 				throw new Error(`Response status: ${response.status}`);
 			}
