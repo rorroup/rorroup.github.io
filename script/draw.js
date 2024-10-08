@@ -14,8 +14,8 @@ function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
 	
 	
 	const mProjection = camera.projection;
-	const cameraPos = camera.position;
-	const cameraRot = camera.rotation;
+	const cameraPos = [-camera.position[0], -camera.position[1], -camera.position[2], 1.0];
+	const cameraRot = [-camera.rotation[0], -camera.rotation[1], -camera.rotation[2], 1.0];
 	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(

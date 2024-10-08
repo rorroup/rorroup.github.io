@@ -273,10 +273,10 @@ function main(){
 			let mouseX = event_.offsetX;
 			let mouseY = event_.offsetY;
 			
-			Animated.camera.rotate([(mouseY / Animated.canvasSize.y - 0.5) * Animated.cameraThreshold[1], -Math.PI * 90 / 180 + (mouseX / Animated.canvasSize.x - 0.5) * Animated.cameraThreshold[0], 0.0, 1.0]);
+			Animated.camera.rotate([(0.5 - mouseY / Animated.canvasSize.y) * Animated.cameraThreshold[1], -Math.PI * 90 / 180 + (0.5 - mouseX / Animated.canvasSize.x) * Animated.cameraThreshold[0], 0.0, 1.0]);
 			
-			const campos = Vector3([-Animated.camera.position.x, -Animated.camera.position.y, -Animated.camera.position.z]);
-			const camdir = Vector3([-Animated.camera.direction.x, -Animated.camera.direction.y, Animated.camera.direction.z]);
+			const campos = Vector3(Animated.camera.position);
+			const camdir = Vector3(Animated.camera.direction);
 			
 			let vecRight = camdir.copy().cross(pen_Matrix.Y1).normalize();
 			let vecUpwards = vecRight.copy().cross(camdir); // Normalized already since it is the cross product of 2 normalized orthoginal vectors.
@@ -472,8 +472,8 @@ function draw_silhouette(gl, programInfo, camera, bodySelected){
 	
 	
 	const mProjection = camera.projection;
-	const cameraPos = camera.position;
-	const cameraRot = camera.rotation;
+	const cameraPos = [-camera.position[0], -camera.position[1], -camera.position[2], 1.0];
+	const cameraRot = [-camera.rotation[0], -camera.rotation[1], -camera.rotation[2], 1.0];
 	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
