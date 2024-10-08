@@ -161,7 +161,7 @@ function main(){
 				this.cameraThreshold = [Math.PI * (37 + 32 * ((this.canvasSize.y / this.canvasSize.x) - (9 / 16))) / 180, Math.PI * (35 - 22 * ((this.canvasSize.y / this.canvasSize.x) - (9 / 16))) / 180];
 				
 				// Move camera position.
-				this.camera.position.x = 0.0 - 0.8 * ((this.canvasSize.y / this.canvasSize.x) - (9 / 16));
+				this.camera.position.z = 0.5 + 0.2 * ((this.canvasSize.y / this.canvasSize.x) - (9 / 16));
 				
 				// Update projection matrix.
 				this.camera.aspectRatio = this.canvasSize.y / this.canvasSize.x;
@@ -171,15 +171,20 @@ function main(){
 			},
 			update(){
 				// Day-Night cycle
-				this.lightGlobal.diffuse.fill(0.2 + 2 * 0.1 * Math.abs(((this.timeFrameCurrent % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)) - 0.5));
+				// this.lightGlobal.diffuse.fill(0.2 + 2 * 0.1 * Math.abs(((this.timeFrameCurrent % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)) - 0.5));
 				
-				this.lightGlobal.directional.direction.set([8.0 - 10.0 * (((this.timeFrameCurrent + this.cycleDayNight * Math.PI) % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)), -10.0, -2.0]).normalize();
-				this.lightGlobal.directional.color.fill(0.2 + 2 * 0.8 * Math.abs(((this.timeFrameCurrent % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)) - 0.5));
+				// this.lightGlobal.directional.direction.set([8.0 - 10.0 * (((this.timeFrameCurrent + this.cycleDayNight * Math.PI) % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)), -10.0, -2.0]).normalize();
+				// this.lightGlobal.directional.color.fill(0.2 + 2 * 0.8 * Math.abs(((this.timeFrameCurrent % (this.cycleDayNight * 2 * Math.PI)) / (this.cycleDayNight * 2 * Math.PI)) - 0.5));
 				
-				this.skybox.x = 0.50 - 0.50 * Math.cos(this.timeFrameCurrent / this.cycleDayNight * 2); // r
-				this.skybox.y = 0.45 + 0.45 * Math.cos(this.timeFrameCurrent / this.cycleDayNight); // g
-				this.skybox.z = 0.55 + 0.45 * Math.cos(this.timeFrameCurrent / this.cycleDayNight); // b
+				// this.skybox.x = 0.50 - 0.50 * Math.cos(this.timeFrameCurrent / this.cycleDayNight * 2); // r
+				// this.skybox.y = 0.45 + 0.45 * Math.cos(this.timeFrameCurrent / this.cycleDayNight); // g
+				// this.skybox.z = 0.55 + 0.45 * Math.cos(this.timeFrameCurrent / this.cycleDayNight); // b
 				
+				
+				this.lightGlobal.diffuse.fill(0.4);
+				this.lightGlobal.directional.direction.set([5.0, -10.0, -7.0]).normalize();
+				this.lightGlobal.directional.color.fill(0.4);
+				this.skybox.set([0.3, 0.3, 0.3]);
 				
 				this.scenery.forEach((body) => {body.update(this.deltaTime);});
 				this.bodies.forEach((body) => {body.update(this.deltaTime);});
@@ -273,7 +278,7 @@ function main(){
 			let mouseX = event_.offsetX;
 			let mouseY = event_.offsetY;
 			
-			Animated.camera.rotate([(0.5 - mouseY / Animated.canvasSize.y) * Animated.cameraThreshold[1], -Math.PI * 90 / 180 + (0.5 - mouseX / Animated.canvasSize.x) * Animated.cameraThreshold[0], 0.0, 1.0]);
+			Animated.camera.rotate([(0.5 - mouseY / Animated.canvasSize.y) * Animated.cameraThreshold[1], (0.5 - mouseX / Animated.canvasSize.x) * Animated.cameraThreshold[0], 0.0, 1.0]);
 			
 			const campos = Vector3(Animated.camera.position);
 			const camdir = Vector3(Animated.camera.direction);
