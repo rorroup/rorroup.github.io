@@ -53,17 +53,19 @@ br
 
 section{
 	display: block;
-	position: relative;
+	position: absolute;
 	width: 100%;
 	height: 100vh;
 	overflow: hidden;
 	box-sizing: border-box;
-	z-index: 1;
+	top: 0px;
+	left: 0px;
+	/* z-index: 1; */
 }
 
 #glcanvas{
-	width: 100vw;
-	height: 100vh;
+	width: 100%;
+	height: 100%;
 	display: block;
 	position: absolute;
 	top: 0px;
@@ -101,6 +103,147 @@ section{
 
 .credits{
 	text-align: right;
+}
+
+.sectionBackground
+{
+	width: 100%;
+	height: 100%;
+	position: relative;
+	left: 0px;
+	top: 0px;
+	display: block;
+	overflow: hidden;
+	background-color: #111111;
+	
+	animation-name: a_sectionBackground;
+	animation-duration: 2s;
+	animation-iteration-count: 1;
+}
+
+@keyframes a_sectionBackground
+{
+	0%{
+		background-color: #111111;
+	}
+	50%{
+		background-color: #00000000;
+	}
+	100%{
+		background-color: #00000000;
+	}
+}
+
+.sectionFrame
+{
+	width: 100%;
+	height: 100%;
+	position: relative;
+	left: 0px;
+	top: 0px;
+	display: block;
+	overflow: hidden;
+	
+	animation-name: a_sectionFrame;
+	animation-duration: 2s;
+	animation-iteration-count: 1;
+}
+
+@keyframes a_sectionFrame
+{
+	50%{
+		transform: scale(90%);
+		top: 0%;
+	}
+	100%{
+		transform: scale(90%);
+		top: 100%;
+	}
+}
+
+.sectionContent
+{
+	width: 100%;
+	height: 100%;
+	position: relative;
+	left: 0px;
+	top: 0px;
+	display: block;
+	overflow: scroll;
+	
+	animation-name: a_sectionContent;
+	animation-duration: 2s;
+	animation-iteration-count: 1;
+}
+
+@keyframes a_sectionContent
+{
+	0%{
+		overflow: hidden;
+	}
+	50%{
+		transform: scaleX(50%);
+	}
+	100%{
+		transform: scaleX(50%);
+		overflow: hidden;
+	}
+}
+
+.sectionCover
+{
+	width: 50%;
+	height: 100%;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%) rotateY(90deg);
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	background-color: #000000;
+	font-size: 160%;
+	
+	animation-name: a_sectionCover;
+	animation-duration: 2s;
+	animation-iteration-count: 1;
+}
+
+@keyframes a_sectionCover
+{
+	0%{
+		transform: translate(-130%, -50%) rotateY(90deg);
+	}
+	60%{
+		transform: translate(-50%, -50%) rotateY(0deg);
+	}
+	100%{
+		transform: translate(-50%, -50%) rotateY(0deg);
+	}
+}
+
+.sectionColumn
+{
+	width: 70%;
+	min-height: 100%;
+	position: relative;
+	left: 0px;
+	top: 0px;
+	display: block;
+	overflow: auto;
+	margin: 0px auto;
+	padding: 1em;
+	box-sizing: border-box;
+	color: #FFFFFF;
+	background-color: #111111;
+	text-align: justify;
+	text-justify: inter-word;
+	font-size: 120%;
+}
+
+.sectionColumn p
+{
+	margin: 1em;
 }
 
 #hover{
