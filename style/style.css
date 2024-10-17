@@ -116,7 +116,7 @@ section{
 	overflow: hidden;
 	background-color: #111111;
 	
-	animation-name: a_sectionBackground;
+	/* animation-name: a_sectionBackground; */
 	animation-duration: 2s;
 	animation-iteration-count: 1;
 }
@@ -144,7 +144,7 @@ section{
 	display: block;
 	overflow: hidden;
 	
-	animation-name: a_sectionFrame;
+	/* animation-name: a_sectionFrame; */
 	animation-duration: 2s;
 	animation-iteration-count: 1;
 }
@@ -171,7 +171,7 @@ section{
 	display: block;
 	overflow: scroll;
 	
-	animation-name: a_sectionContent;
+	/* animation-name: a_sectionContent; */
 	animation-duration: 2s;
 	animation-iteration-count: 1;
 }
@@ -204,7 +204,7 @@ section{
 	background-color: #000000;
 	font-size: 160%;
 	
-	animation-name: a_sectionCover;
+	/* animation-name: a_sectionCover; */
 	animation-duration: 2s;
 	animation-iteration-count: 1;
 }
@@ -244,6 +244,24 @@ section{
 .sectionColumn p
 {
 	margin: 1em;
+}
+
+.buttonEnter
+{
+	width: fit-content;
+	margin: 3em auto 1em;
+	padding: 0.7em 2em;
+	font-size: 120%;
+	background-color: #666666;
+	color: #000000;
+	border-radius: 8px;
+	border: 2px solid #444444;
+}
+
+.buttonEnter:hover
+{
+	color: #FFFFFF;
+	border: 2px solid #FFFFFF;
 }
 
 #hover{

@@ -331,6 +331,18 @@ function main(){
 			}
 		});
 		
+		canvas.addEventListener("click", function(event_){
+			if(Animated.selected != false){
+				const rootID = Animated.selected.model.name;
+				const root = document.getElementById("HOME");
+				root.getElementsByClassName("sectionBackground")[0].style.animationName = "";
+				root.getElementsByClassName("sectionFrame")[0].style.animationName = "";
+				root.getElementsByClassName("sectionContent")[0].style.animationName = "";
+				root.getElementsByClassName("sectionCover")[0].style.animationName = "";
+				root.style.display = "block";
+			}
+		});
+		
 		// Flip image pixels into the bottom-to-top order that WebGL expects.
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		
@@ -538,3 +550,20 @@ function draw_silhouette(gl, programInfo, camera, bodySelected){
 	
 	gl.drawArrays(gl.TRIANGLES, bodySelected.model.offset, bodySelected.model.vertexCount);
 }
+
+
+function bookClose(rootID)
+{
+	const root = document.getElementById(rootID);
+	root.getElementsByClassName("sectionBackground")[0].style.animationName = "a_sectionBackground";
+	root.getElementsByClassName("sectionFrame")[0].style.animationName = "a_sectionFrame";
+	root.getElementsByClassName("sectionContent")[0].style.animationName = "a_sectionContent";
+	root.getElementsByClassName("sectionCover")[0].style.animationName = "a_sectionCover";
+	root.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
+		root.style.display = "none";
+	});
+}
+
+document.getElementById("HOME").getElementsByClassName("buttonEnter")[0].addEventListener("click", function(event_){
+	bookClose("HOME");
+});
