@@ -325,7 +325,7 @@ function main(){
 				Animated.selected = Animated.bodies[intersections[0][0]];
 				
 				hover.style.display = "block";
-				hover.textContent = Animated.bodies[intersections[0][0]].model.name;
+				hover.textContent = Animated.selected.model.name;
 				hover.style.left = (mouseX - 20).toString() + "px";
 				hover.style.bottom = (Animated.canvasSize.y - mouseY + 20).toString() + "px";
 			}
