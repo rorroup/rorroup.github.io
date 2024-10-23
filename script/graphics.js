@@ -333,8 +333,8 @@ function main(){
 		
 		canvas.addEventListener("click", function(event_){
 			if(Animated.selected != false){
-				const rootID = Animated.selected.model.name;
-				const root = document.getElementById("HOME");
+				const rootID = Animated.selected.model.name.toUpperCase();
+				const root = document.getElementById(rootID);
 				root.getElementsByClassName("sectionBackground")[0].style.animationName = "";
 				root.getElementsByClassName("sectionFrame")[0].style.animationName = "";
 				root.getElementsByClassName("sectionContent")[0].style.animationName = "";
