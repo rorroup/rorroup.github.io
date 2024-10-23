@@ -93,6 +93,13 @@ section{
 	margin: 10px auto;
 }
 
+.title_sec
+{
+	font-size: 200%;
+	margin: 0.5em;
+	text-align: center;
+}
+
 .centering{
 	text-align: center;
 }
