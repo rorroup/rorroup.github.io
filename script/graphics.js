@@ -340,6 +340,9 @@ function main(){
 				root.getElementsByClassName("sectionContent")[0].style.animationName = "";
 				root.getElementsByClassName("sectionCover")[0].style.animationName = "";
 				root.style.display = "block";
+				
+				Animated.selected = false; // Deselect.
+				hover.style.display = "none";
 			}
 		});
 		
