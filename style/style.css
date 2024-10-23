@@ -259,6 +259,33 @@ section{
 	border: 2px solid #FFFFFF;
 }
 
+math
+{
+	box-sizing: border-box;
+	margin: 8px 0.4em;
+}
+
+mrow
+{
+	margin: 4px;
+}
+
+mtd
+{
+	padding: 0px 4px;
+}
+
+.equation
+{
+	display: block;
+	text-align: center;
+}
+
+.variable
+{
+	font-style: oblique;
+}
+
 #hover{
 	display: none;
 	position: absolute;
