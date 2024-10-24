@@ -299,7 +299,7 @@ function main(){
 				body.selected = false;
 				for(let j = 0; j < body.model.vertexCount / 3; j++){
 					const d = collision_LineTriangle(
-						[campos, cam2mouse],
+						[campos, cam2mouseNormalized],
 						[
 							body.model.vertices.subarray(9 * j + 0, 9 * j + 3),
 							body.model.vertices.subarray(9 * j + 3, 9 * j + 6),
