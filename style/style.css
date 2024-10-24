@@ -248,6 +248,13 @@ section{
 	font-size: 120%;
 }
 
+#HOME .sectionColumn
+{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
 .sectionFrame .buttonFrame
 {
 	position: fixed;
