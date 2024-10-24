@@ -1174,26 +1174,7 @@
 									The resulting volume bounded by the vertical field of view, its corresponding horizontal ratio, and the near and far planes has the shape of a <a target="blank_" href="https://en.wikipedia.org/wiki/Frustum">frustum</a> and corresponds to the visible volume to be projected onto the clip space for rendering. The best analogy I can think of is as if looking at your screen is the same as looking into the world trough a window. We are standing still at a fixed distance before the window and everything in the world happens beyond it so all we can see is what is directly in front of it at any given time.
 									<br/>
 									
-									The 4x4 projection matrix to multiply the homogeneous coordinates must contain the geometrycal relationships to properly map the vertices. Since our model has light traveling in a straight line rays at the field of view's edges form an <a target="blank_" href="https://en.wikipedia.org/wiki/Isosceles_triangle">isosceles</a> triangle whose height <math><msub><mn>Z</mn><mi>near</mi></msub></math> <a target="blank_" href="https://en.wikipedia.org/wiki/Bisection#Angle_bisector">bisects</a> the <math>FoV</math> and whose base lies on the near plane with length <math><msub><mi>H</mi><mi>near</mi></msub> = 2 <msub><mi>h</mi><mi>near</mi></msub></math> holding the relationship
-									
-									<math class="equation">
-										<mrow>
-											tan
-											<mo>(</mo>
-											<mfrac>
-												<mrow>FoV</mrow>
-												<mrow>2</mrow>
-											</mfrac>
-											<mo>)</mo>
-											<mo>=</mo>
-											<mfrac>
-												<mrow><msub><mi>h</mi><mi>near</mi></msub></mrow>
-												<mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow>
-											</mfrac>
-										</mrow>
-									</math>
-									
-									Since the rectangular orthogonal symmetric visible frustum is <math>0</math> centered in both the <math>x</math> and <math>y</math> directions a ray from the camera to a point in the world
+									The 4x4 projection matrix is built from the geometrycal relationships to accurately map a world coordinate
 									<math>
 										<mn>W</mn>
 										=
@@ -1216,7 +1197,26 @@
 											1
 										)
 									</math>
-									intersects the near plane at a point
+									into normalized clip space. Since our model has light traveling in a straight line rays at the field of view's edges form an <a target="blank_" href="https://en.wikipedia.org/wiki/Isosceles_triangle">isosceles</a> triangle whose height <math><msub><mn>Z</mn><mi>near</mi></msub></math> <a target="blank_" href="https://en.wikipedia.org/wiki/Bisection#Angle_bisector">bisects</a> the <math>FoV</math> and whose base lies on the near plane with length <math><msub><mi>H</mi><mi>near</mi></msub> = 2 <msub><mi>h</mi><mi>near</mi></msub></math> holding the relationship
+									
+									<math class="equation">
+										<mrow>
+											tan
+											<mo>(</mo>
+											<mfrac>
+												<mrow>FoV</mrow>
+												<mrow>2</mrow>
+											</mfrac>
+											<mo>)</mo>
+											<mo>=</mo>
+											<mfrac>
+												<mrow><msub><mi>h</mi><mi>near</mi></msub></mrow>
+												<mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow>
+											</mfrac>
+										</mrow>
+									</math>
+									
+									Because the rectangular orthogonal symmetric visible frustum has its tip in the camera located at the origin implying it is <math>0</math> centered in both the <math>x</math> and <math>y</math> directions a ray from the camera to the point in the world <math>W</math> intersects the near plane at a point
 									<math>
 										<mn>N</mn>
 										=
@@ -1288,7 +1288,7 @@
 											</msub>
 										)
 									</math>
-									in the <math>y</math> axis is therefore obtained by normalizing it by the near rectangle's height to belong in the interval <math>[-1, 1]</math>
+									in the <math>y</math> axis is therefore obtained by normalizing it by the near rectangle's height to belong in the interval <math>[-1, 1]</math> as
 									<math class="equation">
 										<mrow>
 											<msub>
@@ -1362,7 +1362,7 @@
 											AR
 										</mrow>
 									</math>
-									The <math>x</math> coordinate yields a relationship analog to the <math>y</math> corrdinate like
+									The <math>x</math> coordinate yields a relationship analog to the <math>y</math> coordinate like
 									<math class="equation">
 										<mrow>
 											<mfrac>
@@ -1520,7 +1520,66 @@
 											</mrow>
 										</mrow>
 									</math>
-									come in handy. Since in the end the whole vector will get scaled the coordinate is conveniently set <math> <msub><mi>C</mi><mn>w</mn></msub> <mo>=</mo> <msub><mi>W</mi><mn>z</mn></msub> </math> to accomodate the previous equations to the homogeneous result <math>H</math>. Thus the projection matrix is constructed in the form
+									come in handy. Since in the end the whole vector will get scaled internally its value is conveniently set to <math> <msub><mi>C</mi><mn>w</mn></msub> <mo>=</mo> <msub><mi>W</mi><mn>z</mn></msub> </math> allowing to accomodate the previous equations to the homogeneous result <math>H</math> yielding
+									<math class="equation">
+										<mrow>
+											<msub><mi>H</mi><mn>x</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
+											</mfrac>
+											<msub><mi>C</mi><mn>x</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>W</mi><mn>z</mn></msub></mrow>
+											</mfrac>
+											<mfrac>
+												<mrow>AR</mrow>
+												<mrow>
+													tan
+													<mo>(</mo>
+													<mfrac>
+														<mrow>FoV</mrow>
+														<mrow>2</mrow>
+													</mfrac>
+													<mo>)</mo>
+												</mrow>
+											</mfrac>
+											<msub><mi>W</mi><mn>x</mn></msub>
+										</mrow>
+									</math>
+									<math class="equation">
+										<mrow>
+											<msub><mi>H</mi><mn>y</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
+											</mfrac>
+											<msub><mi>C</mi><mn>y</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>W</mi><mn>z</mn></msub></mrow>
+											</mfrac>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow>
+													tan
+													<mo>(</mo>
+													<mfrac>
+														<mrow>FoV</mrow>
+														<mrow>2</mrow>
+													</mfrac>
+													<mo>)</mo>
+												</mrow>
+											</mfrac>
+											<msub><mi>W</mi><mn>y</mn></msub>
+										</mrow>
+									</math>
+									Thus the projection matrix is therefore constructed in the form
 									<math class="equation">
 										<mrow>
 											<mo>(</mo>
@@ -1583,10 +1642,27 @@
 											<mo>)</mo>
 										</mrow>
 									</math>
-									where the <math>z</math> component has been negated since its value grows negative in front of the camera so as to not flip the <math>x</math> and <math>y</math> coordinates. The depth normalization has also been asumed to not depend on the <math>x</math> and <math>y</math> components so their respective factors have been set to <math>0</math>. This rises yet another problem though since the <math>z</math> transformation now has the form
+									where the <math>z</math> component has been negated since its value grows negative in front of the camera so as to not flip the <math>x</math> and <math>y</math> coordinates. The depth normalization has also been assumed to not depend on the <math>x</math> and <math>y</math> components so their respective factors have been set to <math>0</math>. This rises yet another problem though since the <math>z</math> transformation now has the form
 									<math class="equation">
 										<mrow>
 											<msub><mn>H</mn><mi>z</mi></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
+											</mfrac>
+											<msub><mi>C</mi><mn>z</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><mo>-</mo><msub><mi>W</mi><mn>z</mn></msub></mrow>
+											</mfrac>
+											<mo>(</mo>
+											<mn>&alpha;</mn>
+											<msub><mi>W</mi><mn>z</mn></msub>
+											<mo>+</mo>
+											<mn>&beta;</mn>
+											<mo>)</mo>
 											<mo>=</mo>
 											<mo>-</mo>
 											<mn>&alpha;</mn>
@@ -1654,7 +1730,7 @@
 											</mrow>
 										</mrow>
 									</math>
-									Its solution finally allows to write the complete WebGL Projection Matrix
+									Solving for &alpha; and &beta; finally allows to write the complete WebGL projection matrix
 									<math class="equation">
 										<mrow>
 											<mo>(</mo>
@@ -1740,9 +1816,8 @@
 											<mo>)</mo>
 										</mrow>
 									</math>
-									
+									<br/>
 								</p>
-								
 							</div>
 						</div>
 						
