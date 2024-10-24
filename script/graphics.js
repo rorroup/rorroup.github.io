@@ -572,7 +572,11 @@ function bookClose(rootID)
 
 document.getElementById("HOME").getElementsByClassName("buttonEnter")[0].addEventListener("click", function(event_){
 	bookClose("HOME");
-	// TODO: Replace this 'Go in!' button for a new 'Back to Library' button as fixed position.
+	const sectionHome = document.getElementById("HOME");
+	sectionHome.getElementsByClassName("buttonFrame")[0].style.display = "flex";
+	sectionHome.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
+		sectionHome.getElementsByClassName("buttonEnter")[0].style.display = "none";
+	});
 });
 
 ["HOME", "MANAGER", "PROJECTION", "OUTLINE", "RAY-COLLISSION"].forEach((sectionName) => {
