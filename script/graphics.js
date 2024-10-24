@@ -341,6 +341,7 @@ function main(){
 				root.getElementsByClassName("sectionCover")[0].style.animationName = "";
 				root.style.display = "block";
 				
+				Animated.selected.selected = false;
 				Animated.selected = false; // Deselect.
 				hover.style.display = "none";
 			}
