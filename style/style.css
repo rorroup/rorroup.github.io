@@ -248,6 +248,59 @@ section{
 	font-size: 120%;
 }
 
+.sectionFrame .buttonFrame
+{
+	position: fixed;
+	right: 0px;
+	top: 10%;
+	display: flex;
+	background-color: #666666;
+	color: #000000;
+	font-size: 22pt;
+	
+	animation-duration: 2s;
+	animation-iteration-count: 1;
+}
+
+.sectionFrame .buttonFrame .buttonArrow
+{
+	position: relative;
+	left: -8pt;
+	width: 0;
+	height: 0;
+	border-top: 8pt solid transparent;
+	border-right: 16pt solid #FFFFFF;
+	border-bottom: 8pt solid transparent;
+}
+
+.sectionFrame .buttonFrame .buttonReturn
+{
+	margin: 0.2em 0.4em 0.2em 0px;
+	text-wrap: nowrap;
+	overflow: hidden;
+	max-width: 0px;
+	transition: max-width 0.15s ease-out;
+}
+
+.sectionFrame .buttonFrame:hover .buttonReturn
+{
+	max-width: 50vw;
+	transition: max-width 0.25s ease-in;
+}
+
+@keyframes a_buttonFrame
+{
+	0%{
+		right: 0%;
+	}
+	20%{
+		right: 15%;
+	}
+	100%{
+		right: 15%;
+	}
+}
+
 .buttonEnter
 {
 	width: fit-content;

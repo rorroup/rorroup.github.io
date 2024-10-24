@@ -339,6 +339,7 @@ function main(){
 				root.getElementsByClassName("sectionFrame")[0].style.animationName = "";
 				root.getElementsByClassName("sectionContent")[0].style.animationName = "";
 				root.getElementsByClassName("sectionCover")[0].style.animationName = "";
+				root.getElementsByClassName("buttonFrame")[0].style.animationName = "";
 				root.style.display = "block";
 				
 				Animated.selected.selected = false;
@@ -563,6 +564,7 @@ function bookClose(rootID)
 	root.getElementsByClassName("sectionFrame")[0].style.animationName = "a_sectionFrame";
 	root.getElementsByClassName("sectionContent")[0].style.animationName = "a_sectionContent";
 	root.getElementsByClassName("sectionCover")[0].style.animationName = "a_sectionCover";
+	root.getElementsByClassName("buttonFrame")[0].style.animationName = "a_buttonFrame";
 	root.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
 		root.style.display = "none";
 	});
@@ -570,4 +572,11 @@ function bookClose(rootID)
 
 document.getElementById("HOME").getElementsByClassName("buttonEnter")[0].addEventListener("click", function(event_){
 	bookClose("HOME");
+	// TODO: Replace this 'Go in!' button for a new 'Back to Library' button as fixed position.
+});
+
+["HOME", "MANAGER", "PROJECTION", "OUTLINE", "RAY-COLLISSION"].forEach((sectionName) => {
+	document.getElementById(sectionName).getElementsByClassName("buttonFrame")[0].addEventListener("click", function(event_){
+		bookClose(sectionName);
+	});
 });
