@@ -291,7 +291,8 @@ function main(){
 			
 			let cam2mouseNormalized = cam2mouse.copy().normalize();
 			
-			let intersections = [];
+			hover.style.display = "none";
+			Animated.selected = false;
 			
 			for(let i = 0; i < Animated.bodies.length; i++){
 				let body = Animated.bodies[i];
@@ -308,26 +309,16 @@ function main(){
 					
 					if(d != null){
 						if(d > 0){
-							intersections.push([i, d]);
-							// let intersection = campos.copy().add(cam2mouse.copy().scale(d));
-							break;
+							Animated.bodies[i].selected = true;
+							Animated.selected = Animated.bodies[i];
+							hover.style.display = "block";
+							hover.textContent = Animated.selected.model.name;
+							hover.style.left = (mouseX - 20).toString() + "px";
+							hover.style.bottom = (Animated.canvasSize.y - mouseY + 20).toString() + "px";
+							return;
 						}
 					}
 				}
-			}
-			
-			hover.style.display = "none";
-			Animated.selected = false;
-			
-			if(intersections.length > 0){
-				intersections.sort((a, b) => {return a[1] - b[1];});
-				Animated.bodies[intersections[0][0]].selected = true;
-				Animated.selected = Animated.bodies[intersections[0][0]];
-				
-				hover.style.display = "block";
-				hover.textContent = Animated.selected.model.name;
-				hover.style.left = (mouseX - 20).toString() + "px";
-				hover.style.bottom = (Animated.canvasSize.y - mouseY + 20).toString() + "px";
 			}
 		});
 		
