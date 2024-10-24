@@ -142,8 +142,9 @@ class Body{
 
 function collision_LineTriangle(line, triangle)
 {
+	// Triangular boundary.
 	const linePoint = Vector3(line[0]);
-	const lineDirection = Vector3(line[1]).normalize();
+	const lineDirection = Vector3(line[1]); // Must be normalized.
 	
 	const triangleVertex0 = Vector3(triangle[0]);
 	const triangleVertex1 = Vector3(triangle[1]);
@@ -166,5 +167,63 @@ function collision_LineTriangle(line, triangle)
 		return d;
 	}
 	
+	return null;
+}
+
+function collision_LineTriangle1(line, triangle)
+{
+	// Triangular pyramid.
+	const linePoint = Vector3(line[0]);
+	const lineDirection = Vector3(line[1]); // Must be normalized.
+	
+	const triangleVertex0 = Vector3(triangle[0]);
+	const triangleVertex1 = Vector3(triangle[1]);
+	const triangleVertex2 = Vector3(triangle[2]);
+	
+	const triangleSide0 = triangleVertex0.copy().substract(triangleVertex1);
+	const triangleSide1 = triangleVertex1.copy().substract(triangleVertex2);
+	const triangleSide2 = triangleVertex2.copy().substract(triangleVertex0);
+	
+	const normal0 = triangleVertex0.copy().substract(linePoint).cross(triangleSide0);
+	const normal1 = triangleVertex1.copy().substract(linePoint).cross(triangleSide1);
+	const normal2 = triangleVertex2.copy().substract(linePoint).cross(triangleSide2);
+	
+	if(lineDirection.dot(normal0) > 0 && lineDirection.dot(normal1) > 0 && lineDirection.dot(normal2) > 0){
+		// https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+		const planeNormal = triangleSide0.copy().cross(triangleSide1);
+		const parallel = lineDirection.copy().dot(planeNormal);
+		if(parallel != 0){
+			return triangleVertex0.copy().substract(linePoint).dot(planeNormal) / parallel;
+		}
+	}
+	return null;
+}
+
+function collision_LineTriangle2(line, triangle)
+{
+	// Triangular prism.
+	const linePoint = Vector3(line[0]);
+	const lineDirection = Vector3(line[1]); // Must be normalized.
+	
+	const triangleVertex0 = Vector3(triangle[0]);
+	const triangleVertex1 = Vector3(triangle[1]);
+	const triangleVertex2 = Vector3(triangle[2]);
+	
+	const triangleSide0 = triangleVertex0.copy().substract(triangleVertex1);
+	const triangleSide1 = triangleVertex1.copy().substract(triangleVertex2);
+	const triangleSide2 = triangleVertex2.copy().substract(triangleVertex0);
+	
+	const normal0 = lineDirection.copy().cross(triangleSide0);
+	const normal1 = lineDirection.copy().cross(triangleSide1);
+	const normal2 = lineDirection.copy().cross(triangleSide2);
+	
+	if(linePoint.copy().substract(triangleVertex0).dot(normal0) > 0 && linePoint.copy().substract(triangleVertex1).dot(normal1) > 0 && linePoint.copy().substract(triangleVertex2).dot(normal2) > 0){
+		// https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+		const planeNormal = triangleSide0.copy().cross(triangleSide1);
+		const parallel = lineDirection.copy().dot(planeNormal);
+		if(parallel != 0){
+			return triangleVertex0.copy().substract(linePoint).dot(planeNormal) / parallel;
+		}
+	}
 	return null;
 }
