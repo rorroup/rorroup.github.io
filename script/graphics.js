@@ -345,6 +345,10 @@ function main(){
 				Animated.selected.selected = false;
 				Animated.selected = false; // Deselect.
 				hover.style.display = "none";
+				
+				// Stop drawing.
+				cancelAnimationFrame(Animated.animationID);
+				Animated.animationID = 0;
 			}
 		});
 		
@@ -360,8 +364,22 @@ function main(){
 			// Draw
 			this.draw();
 		}
-		animation_initAnimationComponent(Animated, Animated_Play);
+		animation_initAnimationComponent(Animated, Animated_Play, false, false);
 		
+		document.getElementById("HOME").getElementsByClassName("buttonEnter")[0].addEventListener("click", function(event_){
+			bookClose("HOME", Animated);
+			const sectionHome = document.getElementById("HOME");
+			sectionHome.getElementsByClassName("buttonFrame")[0].style.display = "flex";
+			sectionHome.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
+				sectionHome.getElementsByClassName("buttonEnter")[0].style.display = "none";
+			});
+		});
+
+		["HOME", "MANAGER", "PROJECTION", "OUTLINE", "RAY-COLLISSION"].forEach((sectionName) => {
+			document.getElementById(sectionName).getElementsByClassName("buttonFrame")[0].addEventListener("click", function(event_){
+				bookClose(sectionName, Animated);
+			});
+		});
 	}).catch((e) => {
 		console.error(e);
 	});
@@ -557,8 +575,9 @@ function draw_silhouette(gl, programInfo, camera, bodySelected){
 }
 
 
-function bookClose(rootID)
+function bookClose(rootID, animation_)
 {
+	animation_.animationID = requestAnimationFrame(animation_.animationStart); // Resume drawing.
 	const root = document.getElementById(rootID);
 	root.getElementsByClassName("sectionBackground")[0].style.animationName = "a_sectionBackground";
 	root.getElementsByClassName("sectionFrame")[0].style.animationName = "a_sectionFrame";
@@ -569,18 +588,3 @@ function bookClose(rootID)
 		root.style.display = "none";
 	});
 }
-
-document.getElementById("HOME").getElementsByClassName("buttonEnter")[0].addEventListener("click", function(event_){
-	bookClose("HOME");
-	const sectionHome = document.getElementById("HOME");
-	sectionHome.getElementsByClassName("buttonFrame")[0].style.display = "flex";
-	sectionHome.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
-		sectionHome.getElementsByClassName("buttonEnter")[0].style.display = "none";
-	});
-});
-
-["HOME", "MANAGER", "PROJECTION", "OUTLINE", "RAY-COLLISSION"].forEach((sectionName) => {
-	document.getElementById(sectionName).getElementsByClassName("buttonFrame")[0].addEventListener("click", function(event_){
-		bookClose(sectionName);
-	});
-});
