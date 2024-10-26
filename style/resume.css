@@ -1,12 +1,6 @@
 
 #resume{
-	display: none;
-	position: absolute;
-	top: 0px;
-	left: 50%;
-	transform: translateX(-50%);
 	height: 100%;
-	overflow-y: auto;
 	padding: 20px 10px;
 	box-sizing: border-box;
 }

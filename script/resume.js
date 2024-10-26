@@ -1,10 +1,4 @@
 
-document.getElementById("resume_close").addEventListener("click", function(event_){
-	stageDisplay("resume", false);
-	npc_run();
-});
-
-
 var RESUME_DATA = {};
 var RESUME_SELECTED = "";
 
