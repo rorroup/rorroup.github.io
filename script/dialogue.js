@@ -193,14 +193,15 @@ function* animateNPC(animation){
 	return animation;
 }
 
+function* npc_introduction(){
+	yield* animateNPC("talk");
+	yield* writeDialogue(`<p>Welcome! It is my pleasure to have you visit my humble library.<br/>May you find something of your interest during your stay.<br/>Feel free to ring the bell if you have any questions.</p>`, "Close");
+}
 
 var introduced = false;
 var playerName = false;
 
 function* npc_information(){
-	if(introduced){ yield* setTalker(`<h2>Penicilina</h2>`); }
-	yield* animateNPC("talk");
-	yield* writeDialogue(`<p>Welcome visitor.<br/>It is my pleasure to have you here today.<br/>May you find something of your interest during your stay.</p>`);
 	let topic = -1;
 	while(topic != 2){
 		if(introduced){ yield* setTalker(`<h2>Penicilina</h2>`); }

@@ -370,6 +370,9 @@ function main(){
 			sectionHome.getElementsByClassName("buttonFrame")[0].style.display = "flex";
 			sectionHome.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
 				sectionHome.getElementsByClassName("buttonEnter")[0].style.display = "none";
+				npc_active = npc_introduction();
+				npc_run();
+				document.getElementById("MANAGER").style.display = "block";
 			});
 		});
 
