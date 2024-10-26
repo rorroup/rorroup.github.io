@@ -7,19 +7,15 @@
 
 var npc_active = false;
 
-function* stageDisplay2(stage, show = true){
-	yield stageDisplay(stage, show);
-	return show;
-}
-
 function npc_end(){
-	stageDisplay("dialogue", false);
+	document.getElementById("dialogue").style.display = "none";
 	document.getElementById("dialogue_name").replaceChildren();
 	document.getElementById("dialogue_text").replaceChildren();
 	document.getElementById("dialogue_prompt").replaceChildren();
 	document.getElementById("dialogue_button").style.visibility = "hidden";
-	stageDisplay("npc", false);
+	document.getElementById("npc").style.display = "none";
 	npc_active = false;
+	document.getElementById("MANAGER").style.display = "none";
 	return false;
 }
 
@@ -41,7 +37,7 @@ function dialogueButtonText(text_ = "Next"){
 }
 
 function* writeDialogue(text_, button_ = "Next"){
-	stageDisplay("dialogue", true);
+	document.getElementById("dialogue").style.display = "block";
 	if(text_ != false){
 		document.getElementById("dialogue_text").innerHTML = text_;
 	}
@@ -55,7 +51,7 @@ function* writeDialogue(text_, button_ = "Next"){
 }
 
 function* setTalker(talker){
-	// stageDisplay("dialogue", true);
+	// document.getElementById("dialogue").style.display = "block";
 	document.getElementById("dialogue_name").innerHTML = talker;
 	return talker;
 }
@@ -193,7 +189,7 @@ function* animateNPC(animation){
 		default:
 			break;
 	}
-	stageDisplay("npc", true);
+	document.getElementById("npc").style.display = "block";
 	return animation;
 }
 
@@ -310,9 +306,4 @@ function* npc_information(){
 	if(introduced){ yield* setTalker(`<h2>Penicilina</h2>`); }
 	yield* animateNPC("talk");
 	yield* writeDialogue(`<p>Come back to me if you need something else.</p>`, "Close");
-}
-
-
-function* npc_resume(){
-	yield* stageDisplay2("resume", true);
 }

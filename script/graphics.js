@@ -326,20 +326,27 @@ function main(){
 			if(Animated.selected != false){
 				const rootID = Animated.selected.model.name.toUpperCase();
 				const root = document.getElementById(rootID);
-				root.getElementsByClassName("sectionBackground")[0].style.animationName = "";
-				root.getElementsByClassName("sectionFrame")[0].style.animationName = "";
-				root.getElementsByClassName("sectionContent")[0].style.animationName = "";
-				root.getElementsByClassName("sectionCover")[0].style.animationName = "";
-				root.getElementsByClassName("buttonFrame")[0].style.animationName = "";
+				
+				if(rootID == "MANAGER"){
+					npc_active = npc_information();
+					npc_run();
+				}else{
+					root.getElementsByClassName("sectionBackground")[0].style.animationName = "";
+					root.getElementsByClassName("sectionFrame")[0].style.animationName = "";
+					root.getElementsByClassName("sectionContent")[0].style.animationName = "";
+					root.getElementsByClassName("sectionCover")[0].style.animationName = "";
+					root.getElementsByClassName("buttonFrame")[0].style.animationName = "";
+					
+					// Stop drawing.
+					cancelAnimationFrame(Animated.animationID);
+					Animated.animationID = 0;
+				}
+				
 				root.style.display = "block";
 				
 				Animated.selected.selected = false;
 				Animated.selected = false; // Deselect.
 				hover.style.display = "none";
-				
-				// Stop drawing.
-				cancelAnimationFrame(Animated.animationID);
-				Animated.animationID = 0;
 			}
 		});
 		
@@ -366,7 +373,7 @@ function main(){
 			});
 		});
 
-		["HOME", "MANAGER", "RESUME", "PROJECTION", "OUTLINE", "RAY-COLLISSION"].forEach((sectionName) => {
+		["HOME", "RESUME", "PROJECTION", "OUTLINE", "RAY-COLLISSION"].forEach((sectionName) => {
 			document.getElementById(sectionName).getElementsByClassName("buttonFrame")[0].addEventListener("click", function(event_){
 				bookClose(sectionName, Animated);
 			});
