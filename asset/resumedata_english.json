@@ -1,14 +1,14 @@
 
 {
 	"name": "Rodrigo Alejandro Urrutia Pozo",
-	"title": "Bachelor of Electrical Engineering, Graduated",
+	"title": "Electrical Engineer",
 	
 	
 	"Personal": {
 		"name": "Personal",
 		"content": [
 			["direction", "Peñalolén, Santiago"],
-			["age", "31 years old"],
+			["age", "32 years old"],
 			["civil", "Single"],
 			["nationality", "Chilean"],
 			["phone", "+569 78700660"],
@@ -38,18 +38,13 @@
 		]
 	},
 	
-	"Programming": {
-		"name": "Programming",
+	"Skills": {
+		"name": "Skills",
 		"content": [
-			["C", 2],
-			["C++", 3],
-			["Python", 4],
-			["Lua ", 4],
-			["HTML", 2],
-			["CSS", 2],
-			["Javascript", 3],
-			["PHP", 2],
-			["MySQL", 2],
+			["Programming", 3],
+			["Web Developement", 2],
+			["Databases", 1],
+			["Computer Graphics", 1],
 			["LaTeX", 3]
 		]
 	},
@@ -66,7 +61,7 @@
 	"Profile": {
 		"name": "Profile",
 		"content": [
-			"Bachelor of Electrical Engineering graduate with experience in transformer design and dissolved gas analysis. Deeply interested in software development and its digital electronics association which has motivated increasingly comprehensive programming and software development self teaching."
+			"Electrical engineer with experience in electric maintenance as well as transformer and harmonic filter design. Deeply interested in computer science whose systemic approach and problem solving capabilities for both daily and engineering matters motivated an incresingly comprehensive programming, web transfer and software development self teaching."
 		]
 	},
 	
@@ -74,15 +69,31 @@
 		"name": "Experience",
 		"content": [
 			{
+				"date": "May - October 2024",
+				"job": "Web development",
+				"institution": "Personal project",
+				"detail": [
+					"Personal webpage update and shader programming for 3D rendering."
+				]
+			},
+			{
+				"date": "December 2023 - February 2024",
+				"job": "Internship",
+				"institution": "Laboratorios Davis, Santiago",
+				"detail": [
+					"Pharmaceutical laboratory equipment maintenance, diagnosis and report."
+				]
+			},
+			{
 				"date": "2021 - 2023",
-				"job": "Thesis development",
+				"job": "Bachelor Thesis",
 				"institution": "Universidad Técnica Federico Santa María, Main Campus, Valparaíso",
 				"detail": [
 					"Transformer and filter design and modeling for a modified high dc current rectifier for simulation and technical analysis."
 				]
 			},
 			{
-				"date": "2019",
+				"date": "April - July 2019",
 				"job": "Pre project",
 				"institution": "Expreso Rancagua",
 				"detail": [
@@ -90,7 +101,7 @@
 				]
 			},
 			{
-				"date": "2019",
+				"date": "January - February 2019",
 				"job": "Internship",
 				"institution": "Pacific Hydro, Rancagua",
 				"detail": [
@@ -104,12 +115,9 @@
 		"name": "Education",
 		"content": [
 			{
-				"date": "2011 - 2021",
+				"date": "Finished 2024",
 				"job": "Bachelor of Electrical Engineering",
-				"institution": "Universidad Técnica Federico Santa María, Main Campus, Valparaíso",
-				"detail": [
-					"Graduate student."
-				]
+				"institution": "Universidad Técnica Federico Santa María, Main Campus, Valparaíso"
 			},
 			{
 				"date": "Finished 2010",

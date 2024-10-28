@@ -1,14 +1,14 @@
 
 {
 	"name": "Rodrigo Alejandro Urrutia Pozo",
-	"title": "Egresado de Ingeniería Eléctrica",
+	"title": "Ingeniero Electricista",
 	
 	
 	"Personal": {
 		"name": "Personal",
 		"content": [
 			["direction", "Peñalolén, Santiago"],
-			["age", "31 años"],
+			["age", "32 años"],
 			["civil", "Soltero"],
 			["nationality", "Chileno"],
 			["phone", "+569 78700660"],
@@ -39,18 +39,13 @@
 	},
 	
 	
-	"Programming": {
-		"name": "Programación",
+	"Skills": {
+		"name": "Habilidades",
 		"content": [
-			["C", 2],
-			["C++", 3],
-			["Python", 4],
-			["Lua ", 4],
-			["HTML", 2],
-			["CSS", 2],
-			["Javascript", 3],
-			["PHP", 2],
-			["MySQL", 2],
+			["Programación", 3],
+			["Desarrollo Web", 2],
+			["Bases de Datos", 1],
+			["Gráficos digitales", 1],
 			["LaTeX", 3]
 		]
 	},
@@ -68,13 +63,29 @@
 	"Profile": {
 		"name": "Perfil",
 		"content": [
-			"Egresado de Ingeniería Eléctrica en la Universidad Técnica Federico Santa María, con experiencia en el diseño electromagnético y diagnóstico cromatográfico de transformadores. Ampliamente interesado en la computación y su asociación con la electrónica digital, que ha motivado un creciente aprendizaje sobre programación y desarrollo de software."
+			"Ingeniero electricista con experiencia en mantenimiento eléctrico, así como diseño de transformadores y filtros armónicos. Aficionado a la informática por su construcción sistémica y su capacidad para la resolución de problemas cotidianos e ingenieriles que ha motivado un creciente aprendizaje autodidacta de programación, transferencia por internet y desarrollo de aplicaciones."
 		]
 	},
 	
 	"Experience": {
 		"name": "Experiencia",
 		"content": [
+			{
+				"date": "Mayo - Octubre 2024",
+				"job": "Desarrollo web",
+				"institution": "Proyecto personal",
+				"detail": [
+					"Actualización de página web personal y programación de shaders para la visualización de gráficos tridimensionales."
+				]
+			},
+			{
+				"date": "Diciembre 2023 - Febrero 2024",
+				"job": "Practicante",
+				"institution": "Laboratorios Davis, Santiago",
+				"detail": [
+					"Mantenimiento y diagnóstico de equipos de laboratorio farmacéutico y subsecuente elaboración de los respectivos informes técnicos."
+				]
+			},
 			{
 				"date": "2021 - 2023",
 				"job": "Memorista",
@@ -84,7 +95,7 @@
 				]
 			},
 			{
-				"date": "2019",
+				"date": "Abril - Julio 2019",
 				"job": "Anteproyecto",
 				"institution": "Expreso Rancagua",
 				"detail": [
@@ -92,7 +103,7 @@
 				]
 			},
 			{
-				"date": "2019",
+				"date": "Enero - Febrero 2019",
 				"job": "Practicante",
 				"institution": "Pacific Hydro, Rancagua",
 				"detail": [
@@ -107,11 +118,11 @@
 		"name": "Educación",
 		"content": [
 			{
-				"date": "2011 - 2021",
+				"date": "2011 - 2024",
 				"job": "Estudios Profesionales",
 				"institution": "Universidad Técnica Federico Santa María, Casa Central, Valparaíso",
 				"detail": [
-					"Ingeniería Eléctrica, Egresado"
+					"Ingeniería Eléctrica."
 				]
 			},
 			{
@@ -119,7 +130,7 @@
 				"job": "Enseñanza Básica y Media",
 				"institution": "Colegio Instituto Inglés, Rancagua",
 				"detail": [
-					"Sexto Básico a Cuarto Medio"
+					"Sexto Básico a Cuarto Medio."
 				]
 			},
 			{
@@ -127,7 +138,7 @@
 				"job": "Enseñanza Básica",
 				"institution": "Colegio De La Salle, La Reina, Santiago",
 				"detail": [
-					"Parvulario a Quinto Básico"
+					"Parvulario a Quinto Básico."
 				]
 			}
 		]

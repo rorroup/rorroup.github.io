@@ -184,7 +184,7 @@ function resume_buildResume(language){
 		resume_sectionLeft(resume_data, "Personal", resume_buildInformation),
 		resume_sectionLeft(resume_data, "Links", resume_buildLinks),
 		resume_sectionLeft(resume_data, "Software", resume_buildSkillTable),
-		resume_sectionLeft(resume_data, "Programming", resume_buildSkillTable),
+		resume_sectionLeft(resume_data, "Skills", resume_buildSkillTable),
 		resume_sectionLeft(resume_data, "Language", resume_buildSkillTable),
 	);
 	document.getElementById("resume_right").replaceChildren(
