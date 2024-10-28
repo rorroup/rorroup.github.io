@@ -32,6 +32,11 @@
 	margin: auto;
 }
 
+#resume_resume br
+{
+	margin: 0px;
+}
+
 #resume_top, #resume_columns{
 	min-width: 100%;
 	max-width: 100%;
