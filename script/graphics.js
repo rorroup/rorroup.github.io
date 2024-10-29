@@ -115,6 +115,7 @@ function main(){
 				program: shaderProgram_texture,
 				attribLocations: {
 					vertexPosition: gl.getAttribLocation(shaderProgram_texture, "aVertexPosition"),
+					vertexNormal: gl.getAttribLocation(shaderProgram_texture, "aVertexNormal"),
 					textureCoord: gl.getAttribLocation(shaderProgram_texture, "aTextureCoord"),
 				},
 				uniformLocations: {
@@ -124,6 +125,10 @@ function main(){
 					cameraPosition: gl.getUniformLocation(shaderProgram_texture, "uCameraPosition"),
 					cameraRotation: gl.getUniformLocation(shaderProgram_texture, "uCameraRotation"),
 					uSampler: gl.getUniformLocation(shaderProgram_texture, "uSampler"),
+					LightAmbient: gl.getUniformLocation(shaderProgram_texture, "uLightAmbient"),
+					LightDirection: gl.getUniformLocation(shaderProgram_texture, "uLightDirection"),
+					LightColor: gl.getUniformLocation(shaderProgram_texture, "uLightColor"),
+					selected: gl.getUniformLocation(shaderProgram_texture, "uSelected"),
 				},
 			},
 			glProgramInfo_silhouette: {

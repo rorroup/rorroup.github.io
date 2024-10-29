@@ -113,18 +113,18 @@ function draw_texture(gl, programInfo, camera, light, bodies, skybox){
 			0.0, 0.0, 0.0, 1.0,
 		])
 	);
-	/*
+	
 	// Pass Lighting conditions
 	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, new Float32Array(light.diffuse));
 	gl.uniform3fv(programInfo.uniformLocations.LightDirection, new Float32Array(light.directional.direction));
 	gl.uniform3fv(programInfo.uniformLocations.LightColor, new Float32Array(light.directional.color));
-	*/
+	
 	//bodies.forEach((body) => {
 		// Tell WebGL how to pull out the positions from the position
 		// buffer into the vertexPosition attribute.
 		body.setPositionAttribute(gl, programInfo);
 		body.setTextureAttribute(gl, programInfo);
-		// body.setNormalAttribute(gl, programInfo);
+		body.setNormalAttribute(gl, programInfo);
 		
 		// Set the shader uniforms
 		gl.uniformMatrix4fv(
@@ -159,7 +159,7 @@ function draw_texture(gl, programInfo, camera, light, bodies, skybox){
 		// Tell the shader we bound the texture to texture unit 0
 		gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 		
-		// gl.uniform3fv(programInfo.uniformLocations.selected, body.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
+		gl.uniform3fv(programInfo.uniformLocations.selected, body.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
 		
 		gl.drawArrays(gl.TRIANGLES, body.model.offset, body.model.vertexCount);
 	//});
