@@ -87,7 +87,7 @@ function loadTexture(gl, url){
 		srcType,
 		pixel,
 	);
-	/*
+	
 	const image = new Image();
 	image.onload = () => {
 		gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -115,7 +115,7 @@ function loadTexture(gl, url){
 		}
 	};
 	image.src = url;
-	*/
+	
 	return texture;
 }
 
