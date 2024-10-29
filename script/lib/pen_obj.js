@@ -359,6 +359,15 @@ var pen_obj = {
 								}
 							}
 							break;
+						case "map_Kd":
+							{
+								if(data.length == 2){
+									newmtl.map_Kd = data[1];
+								}else{
+									console.log(`[Error] Malformed statement '${content}' on line ${i + 1} for material '${newmtl.newmtl}'. Ignoring texture.`);
+								}
+							}
+							break;
 						// TODO:
 						case "Ns":
 						case "Ka":
