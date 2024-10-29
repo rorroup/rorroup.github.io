@@ -222,7 +222,19 @@ function main(){
 				// render to the canvas
 				gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 				
-				draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, this.scenery.concat(this.bodies), this.skybox);
+				gl.clearColor(...this.skybox, 1.0); // Background color
+				gl.clearDepth(1.0); // Clear everything
+				gl.enable(gl.DEPTH_TEST); // Enable depth testing
+				gl.depthFunc(gl.LEQUAL); // Near things obscure far things
+				
+				// Clear the canvas before we start drawing on it.
+				
+				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+				
+				this.scenery.concat(this.bodies).forEach((bodyCurrent) => {
+						draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, bodyCurrent, this.skybox);
+				});
+				
 				
 				if(this.selected != false){
 					// render to our targetTexture by binding the framebuffer

@@ -1,17 +1,6 @@
 
 function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
-	gl.clearColor(...skybox, 1.0); // Background color
-	gl.clearDepth(1.0); // Clear everything
-	gl.enable(gl.DEPTH_TEST); // Enable depth testing
-	gl.depthFunc(gl.LEQUAL); // Near things obscure far things
-	
-	// Clear the canvas before we start drawing on it.
-	
-	gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-	
-	// Tell WebGL to use our program when drawing
-	gl.useProgram(programInfo.program);
-	
+	const body = bodies;
 	
 	const mProjection = camera.projection;
 	const cameraPos = [-camera.position[0], -camera.position[1], -camera.position[2], 1.0];
@@ -51,7 +40,7 @@ function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
 	gl.uniform3fv(programInfo.uniformLocations.LightDirection, new Float32Array(light.directional.direction));
 	gl.uniform3fv(programInfo.uniformLocations.LightColor, new Float32Array(light.directional.color));
 	
-	bodies.forEach((body) => {
+	//bodies.forEach((body) => {
 		// Tell WebGL how to pull out the positions from the position
 		// buffer into the vertexPosition attribute.
 		body.setPositionAttribute(gl, programInfo);
@@ -86,5 +75,5 @@ function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
 		gl.uniform3fv(programInfo.uniformLocations.selected, body.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
 		
 		gl.drawArrays(gl.TRIANGLES, body.model.offset, body.model.vertexCount);
-	});
+	//});
 }
