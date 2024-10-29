@@ -232,7 +232,17 @@ function main(){
 				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 				
 				this.scenery.concat(this.bodies).forEach((bodyCurrent) => {
+					if(bodyCurrent.texture == false){
+						// Tell WebGL to use our program when drawing
+						gl.useProgram(this.glProgramInfo_vertexColor.program);
+						
 						draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, bodyCurrent, this.skybox);
+					}else{
+						// Tell WebGL to use our program when drawing
+						gl.useProgram(this.glProgramInfo_texture.program);
+						
+						draw_texture(this.gl, this.glProgramInfo_texture, this.camera, this.lightGlobal, bodyCurrent, this.skybox);
+					}
 				});
 				
 				
