@@ -18,6 +18,10 @@ function main(){
 			fetch("script/shader/vertexColor.fs"),
 		]),
 		Promise.all([
+			fetch("script/shader/texture.vs"),
+			fetch("script/shader/texture.fs"),
+		]),
+		Promise.all([
 			fetch("script/shader/silhouette.vs"),
 			fetch("script/shader/silhouette.fs"),
 		]),
@@ -33,11 +37,15 @@ function main(){
 				}
 			});
 		});
-		[vertexColor, silhouette, outline] = responses;
+		[vertexColor, texture, silhouette, outline] = responses;
 		return Promise.all([
 			Promise.all([
 				vertexColor[0].text(),
 				vertexColor[1].text(),
+			]),
+			Promise.all([
+				texture[0].text(),
+				texture[1].text(),
 			]),
 			Promise.all([
 				silhouette[0].text(),
@@ -49,13 +57,19 @@ function main(){
 			]),
 		]);
 	}).then((shaders) => {
-		[vertexColor, silhouette, outline] = shaders;
+		[vertexColor, texture, silhouette, outline] = shaders;
 		
 		// Initialize a shader program; this is where all the lighting
 		// for the vertices and so forth is established.
 		const shaderProgram_vertexColor = initShaderProgram(gl, vertexColor[0], vertexColor[1]);
 		
 		if(shaderProgram_vertexColor === null){
+			return;
+		}
+		
+		const shaderProgram_texture = initShaderProgram(gl, texture[0], texture[1]);
+		
+		if(shaderProgram_texture === null){
 			return;
 		}
 		
