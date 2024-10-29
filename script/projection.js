@@ -53,7 +53,9 @@ class Body{
 		this.selected = false;
 		
 		// Load texture
-		this.texture = false;
+		this.texture = "map_Kd" in model.material ? loadTexture(gl, `asset/${model.material.map_Kd}`) : false;
+		// Flip image pixels into the bottom-to-top order that WebGL expects.
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		
 		// Create a buffer for the square's positions.
 		this.positionBuffer = gl.createBuffer();
