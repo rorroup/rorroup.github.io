@@ -111,6 +111,21 @@ function main(){
 					selected: gl.getUniformLocation(shaderProgram_vertexColor, "uSelected"),
 				},
 			},
+			glProgramInfo_texture: {
+				program: shaderProgram_texture,
+				attribLocations: {
+					vertexPosition: gl.getAttribLocation(shaderProgram_texture, "aVertexPosition"),
+					textureCoord: gl.getAttribLocation(shaderProgram_texture, "aTextureCoord"),
+				},
+				uniformLocations: {
+					projectionMatrix: gl.getUniformLocation(shaderProgram_texture, "uProjectionMatrix"),
+					modelViewMatrix: gl.getUniformLocation(shaderProgram_texture, "uModelViewMatrix"),
+					rotationMatrix: gl.getUniformLocation(shaderProgram_texture, "uRotationMatrix"),
+					cameraPosition: gl.getUniformLocation(shaderProgram_texture, "uCameraPosition"),
+					cameraRotation: gl.getUniformLocation(shaderProgram_texture, "uCameraRotation"),
+					uSampler: gl.getUniformLocation(shaderProgram_texture, "uSampler"),
+				},
+			},
 			glProgramInfo_silhouette: {
 				program: shaderProgram_silhouette,
 				attribLocations: {
