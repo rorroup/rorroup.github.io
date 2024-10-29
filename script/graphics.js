@@ -432,7 +432,7 @@ function main(){
 			});
 		});
 
-		["HOME", "BUILD", "PROJECTION", "OUTLINE", "RAY-COLLISSION"].forEach((sectionName) => {
+		["HOME", "SAUCE", "BUILD", "PROJECTION", "OUTLINE", "RAY-COLLISSION"].forEach((sectionName) => {
 			document.getElementById(sectionName).getElementsByClassName("buttonFrame")[0].addEventListener("click", function(event_){
 				bookClose(sectionName, Animated);
 			});
