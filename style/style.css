@@ -356,3 +356,50 @@ mtd
 	color: white;
 	padding: 8px;
 }
+
+/* https://stackoverflow.com/a/1636635 */
+ol[class="references"]
+{
+	position: relative;
+	list-style: none;
+	counter-reset: c_reference;
+}
+
+ol[class="references"]>li
+{
+	position: relative;
+	margin-left: 2.5em;
+}
+
+ol[class="references"]>li::before
+{
+	content: '[' counter(c_reference) ']';
+	counter-increment: c_reference;
+	position: absolute;
+	left: -2.5em;
+	display: block;
+	width: 2em;
+	text-align: left;
+}
+
+.references .manual .bookTitle
+{
+	font-style: italic;
+}
+
+.references .website .pageTitle::before,
+.references .website .pageTitle::after
+{
+	content: '"';
+}
+
+.references .website .dateAccessed::before
+{
+	content: "Accessed: ";
+}
+
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/attr */
+.references .website .webAddress::before
+{
+	content: "[Online.] Available: " attr(href);
+}
