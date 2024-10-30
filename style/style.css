@@ -334,12 +334,15 @@ mtd
 	font-style: oblique;
 }
 
-#hover{
+#itemHover{
 	display: none;
 	position: absolute;
-	background-color: black;
-	color: white;
-	padding: 8px;
+	background-color: #000000;
+	color: #FFFFFF;
+	padding: 0.2em 0.4em;
+	font-size: 150%;
+	border-radius: 4px;
+	border: 3px solid #FFFFFF;
 }
 
 /* https://stackoverflow.com/a/1636635 */

@@ -323,7 +323,7 @@ function main(){
 		Animated.resize();
 		window.addEventListener("resize", () => {Animated.resize();});
 		
-		const hover = document.getElementById("hover");
+		const hover = document.getElementById("itemHover");
 		canvas.addEventListener("mousemove", function(event_){
 			let mouseX = event_.offsetX;
 			let mouseY = event_.offsetY;
