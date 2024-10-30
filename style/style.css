@@ -368,7 +368,7 @@ ol[class="references"]
 ol[class="references"]>li
 {
 	position: relative;
-	margin-left: 2.5em;
+	margin: 0.5em 0px 0.5em 2.5em;
 }
 
 ol[class="references"]>li::before
@@ -382,24 +382,42 @@ ol[class="references"]>li::before
 	text-align: left;
 }
 
+.references .webVideo .videoTitle,
+.references .book .bookTitle,
 .references .manual .bookTitle
 {
 	font-style: italic;
 }
 
-.references .website .pageTitle::before,
-.references .website .pageTitle::after
+.references .webSite .pageTitle::before,
+.references .webSite .pageTitle::after
 {
 	content: '"';
 }
 
-.references .website .dateAccessed::before
+.references .webVideo .dateAccessed::before,
+.references .webSite .dateAccessed::before
 {
 	content: "Accessed: ";
 }
 
 /* https://developer.mozilla.org/en-US/docs/Web/CSS/attr */
-.references .website .webAddress::before
+.references .webSite .webAddress::before
 {
-	content: "[Online.] Available: " attr(href);
+	content: "[Online]. Available: " attr(href);
+}
+
+.references .webVideo .datePublished::before
+{
+	content: '(';
+}
+
+.references .webVideo .datePublished::after
+{
+	content: ')';
+}
+
+.references .webVideo .webAddress::before
+{
+	content: "[Online Video]. Available: " attr(href);
 }
