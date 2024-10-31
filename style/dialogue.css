@@ -137,6 +137,7 @@
 	display: none;
 	position: absolute;
 	min-width: 24ch;
+	max-width: 90vw;
 	overflow: auto;
 	left: 0px;
 	top: 100%;
@@ -161,7 +162,6 @@
 	bottom: 0px;
 	width: 75vh;
 	height: 75vh;
-	/* transform: translateX(10%); */
 }
 
 #npc>div
