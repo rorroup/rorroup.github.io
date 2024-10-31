@@ -11,6 +11,11 @@
 	left: 0px;
 }
 
+#dialogue br
+{
+	margin: 0px 0px 0.2em;
+}
+
 #dialogue_prompt
 {
 	font-size: inherit;
@@ -130,7 +135,6 @@
 
 .dropdown_trigger{
 	border: 2px dotted #FF0000;
-	font-style: italic;
 }
 
 .dropdown_content{
