@@ -1,7 +1,5 @@
 
-function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
-	const body = bodies;
-	
+function draw_vertexColor(gl, programInfo, camera, light, body, skybox){
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.projectionMatrix,
@@ -62,9 +60,7 @@ function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
 	gl.drawArrays(gl.TRIANGLES, body.model.offset, body.model.vertexCount);
 }
 
-function draw_texture(gl, programInfo, camera, light, bodies, skybox){
-	const body = bodies;
-	
+function draw_texture(gl, programInfo, camera, light, body, skybox){
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.projectionMatrix,
