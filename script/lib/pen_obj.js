@@ -1,6 +1,6 @@
 
 var pen_obj = {
-	obj_load: async function(text_){
+	async obj_load(text_){
 		let models = [];
 		
 		let objects = [];
@@ -298,7 +298,7 @@ var pen_obj = {
 		return models;
 	},
 	
-	mtl_load: async function(text_){
+	async mtl_load(text_){
 		let materials = {};
 		let newmtl = false;
 		let paramSet = [];
