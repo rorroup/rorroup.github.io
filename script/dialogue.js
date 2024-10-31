@@ -205,7 +205,7 @@ var playerName = false;
 
 function* npc_information(){
 	let topic = -1;
-	while(topic != 2){
+	while(topic != 3){
 		if(introduced){ yield* setTalker(`<h2>Penicilina</h2>`); }
 		yield* animateNPC("talk");
 		yield* writeDialogue(`<p>Is there something you would like to know?</p>`);
@@ -213,6 +213,7 @@ function* npc_information(){
 		topic = yield* setChoices([
 			`<p>Who are you?</p>`,
 			`<p>What is this place?</p>`,
+			`<p>How does this place work?</p>`,
 			`<p>Nothing, thanks.</p>`,
 		]);
 		switch(topic){
@@ -306,6 +307,57 @@ function* npc_information(){
 				To be expected from someone who studied electrical engineering anyways.</p>`);
 				break;
 			case 2:
+				yield* animateNPC("talk");
+				yield* writeDialogue(`<p>As you can probably tell already I generally quite like videogames, the <i>RPG</i> genre in particular. As I was going to program something I thought I'd better do it for my own amusement, so I decided it would be interesting trying to make this webpage behave like one. I was also quite interested in understanding computer graphics and shaders out of sheer curiosity. So basically this is what came out of all that.</p>`);
+				switch(yield* setChoices([
+					`<p>Tell me about the scene.</p>`,
+					`<p>What about this dialogue?</p>`,
+					`<p>I'm here for the the <span style="font-size: 200%; color: #FF0000;">sauce</span>.</p>`,
+				])){
+					case 0:
+						yield* animateNPC("talk");
+						yield* writeDialogue(`<p>The main part of the webpage is this one which I decided to ambient and call 'The Library'. It is basically the main menu that links to all other parts of the website, which to be fair are not that many. It is a very simple low polygon 3D scene modeled by my limited artistic skills loaded as an obj file. It works by detecting which item the user is hovering over through 3D collision detection based on the camera orientation and then draws the result to the screen.</p>`);
+						yield* animateNPC("talk");
+						yield* writeDialogue(`<p>On that shelf I store <i>books</i> explaining how the different parts of the whole scene are handled. I would like to write more of them, but probably won't so don't hold too much hope.</p>`);
+						switch(yield* setChoices([
+							`<p>Tell me more about the rendering.</p>`,
+							`<p>How does the hovering detection work?</p>`,
+						])){
+							case 0:
+								yield* animateNPC("talk");
+								yield* writeDialogue(`<p>To draw the 3D scene I update the objects whenever necessary and then pass their vertices to the shaders alongside all the information about the world and the camera.<br/>Right now I have only global lighting. I implemented some sinusoidal waves to control the illumination to pretend a day-night cycle. I also used absolute value together with the modulus operator to obtain a triangular wave to control some of the parameters with a different waveform just for the sake of doing things differently, making sure to equalize their frequencies beforehand.</p>`);
+								yield* animateNPC("talk");
+								yield* writeDialogue(`<p>Perspective calculations are all performed within the shaders and finally WebGL draws the result to the canvas so you see it on your screen.<br/>I actually had to set up 3 different shaders for this scene: I had 1 for straight up rendering but then 2 more had to be added for post-processing.</p>`);
+								yield* animateNPC("talk");
+								yield* writeDialogue(`<p>First the whole scene is rendered to the screen.<br/>Then, if hovering is detected, the hovered item is rendered again to a separate texture as what-I-would-like-to-be a bitmask shader where the item is set to all white and every other pixel to black, no depth, giving a binary white silhouette on a black background. With this its outline can be obtained using the last shader by post-processing it to obtain every outer adjacent pixel to draw to the screen on top of the scene.</p>`);
+								break;
+							case 1:
+							default:
+								yield* animateNPC("talk");
+								yield* writeDialogue(`<p>The only way I could come up to solve hovering was to project a ray from the camera to the mouse.<br/>I said that if the projected ray intersects the object then from the perspective of the camera the mouse is over it.</p>`);
+								yield* animateNPC("talk");
+								yield* writeDialogue(`<p>This of course requires a bit of vector math to set up the ray, and then the ray must be tested against every triangle of every object using more math causing it to be a rather slow process.</p>`);
+								yield* animateNPC("talk");
+								yield* writeDialogue(`<p>As for the ray-triangle collission I could write 3 math tests which were all very similar to be honest so there does not seem to be much room for performance improvement right now sadly.</p>`);
+								break;
+						}
+						break;
+					case 1:
+						yield* animateNPC("talk");
+						yield* writeDialogue(`<p>Everything related to this dialogue interface is controlled by native javascript generator functions.</p>`);
+						yield* animateNPC("talk");
+						yield* writeDialogue(`<p>Generator functions are ones that hold a state of themselves so they can be suspended mid execution and resumed at a later time.<br/>This way I can print dialogue text to the screen and then wait for the user to take some action before continuing.</p>`);
+						break;
+					case 2:
+					default:
+						yield* animateNPC("wink");
+						yield* writeDialogue(`<div style="width: 100%; height: 100%; text-shadow: 0.07em 0.07em 0.05em black; background-image: url(https://www.researchgate.net/publication/343598792/figure/fig2/AS:923535321075713@1597199387637/Ah-I-See-Youre-A-Man-Of-Culture-As-Well-expresses-the-admiration-for-certain.jpg); background-size: auto 100%;"></div>`);
+						yield* animateNPC("happy");
+						yield* writeDialogue(`<p>He he he...<br/>We surely have <span style="font-size: 200%; color: #FF0000;">sauce</span> dear customer.<br/>You will find it inside that <span style="color: #FF0000;">bottle</span> to your right.</p>`);
+						break;
+				}
+				break;
+			case 3:
 				break;
 			default:
 				yield* animateNPC("angry");
