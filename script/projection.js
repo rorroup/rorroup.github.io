@@ -1,49 +1,4 @@
 
-class Camera
-{
-	constructor(FoV, Znear, Zfar, aspectRatio, position = false, rotation = false)
-	{
-		this.FoV = FoV;
-		this.Znear = Znear;
-		this.Zfar = Zfar;
-		this.aspectRatio = aspectRatio;
-		this.FoVratio = Math.tan(FoV * 0.5 / 180.0 * Math.PI);
-		this.projection = new Matrix(4);
-		this.project();
-		this.position = Vector4(position);
-		this.position[3] = 1.0;
-		this.rotation = Vector4(rotation);
-		this.rotation[3] = 1.0;
-		this.direction = Vector(4);
-		this.rotate(this.rotation);
-	}
-	
-	project(){
-		this.projection[0] = 1 / this.FoVratio * this.aspectRatio;
-		this.projection[5] = 1 / this.FoVratio;
-		this.projection[10] = (this.Znear + this.Zfar) / (this.Znear - this.Zfar);
-		this.projection[14] = 2.0 * (this.Znear * this.Zfar) / (this.Znear - this.Zfar);
-		this.projection[11] = -1.0;
-	}
-	
-	rotate(rotation){
-		this.rotation.set(rotation);
-		for(let i = 0; i < 3; i++){
-			this.rotation[i] = ((this.rotation[i] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
-		}
-		this.direction.set([-Math.sin(this.rotation[1]) * Math.cos(this.rotation[0]), Math.sin(this.rotation[0]), -Math.cos(this.rotation[1]) * Math.cos(this.rotation[0]), 1.0]);
-	}
-	
-	direct(direction){
-		this.direction.set(direction);
-		this.direction[3] = 0.0;
-		this.direction.normalize();
-		this.direction[3] = 1.0;
-		this.rotation[0] = Math.asin(y);
-		this.rotation[1] = Math.atan2(-x, -z);
-	}
-}
-
 class Body{
 	constructor(position, rotation, model, gl){
 		this.position = position;
