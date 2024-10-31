@@ -2,37 +2,23 @@
 function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
 	const body = bodies;
 	
-	const mProjection = camera.projection;
-	const cameraPos = [-camera.position[0], -camera.position[1], -camera.position[2], 1.0];
-	const cameraRot = [-camera.rotation[0], -camera.rotation[1], -camera.rotation[2], 1.0];
-	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.projectionMatrix,
 		false,
-		new Float32Array(mProjection)
+		camera.projection
 	);
 	
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.cameraPosition,
 		false,
-		new Float32Array([
-			1.0, 0.0, 0.0, 0.0,
-			0.0, 1.0, 0.0, 0.0,
-			0.0, 0.0, 1.0, 0.0,
-			...cameraPos
-		])
+		camera.position
 	);
 	
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.cameraRotation,
 		false,
-		new Float32Array([
-			Math.cos(cameraRot[1]), Math.sin(cameraRot[1]) * Math.sin(cameraRot[0]), -Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
-			0.0, Math.cos(cameraRot[0]), Math.sin(cameraRot[0]), 0.0,
-			Math.sin(cameraRot[1]), -Math.cos(cameraRot[1]) * Math.sin(cameraRot[0]), Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
-			0.0, 0.0, 0.0, 1.0,
-		])
+		camera.rotation
 	);
 	
 	// Pass Lighting conditions
@@ -79,37 +65,23 @@ function draw_vertexColor(gl, programInfo, camera, light, bodies, skybox){
 function draw_texture(gl, programInfo, camera, light, bodies, skybox){
 	const body = bodies;
 	
-	const mProjection = camera.projection;
-	const cameraPos = [-camera.position[0], -camera.position[1], -camera.position[2], 1.0];
-	const cameraRot = [-camera.rotation[0], -camera.rotation[1], -camera.rotation[2], 1.0];
-	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.projectionMatrix,
 		false,
-		new Float32Array(mProjection)
+		camera.projection
 	);
 	
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.cameraPosition,
 		false,
-		new Float32Array([
-			1.0, 0.0, 0.0, 0.0,
-			0.0, 1.0, 0.0, 0.0,
-			0.0, 0.0, 1.0, 0.0,
-			...cameraPos
-		])
+		camera.position
 	);
 	
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.cameraRotation,
 		false,
-		new Float32Array([
-			Math.cos(cameraRot[1]), Math.sin(cameraRot[1]) * Math.sin(cameraRot[0]), -Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
-			0.0, Math.cos(cameraRot[0]), Math.sin(cameraRot[0]), 0.0,
-			Math.sin(cameraRot[1]), -Math.cos(cameraRot[1]) * Math.sin(cameraRot[0]), Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
-			0.0, 0.0, 0.0, 1.0,
-		])
+		camera.rotation
 	);
 	
 	// Pass Lighting conditions

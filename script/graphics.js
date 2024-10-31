@@ -230,17 +230,38 @@ function main(){
 				
 				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 				
+				// Compute camera uniforms.
+				const mProjection = this.camera.projection;
+				const cameraPos = [-this.camera.position[0], -this.camera.position[1], -this.camera.position[2], 1.0];
+				const cameraRot = [-this.camera.rotation[0], -this.camera.rotation[1], -this.camera.rotation[2], 1.0];
+				
+				const camera = {
+					projection: new Float32Array(mProjection),
+					position: new Float32Array([
+						1.0, 0.0, 0.0, 0.0,
+						0.0, 1.0, 0.0, 0.0,
+						0.0, 0.0, 1.0, 0.0,
+						...cameraPos
+					]),
+					rotation: new Float32Array([
+						Math.cos(cameraRot[1]), Math.sin(cameraRot[1]) * Math.sin(cameraRot[0]), -Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+						0.0, Math.cos(cameraRot[0]), Math.sin(cameraRot[0]), 0.0,
+						Math.sin(cameraRot[1]), -Math.cos(cameraRot[1]) * Math.sin(cameraRot[0]), Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+						0.0, 0.0, 0.0, 1.0,
+					]),
+				};
+				
 				this.scenery.concat(this.bodies).forEach((bodyCurrent) => {
 					if(bodyCurrent.texture == false){
 						// Tell WebGL to use our program when drawing
 						gl.useProgram(this.glProgramInfo_vertexColor.program);
 						
-						draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, this.camera, this.lightGlobal, bodyCurrent, this.skybox);
+						draw_vertexColor(this.gl, this.glProgramInfo_vertexColor, camera, this.lightGlobal, bodyCurrent, this.skybox);
 					}else{
 						// Tell WebGL to use our program when drawing
 						gl.useProgram(this.glProgramInfo_texture.program);
 						
-						draw_texture(this.gl, this.glProgramInfo_texture, this.camera, this.lightGlobal, bodyCurrent, this.skybox);
+						draw_texture(this.gl, this.glProgramInfo_texture, camera, this.lightGlobal, bodyCurrent, this.skybox);
 					}
 				});
 				
