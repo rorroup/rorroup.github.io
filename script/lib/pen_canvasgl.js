@@ -137,9 +137,6 @@ class Model{
 		this.normals = new Float32Array(vn);
 		this.vertexCount = vc;
 		this.offset = 0;
-		
-		this.textureSrc = "cubetexture.png";
-		
 		this.material = material;
 	}
 }
