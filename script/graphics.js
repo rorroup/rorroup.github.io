@@ -266,7 +266,7 @@ function main(){
 					// render to our targetTexture by binding the framebuffer
 					gl.bindFramebuffer(gl.FRAMEBUFFER, this.silhouetteFramebuffer.framebuffer);
 					
-					draw_silhouette(this.gl, this.glProgramInfo_silhouette, this.camera, this.selected);
+					draw_silhouette(this.gl, this.glProgramInfo_silhouette, camera, this.selected);
 					
 					// render to the canvas
 					gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -579,37 +579,23 @@ function draw_silhouette(gl, programInfo, camera, bodySelected){
 	gl.useProgram(programInfo.program);
 	
 	
-	const mProjection = camera.projection;
-	const cameraPos = [-camera.position[0], -camera.position[1], -camera.position[2], 1.0];
-	const cameraRot = [-camera.rotation[0], -camera.rotation[1], -camera.rotation[2], 1.0];
-	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.projectionMatrix,
 		false,
-		new Float32Array(mProjection)
+		camera.projection
 	);
 	
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.cameraPosition,
 		false,
-		new Float32Array([
-			1.0, 0.0, 0.0, 0.0,
-			0.0, 1.0, 0.0, 0.0,
-			0.0, 0.0, 1.0, 0.0,
-			...cameraPos
-		])
+		camera.position
 	);
 	
 	gl.uniformMatrix4fv(
 		programInfo.uniformLocations.cameraRotation,
 		false,
-		new Float32Array([
-			Math.cos(cameraRot[1]), Math.sin(cameraRot[1]) * Math.sin(cameraRot[0]), -Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
-			0.0, Math.cos(cameraRot[0]), Math.sin(cameraRot[0]), 0.0,
-			Math.sin(cameraRot[1]), -Math.cos(cameraRot[1]) * Math.sin(cameraRot[0]), Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
-			0.0, 0.0, 0.0, 1.0,
-		])
+		camera.rotation
 	);
 	
 	
