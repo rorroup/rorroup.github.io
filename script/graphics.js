@@ -231,22 +231,18 @@ function main(){
 				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 				
 				// Compute camera uniforms.
-				const mProjection = this.camera.projection;
-				const cameraPos = [-this.camera.position[0], -this.camera.position[1], -this.camera.position[2], 1.0];
-				const cameraRot = [-this.camera.rotation[0], -this.camera.rotation[1], -this.camera.rotation[2], 1.0];
-				
 				const camera = {
-					projection: new Float32Array(mProjection),
+					projection: new Float32Array(this.camera.projection),
 					position: new Float32Array([
 						1.0, 0.0, 0.0, 0.0,
 						0.0, 1.0, 0.0, 0.0,
 						0.0, 0.0, 1.0, 0.0,
-						...cameraPos
+						-this.camera.position.x, -this.camera.position.y, -this.camera.position.z, 1.0
 					]),
 					rotation: new Float32Array([
-						Math.cos(cameraRot[1]), Math.sin(cameraRot[1]) * Math.sin(cameraRot[0]), -Math.sin(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
-						0.0, Math.cos(cameraRot[0]), Math.sin(cameraRot[0]), 0.0,
-						Math.sin(cameraRot[1]), -Math.cos(cameraRot[1]) * Math.sin(cameraRot[0]), Math.cos(cameraRot[1]) * Math.cos(cameraRot[0]), 0.0,
+						Math.cos(this.camera.rotation.y), Math.sin(this.camera.rotation.y) * Math.sin(this.camera.rotation.x), Math.sin(this.camera.rotation.y) * Math.cos(this.camera.rotation.x), 0.0,
+						0.0, Math.cos(this.camera.rotation.x), -Math.sin(this.camera.rotation.x), 0.0,
+						-Math.sin(this.camera.rotation.y), Math.cos(this.camera.rotation.y) * Math.sin(this.camera.rotation.x), Math.cos(this.camera.rotation.y) * Math.cos(this.camera.rotation.x), 0.0,
 						0.0, 0.0, 0.0, 1.0,
 					]),
 				};
