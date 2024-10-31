@@ -240,9 +240,9 @@ function main(){
 						-this.camera.position.x, -this.camera.position.y, -this.camera.position.z, 1.0
 					]),
 					rotation: new Float32Array([
-						Math.cos(this.camera.rotation.y), Math.sin(this.camera.rotation.y) * Math.sin(this.camera.rotation.x), Math.sin(this.camera.rotation.y) * Math.cos(this.camera.rotation.x), 0.0,
-						0.0, Math.cos(this.camera.rotation.x), -Math.sin(this.camera.rotation.x), 0.0,
-						-Math.sin(this.camera.rotation.y), Math.cos(this.camera.rotation.y) * Math.sin(this.camera.rotation.x), Math.cos(this.camera.rotation.y) * Math.cos(this.camera.rotation.x), 0.0,
+						Math.cos(-this.camera.rotation.y), Math.sin(-this.camera.rotation.y) * Math.sin(-this.camera.rotation.x), -Math.sin(-this.camera.rotation.y) * Math.cos(-this.camera.rotation.x), 0.0,
+						0.0, Math.cos(-this.camera.rotation.x), Math.sin(-this.camera.rotation.x), 0.0,
+						Math.sin(-this.camera.rotation.y), -Math.cos(-this.camera.rotation.y) * Math.sin(-this.camera.rotation.x), Math.cos(-this.camera.rotation.y) * Math.cos(-this.camera.rotation.x), 0.0,
 						0.0, 0.0, 0.0, 1.0,
 					]),
 				};
