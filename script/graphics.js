@@ -341,7 +341,6 @@ function main(){
 			
 			let cam2mouseNormalized = cam2mouse.copy().normalize();
 			
-			hover.style.display = "none";
 			Animated.selected = false;
 			
 			for(let i = 0; i < Animated.bodies.length; i++){
@@ -370,6 +369,7 @@ function main(){
 					}
 				}
 			}
+			hover.style.display = "none";
 		});
 		
 		canvas.addEventListener("click", function(event_){
