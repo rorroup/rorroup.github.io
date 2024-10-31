@@ -241,6 +241,13 @@
 	transform: rotate(-30deg);
 }
 
+.eyes_open
+{
+	width: 8%;
+	padding-bottom: 8%;
+	border-radius: 50%;
+}
+
 .eyes_blink
 {
 	width: 8%;

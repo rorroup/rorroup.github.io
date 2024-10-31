@@ -146,6 +146,7 @@ function* animateNPC(animation){
 			npc_eyeR.className = "";
 			requestAnimationFrame((time) => {
 				requestAnimationFrame((time) => {
+					npc_eyeL.className = "eyes_open";
 					npc_eyeR.className = "eyes_blink";
 					npc_mouth.className = "mouth_smile";
 				});
