@@ -119,8 +119,8 @@ function main(){
 				},
 				uniformLocations: {
 					projectionMatrix: gl.getUniformLocation(shaderProgram_texture, "uProjectionMatrix"),
-					modelViewMatrix: gl.getUniformLocation(shaderProgram_texture, "uModelViewMatrix"),
-					rotationMatrix: gl.getUniformLocation(shaderProgram_texture, "uRotationMatrix"),
+					modelViewMatrix: gl.getUniformLocation(shaderProgram_texture, "uVertexTranslation"),
+					rotationMatrix: gl.getUniformLocation(shaderProgram_texture, "uVertexRotation"),
 					cameraPosition: gl.getUniformLocation(shaderProgram_texture, "uCameraPosition"),
 					cameraRotation: gl.getUniformLocation(shaderProgram_texture, "uCameraRotation"),
 					uSampler: gl.getUniformLocation(shaderProgram_texture, "uSampler"),
