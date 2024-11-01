@@ -373,8 +373,6 @@ function main(){
 			
 			let cam2mouseNormalized = cam2mouse.copy().normalize();
 			
-			Animated.selected = false;
-			
 			for(let i = 0; i < Animated.bodies.length; i++){
 				let body = Animated.bodies[i];
 				body.selected = false;
@@ -401,6 +399,7 @@ function main(){
 					}
 				}
 			}
+			Animated.selected = false;
 			hover.style.display = "none";
 		});
 		
