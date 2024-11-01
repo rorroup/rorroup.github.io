@@ -36,7 +36,7 @@ class Body{
 	}
 	
 	// Tell WebGL how to pull out the positions from the position
-	// buffer into the vertexPosition attribute.
+	// buffer into the aVertexPosition attribute.
 	setPositionAttribute(gl, programInfo){
 		const numComponents = 3; // pull out 3 values per iteration
 		const type = gl.FLOAT; // the data in the buffer is 32bit floats
@@ -47,14 +47,14 @@ class Body{
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
 
 		gl.vertexAttribPointer(
-			programInfo.attribLocations.vertexPosition,
+			programInfo.attribLocations.aVertexPosition,
 			numComponents,
 			type,
 			normalize,
 			stride,
 			offset,
 		);
-		gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+		gl.enableVertexAttribArray(programInfo.attribLocations.aVertexPosition);
 	}
 	
 	// tell webgl how to pull out the texture coordinates from buffer
@@ -66,18 +66,18 @@ class Body{
 		const offset = 0; // how many bytes inside the buffer to start from
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.textureCoordBuffer);
 		gl.vertexAttribPointer(
-			programInfo.attribLocations.textureCoord,
+			programInfo.attribLocations.aTextureCoord,
 			num,
 			type,
 			normalize,
 			stride,
 			offset,
 		);
-		gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+		gl.enableVertexAttribArray(programInfo.attribLocations.aTextureCoord);
 	}
 	
 	// Tell WebGL how to pull out the normals from
-	// the normal buffer into the vertexNormal attribute.
+	// the normal buffer into the aVertexNormal attribute.
 	setNormalAttribute(gl, programInfo){
 		const numComponents = 3;
 		const type = gl.FLOAT;
@@ -86,14 +86,14 @@ class Body{
 		const offset = 0;
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
 		gl.vertexAttribPointer(
-			programInfo.attribLocations.vertexNormal,
+			programInfo.attribLocations.aVertexNormal,
 			numComponents,
 			type,
 			normalize,
 			stride,
 			offset,
 		);
-		gl.enableVertexAttribArray(programInfo.attribLocations.vertexNormal);
+		gl.enableVertexAttribArray(programInfo.attribLocations.aVertexNormal);
 	}
 }
 

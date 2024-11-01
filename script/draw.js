@@ -2,36 +2,36 @@
 function draw_vertexColor(gl, programInfo, camera, light, body, skybox){
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.projectionMatrix,
+		programInfo.uniformLocations.uProjectionMatrix,
 		false,
 		camera.projection
 	);
 	
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.cameraPosition,
+		programInfo.uniformLocations.uCameraPosition,
 		false,
 		camera.position
 	);
 	
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.cameraRotation,
+		programInfo.uniformLocations.uCameraRotation,
 		false,
 		camera.rotation
 	);
 	
 	// Pass Lighting conditions
-	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, new Float32Array(light.diffuse));
-	gl.uniform3fv(programInfo.uniformLocations.LightDirection, new Float32Array(light.directional.direction));
-	gl.uniform3fv(programInfo.uniformLocations.LightColor, new Float32Array(light.directional.color));
+	gl.uniform3fv(programInfo.uniformLocations.uLightAmbient, new Float32Array(light.diffuse));
+	gl.uniform3fv(programInfo.uniformLocations.uLightDirection, new Float32Array(light.directional.direction));
+	gl.uniform3fv(programInfo.uniformLocations.uLightColor, new Float32Array(light.directional.color));
 	
 	// Tell WebGL how to pull out the positions from the position
-	// buffer into the vertexPosition attribute.
+	// buffer into the aVertexPosition attribute.
 	body.setPositionAttribute(gl, programInfo);
 	body.setNormalAttribute(gl, programInfo);
 	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.modelViewMatrix,
+		programInfo.uniformLocations.uVertexTranslation,
 		false,
 		new Float32Array([
 			1, 0, 0, 0,
@@ -41,7 +41,7 @@ function draw_vertexColor(gl, programInfo, camera, light, body, skybox){
 		])
 	);
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.rotationMatrix,
+		programInfo.uniformLocations.uVertexRotation,
 		false,
 		new Float32Array([
 			Math.cos(body.rotation[0]), 0, -Math.sin(body.rotation[0]), 0,
@@ -52,9 +52,9 @@ function draw_vertexColor(gl, programInfo, camera, light, body, skybox){
 	);
 	
 	
-	gl.uniform3fv(programInfo.uniformLocations.VertexColor, body.model.material.Kd);
+	gl.uniform3fv(programInfo.uniformLocations.uVertexColor, body.model.material.Kd);
 	
-	gl.uniform3fv(programInfo.uniformLocations.selected, body.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
+	gl.uniform3fv(programInfo.uniformLocations.uSelected, body.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
 	
 	gl.drawArrays(gl.TRIANGLES, body.model.offset, body.model.vertexCount);
 }
@@ -62,37 +62,37 @@ function draw_vertexColor(gl, programInfo, camera, light, body, skybox){
 function draw_texture(gl, programInfo, camera, light, body, skybox){
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.projectionMatrix,
+		programInfo.uniformLocations.uProjectionMatrix,
 		false,
 		camera.projection
 	);
 	
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.cameraPosition,
+		programInfo.uniformLocations.uCameraPosition,
 		false,
 		camera.position
 	);
 	
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.cameraRotation,
+		programInfo.uniformLocations.uCameraRotation,
 		false,
 		camera.rotation
 	);
 	
 	// Pass Lighting conditions
-	gl.uniform3fv(programInfo.uniformLocations.LightAmbient, new Float32Array(light.diffuse));
-	gl.uniform3fv(programInfo.uniformLocations.LightDirection, new Float32Array(light.directional.direction));
-	gl.uniform3fv(programInfo.uniformLocations.LightColor, new Float32Array(light.directional.color));
+	gl.uniform3fv(programInfo.uniformLocations.uLightAmbient, new Float32Array(light.diffuse));
+	gl.uniform3fv(programInfo.uniformLocations.uLightDirection, new Float32Array(light.directional.direction));
+	gl.uniform3fv(programInfo.uniformLocations.uLightColor, new Float32Array(light.directional.color));
 	
 	// Tell WebGL how to pull out the positions from the position
-	// buffer into the vertexPosition attribute.
+	// buffer into the aVertexPosition attribute.
 	body.setPositionAttribute(gl, programInfo);
 	body.setTextureAttribute(gl, programInfo);
 	body.setNormalAttribute(gl, programInfo);
 	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.modelViewMatrix,
+		programInfo.uniformLocations.uVertexTranslation,
 		false,
 		new Float32Array([
 			1, 0, 0, 0,
@@ -103,7 +103,7 @@ function draw_texture(gl, programInfo, camera, light, body, skybox){
 	);
 	
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.rotationMatrix,
+		programInfo.uniformLocations.uVertexRotation,
 		false,
 		new Float32Array([
 			Math.cos(body.rotation[0]), 0, -Math.sin(body.rotation[0]), 0,
@@ -123,7 +123,7 @@ function draw_texture(gl, programInfo, camera, light, body, skybox){
 	// Tell the shader we bound the texture to texture unit 0
 	gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 	
-	gl.uniform3fv(programInfo.uniformLocations.selected, body.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
+	gl.uniform3fv(programInfo.uniformLocations.uSelected, body.selected ? new Float32Array([0.2, 0.2, 0.2]) : new Float32Array([0.0, 0.0, 0.0]));
 	
 	gl.drawArrays(gl.TRIANGLES, body.model.offset, body.model.vertexCount);
 }
@@ -146,9 +146,9 @@ function draw_outline(gl, programInfo, relativeSize, screenSize, attribBuffer, t
 	// Tell the shader we bound the texture to texture unit 0
 	gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 	
-	gl.uniform4fv(programInfo.uniformLocations.outlineColor, new Float32Array([1.0, 1.0, 1.0, 1.0]));
-	gl.uniform1f(programInfo.uniformLocations.outlineSize, 3.0);
-	gl.uniform2fv(programInfo.uniformLocations.textureSize, new Float32Array(screenSize));
+	gl.uniform4fv(programInfo.uniformLocations.uOutlineColor, new Float32Array([1.0, 1.0, 1.0, 1.0]));
+	gl.uniform1f(programInfo.uniformLocations.uOutlineSize, 3.0);
+	gl.uniform2fv(programInfo.uniformLocations.uTextureSize, new Float32Array(screenSize));
 	
 	{
 		const numComponents = 2; // pull out 2 values per iteration
@@ -159,14 +159,14 @@ function draw_outline(gl, programInfo, relativeSize, screenSize, attribBuffer, t
 		const offset = 0; // how many bytes inside the buffer to start from
 		gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer[0]);
 		gl.vertexAttribPointer(
-			programInfo.attribLocations.vertexPosition,
+			programInfo.attribLocations.aVertexPosition,
 			numComponents,
 			type,
 			normalize,
 			stride,
 			offset,
 		);
-		gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+		gl.enableVertexAttribArray(programInfo.attribLocations.aVertexPosition);
 	}
 	
 	{
@@ -187,14 +187,14 @@ function draw_outline(gl, programInfo, relativeSize, screenSize, attribBuffer, t
 		);
 		
 		gl.vertexAttribPointer(
-			programInfo.attribLocations.textureCoord,
+			programInfo.attribLocations.aTextureCoord,
 			num,
 			type,
 			normalize,
 			stride,
 			offset,
 		);
-		gl.enableVertexAttribArray(programInfo.attribLocations.textureCoord);
+		gl.enableVertexAttribArray(programInfo.attribLocations.aTextureCoord);
 	}
 	
 	gl.drawArrays(gl.TRIANGLES, 0, 6);
@@ -214,31 +214,31 @@ function draw_silhouette(gl, programInfo, camera, bodySelected){
 	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.projectionMatrix,
+		programInfo.uniformLocations.uProjectionMatrix,
 		false,
 		camera.projection
 	);
 	
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.cameraPosition,
+		programInfo.uniformLocations.uCameraPosition,
 		false,
 		camera.position
 	);
 	
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.cameraRotation,
+		programInfo.uniformLocations.uCameraRotation,
 		false,
 		camera.rotation
 	);
 	
 	
 	// Tell WebGL how to pull out the positions from the position
-	// buffer into the vertexPosition attribute.
+	// buffer into the aVertexPosition attribute.
 	bodySelected.setPositionAttribute(gl, programInfo);
 	
 	// Set the shader uniforms
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.modelViewMatrix,
+		programInfo.uniformLocations.uVertexTranslation,
 		false,
 		new Float32Array([
 			1, 0, 0, 0,
@@ -248,7 +248,7 @@ function draw_silhouette(gl, programInfo, camera, bodySelected){
 		])
 	);
 	gl.uniformMatrix4fv(
-		programInfo.uniformLocations.rotationMatrix,
+		programInfo.uniformLocations.uVertexRotation,
 		false,
 		new Float32Array([
 			Math.cos(bodySelected.rotation[0]), 0, -Math.sin(bodySelected.rotation[0]), 0,
