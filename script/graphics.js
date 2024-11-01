@@ -353,7 +353,7 @@ function main(){
 		});
 		
 		Animated.resize();
-		window.addEventListener("resize", () => {Animated.resize();});
+		window.addEventListener("resize", (event_) => {Animated.resize();});
 		
 		const hover = document.getElementById("itemHover");
 		canvas.addEventListener("mousemove", function(event_){
