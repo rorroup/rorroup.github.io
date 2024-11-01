@@ -96,6 +96,7 @@ function main(){
 				attribLocations: {
 					vertexPosition: gl.getAttribLocation(shaderProgram_vertexColor, "aVertexPosition"),
 					vertexNormal: gl.getAttribLocation(shaderProgram_vertexColor, "aVertexNormal"),
+					textureCoord: gl.getAttribLocation(shaderProgram_vertexColor, "aTextureCoord"),
 				},
 				uniformLocations: {
 					projectionMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uProjectionMatrix"),
