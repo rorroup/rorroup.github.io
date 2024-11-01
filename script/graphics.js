@@ -337,6 +337,21 @@ function main(){
 			console.error(e);
 		});
 		
+		fetch("asset/libraryCloud.obj").then((response) => {
+			if(!response.ok){
+				throw new Error(`Response status: ${response.status}`);
+			}
+			return response.text();
+		}).then((text) =>
+			pen_obj.obj_load(text)
+		).then((loaded) => {
+			for(let i = 0; i < loaded.length; i++){
+				Animated.scenery.push(new Cloud(Vector4([-25.0 + 4.0 * i, 20.0 - 2.0 * i, -70.0 + 3.0 * i, 1.0]), Vector4(pen_Matrix.W1), loaded[i], Animated.gl));
+			}
+		}).catch((e) => {
+			console.error(e);
+		});
+		
 		Animated.resize();
 		window.addEventListener("resize", () => {Animated.resize();});
 		

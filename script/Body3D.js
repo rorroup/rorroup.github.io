@@ -97,6 +97,22 @@ class Body{
 	}
 }
 
+class Cloud extends Body
+{
+	constructor(position, rotation, model, gl)
+	{
+		super(position, rotation, model, gl);
+		this.timeTotal = 0.0;
+		this.x0 = this.position.x;
+	}
+	
+	update(deltaTime){
+		this.timeTotal += deltaTime;
+		this.position.x = -((this.x0 + this.timeTotal / 250.0) % 80.0);
+		return true;
+	}
+}
+
 function collision_LineTriangle(line, triangle)
 {
 	// Triangular boundary.
