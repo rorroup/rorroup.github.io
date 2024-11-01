@@ -1,33 +1,8 @@
 
 #resume{
-	display: none;
-	position: absolute;
-	top: 0px;
-	left: 50%;
-	transform: translateX(-50%);
 	height: 100%;
-	overflow-y: auto;
 	padding: 20px 10px;
 	box-sizing: border-box;
-}
-
-#resume_close{
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	top: 0px;
-	right: 0px;
-	width: 13mm;
-	height: 13mm;
-	border-radius: 50%;
-	background-color: #006600;
-	border: 2px solid #003300;
-}
-
-#resume_close:hover{
-	background-color: #660000;
-	border: 2px solid #330000;
 }
 
 #resume_resume{
@@ -38,24 +13,30 @@
 	margin: auto;
 }
 
+#resume_resume br
+{
+	margin: 0px;
+}
+
 #resume_top, #resume_columns{
 	min-width: 100%;
 	max-width: 100%;
 }
 
 #resume_top{
-	padding: 6mm 6mm 3mm 6mm;
+	padding: 6mm 6mm 3mm 8mm;
 	box-sizing: border-box;
+	height: 28mm;
 	color: #FFFFFF;
 	background-color: #333333;
 }
 
-#resume_left, #resume_right{
-	padding: 2mm 6mm 6mm 6mm;
+#resume_right{
+	padding: 2mm 8mm 6mm 5mm;
 }
 
 #resume_top>h1{
-	margin: 0mm auto 0mm 0mm;
+	margin: 4mm auto 0mm 0mm;
 	font-size: 25pt;
 	font-weight: normal;
 }
@@ -73,10 +54,12 @@
 }
 
 #resume_left{
-	min-width: 30%;
-	max-width: 30%;
+	min-width: 32.5%;
+	max-width: 32.5%;
 	color: #FFFFFF;
 	background-color: #585858;
+	padding: 2mm 5mm 6mm 8mm;
+	font-size: 12pt;
 }
 
 #resume_right{

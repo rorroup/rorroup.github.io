@@ -14,7 +14,6 @@
 		<link rel="stylesheet" href="style/style.css"/>
 		<link rel="stylesheet" href="style/dialogue.css"/>
 		<link rel="stylesheet" href="style/resume.css"/>
-		<link rel="stylesheet" href="style/demo.css"/>
 		
 		<script src="https://kit.fontawesome.com/127833a4af.js" crossorigin="anonymous"></script>
 		
@@ -26,20 +25,52 @@
 			
 			<section id="">
 				
-				<div id="background">
-					<div id="title">
-						<h1 id="title_name">The Penicilina Quest</h1>
-					</div>
-					<div id="demo" class="">
-						<div id="demo_wrapper">
-							<canvas id="demo_canvas">
-							</canvas>
-							<p id="demo_instruction">Click to play</p>
-							<div id="demo_cover"></div>
+				<canvas id="glcanvas">Your browser does not seem to support HTML canvas.</canvas>
+
+				<p id="itemHover"></p>
+				
+			</section>
+			
+			<section id="HOME">
+				<div class="sectionBackground">
+					<div class="sectionFrame">
+						<div class="sectionContent">
+							<div class="sectionColumn">
+								<div>
+									<h1 id="title_name">The Penicilina Quest</h1>
+									<p>
+										I am an electrical engineer and I program as a hobby. As such, I sometimes come up with a bunch of ideas I want to try so I build small programs where I can apply and test concepts to experiment how the parts involved interact with each other. I have encountered slow programs and bugs so building something with a specific behaviour myself allows me to asess whether the different components are working properly.<br/>
+										
+										Therefore I built this website to hold those experiments. Besides it being hosted on the web gives me more flexibility and allows me to share it with other people should the need ever arise. I had no actual content for it though so I populated it with how the page itself was made instead in part to document what I learned. Maybe someone could find that information useful. That said, I've had my fair share of internet myself so I decided to make the page itself in kind of a meme fashion inspired by the things I like. The technical side should still be trustworthy though, it works after all. Trust me, I'm an engineer.<br/>
+									</p>
+									
+									<div class="buttonEnter">Go in!</div>
+								</div>
+							
+								<div id="footer">
+									<p class="credits">Disclaimer: this page has not been adapted for mobile devices.</p>
+									<p class="credits">b2.0.0</p>
+									<p class="credits">by Penicilina, October 2024</p>
+								</div>
+							</div>
+							
+							<div class="buttonFrame" style="display: none;">
+								<div class="buttonArrow"></div>
+								<p class="buttonReturn">Back to Library</p>
+							</div>
+						</div>
+						
+						<div class="sectionCover">
+							<div>
+								<h2>The Penicilina Quest</h2>
+								<p>by Penicilina</p>
+							</div>
 						</div>
 					</div>
 				</div>
-				
+			</section>
+			
+			<section id="MANAGER" style="display: none;">
 				<div id="npc" class="">
 					<div>
 					</div>
@@ -51,7 +82,6 @@
 						<div class=""></div>
 					</div>
 				</div>
-				
 				<div id="dialogue" class="">
 					<div id="dialogue_prompt">
 					</div>
@@ -61,37 +91,2090 @@
 						<div><button id="dialogue_button"></button></div>
 					</div>
 				</div>
-				
-				<div id="resume" class="">
-					<div id="resume_resume">
-						<div id="resume_top">
-						</div>
-						<div id="resume_columns">
-							<div id="resume_left">
+			</section>
+			
+			<section id="BUILD" style="display: none;">
+				<div class="sectionBackground">
+					<div class="sectionFrame">
+						<div class="sectionContent" id="resume">
+							<div class="sectionColumn" id="resume_resume">
+								<div id="resume_top">
+								</div>
+								<div id="resume_columns">
+									<div id="resume_left">
+									</div>
+									<div id="resume_right">
+									</div>
+								</div>
 							</div>
-							<div id="resume_right">
+							
+							<div class="buttonFrame">
+								<div class="buttonArrow"></div>
+								<p class="buttonReturn">Back to Library</p>
+							</div>
+						</div>
+						
+						<div class="sectionCover">
+							<div>
+								<h2>Resume</h2>
 							</div>
 						</div>
 					</div>
-					<div id="resume_close"><p>Close</p></div>
 				</div>
-				
+			</section>
+			
+			<section id="PROJECTION" style="display: none;">
+				<div class="sectionBackground">
+					<div class="sectionFrame">
+						<div class="sectionContent">
+							<div class="sectionColumn">
+								<h2 class="title_sec">Projection</h2>
+								<p>
+									<a target="blank_" href="https://www.khronos.org/webgl/">WebGL</a> allows for high quality rendering to an html canvas element. It outputs from an internal 4-dimentional normalized coordinate system regarded as clip space ranging from <math>-1</math> to <math>1</math> to the screen by scaling the contents to fit the destination resolution. Points for drawing are passed into WebGL using special programs called <a target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Adding_2D_content_to_a_WebGL_context#the_shaders">shaders</a>. Firstly, the vertex shader defines the position of the desired point by setting a special variable called <math><mi class="variable">gl_Position</mi></math> using a 4-component vector in what is called <a target="blank_" href="https://youtu.be/U0_ONQQ5ZNM?si=WJcXtkjHvVZsn8GA&t=423">homogeneous coordinates</a> meaning that the first 3 components correspond to the <a target="blank_" href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system#Three_dimensions">cartesian</a> <math>x</math>, <math>y</math> and <math>z</math> coordinates dictating horizontal position, vertical position and depth respectively, while the fourth component usually called <math>w</math> serves as a factor whose inverse scales the whole vector; so that everything laying within the 3-dimentional origin-centered 2-unit cube will be drawn and everything else will be ignored. Then the color of the point is established by setting another special variable called <math><mi class="variable">gl_FragColor</mi></math> in the fragment shader.
+									<br/>
+									
+									The rendering of a 3D scene requires mapping the vertices of the objects in the world to the clip space so that WebGL knows how to draw them to the screen. This is generally achieved using <a target="blank_" href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebra</a> through the application of <a target="blank_" href="https://www.youtube.com/watch?v=kYB8IZa5AuE">linear transformations</a> consisting in matrix multiplication to manipulate space thus driving the points to their appropiate coordinates. Being an electrical engineer I'm a big fan of <a target="blank_" href="https://en.wikipedia.org/wiki/Superposition_principle#Other_example_applications">linear systems</a> myself.
+									<br/>
+									
+									Square 3x3 matrices allow for a variety of transformations of three dimentional vectors. Scaling for example implies the multiplication of the vector's components by a constant value. Let
+									<math>
+										<mn>P</mn>
+										=
+										(
+											<msub>
+												<mi>P</mi>
+												<mn>x</mn>
+											</msub>
+											,
+											<msub>
+												<mi>P</mi>
+												<mn>y</mn>
+											</msub>
+											,
+											<msub>
+												<mi>P</mi>
+												<mn>z</mn>
+											</msub>
+										)
+									</math>
+									be a vector in cartesian space and <math><mn>k</mn></math> the scaling constant. Then its scaling matrix satisfies the equality
+									
+									<math class="equation">
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>2</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>2</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>2</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>x</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>x</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>x</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>y</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>y</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>y</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>z</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>z</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>z</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd>
+														<mn>k</mn>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<mn>k</mn>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<mn>k</mn>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										k
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+									</math>
+									
+									giving the solution
+									
+									<math class="equation">
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><mn>k</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>k</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>k</mn></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										k
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><mn>1</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>1</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>1</mn></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+									</math>
+									
+									which can be written as <math>k<msub><mi>I</mi><mn>3</mn></msub></math> using the <a target="blank_" href="https://en.wikipedia.org/wiki/Identity_matrix">identity matrix</a>. <a target="blank_" href="https://en.wikipedia.org/wiki/Rotation_matrix">Rotation</a> may be similarly <a target="blank_" href="https://www.khanacademy.org/math/linear-algebra/matrix-transformations/lin-trans-examples/v/rotation-in-r3-around-the-x-axis">deduced</a> among other transformations. It can be proved however that translation by a vector
+									<math>
+										<mn>T</mn>
+										=
+										(
+											<msub>
+												<mi>T</mi>
+												<mn>x</mn>
+											</msub>
+											,
+											<msub>
+												<mi>T</mi>
+												<mn>y</mn>
+											</msub>
+											,
+											<msub>
+												<mi>T</mi>
+												<mn>z</mn>
+											</msub>
+										)
+									</math>
+									can not be accomplished in this fashion since the matrix equation
+									
+									<math class="equation">
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>2</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>2</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>2</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>x</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>x</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>x</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>y</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>y</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>y</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>z</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>z</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>z</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>T</mi>
+															<mn>x</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>T</mi>
+															<mn>y</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+														+
+														<msub>
+															<mi>T</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										+
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+									</math>
+									
+									has no solution. This issue is circumvented by conveniently adding the aforementioned 4th component <math>w</math> yielding
+									
+									<math class="equation" style="display: block;">
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>2</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>x</mi>
+														<mn>3</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>2</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>y</mi>
+														<mn>3</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>2</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>z</mi>
+														<mn>3</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>w</mi>
+														<mn>0</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>w</mi>
+														<mn>1</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>w</mi>
+														<mn>2</mn>
+													</msub></mtd>
+													<mtd><msub>
+														<mi>w</mi>
+														<mn>3</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd>1</mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>x</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>x</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>x</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+														+
+														<msub>
+															<mi>x</mi>
+															<mn>3</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>y</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>y</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>y</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+														+
+														<msub>
+															<mi>y</mi>
+															<mn>3</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>z</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>z</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>z</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+														+
+														<msub>
+															<mi>z</mi>
+															<mn>3</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>w</mi>
+															<mn>0</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>w</mi>
+															<mn>1</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>w</mi>
+															<mn>2</mn>
+														</msub>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+														+
+														<msub>
+															<mi>w</mi>
+															<mn>3</mn>
+														</msub>
+													</mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>P</mi>
+															<mn>x</mn>
+														</msub>
+														+
+														<msub>
+															<mi>T</mi>
+															<mn>x</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>P</mi>
+															<mn>y</mn>
+														</msub>
+														+
+														<msub>
+															<mi>T</mi>
+															<mn>y</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>
+														<msub>
+															<mi>P</mi>
+															<mn>z</mn>
+														</msub>
+														+
+														<msub>
+															<mi>T</mi>
+															<mn>z</mn>
+														</msub>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd>1</mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										=
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>P</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd>1</mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+										+
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>w</mn>
+													</msub></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+									</math>
+									
+									where for simplicity the <math>w</math> component of the 4-dimentional homogeneous equivalent of the <math>P</math> vector
+									<math>
+										<msub>
+											<mn>P</mn>
+											<mi>H</mi>
+										</msub>
+										=
+										(
+											<msub>
+												<mi>P</mi>
+												<mn>x</mn>
+											</msub>
+											,
+											<msub>
+												<mi>P</mi>
+												<mn>y</mn>
+											</msub>
+											,
+											<msub>
+												<mi>P</mi>
+												<mn>z</mn>
+											</msub>
+											,
+											<msub>
+												<mi>P</mi>
+												<mn>w</mn>
+											</msub>
+										)
+									</math>
+									as well as the translated vector have been forced to scale by <math>1</math> so that the homogeneous coordinates match numerically their 3-dimentional counterparts. The solution to this equation is the 4x4 3D translation matrix
+									
+									<math class="equation">
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><mn>1</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>x</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>1</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>y</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>1</mn></mtd>
+													<mtd><msub>
+														<mi>T</mi>
+														<mn>z</mn>
+													</msub></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>1</mn></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+									</math>
+									
+									that is clearly independent of the <math><msub><mi>T</mi><mn>w</mn></msub></math> translation component which is usually considered as <math>1</math> for consistency reasons as it won't affect the numerical result. This approach establishes the points are to be passed as 4D homogeneous vectors and transformed by 4x4 matrices. Other transformation matrices may be expanded from 3x3 to 4x4 rather trivially like the scaling matrix
+									
+									<math class="equation">
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd><mn>k</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>k</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>k</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>1</mn></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+									</math>
+									
+									keeping in mind a 3D vector is numerically equivalent to its homogenooeus expansion scaled by <math>w = 1</math>. This enables <a target="blank_" href="https://en.wikipedia.org/wiki/Matrix_multiplication">composing</a> multiple matrix multiplications to achieve further transformations.
+									<br/>
+									
+									The 2D screen pixel coordinate for rendering a particular point that exists in the world is calculated from its mapping into WebGL 4D clip space obtained from the perspective of an observer looking into the 3D space through a process called projection. Therefore it is only natural to begin with building a sufficiently accurate model to mimic human sight. Biology is not my specialty, nor is optics, but we know we see by percieving the light coming trough the pupil of the eye which bounced off of an object allowing us to see it. Therefore I establish 2 fundamental laws: firstly light travels in a strictly straight line; and secondly, that which can be seen is light that reaches a particular point in space from the front as if it was the pupil which I will call the camera. To define the camera's front and for simplicity and <a target="blank_" href="https://en.wikipedia.org/wiki/Without_loss_of_generality">without loss of generality</a> the camera will exist at the origin of my coordinate system with the <math>x</math> axis going to the right and the <math>y</math> axis going upwards so that the center of the view as well as the <math>x</math> and <math>y</math> axis match those of the clip space. Again, being an electrical engineer I'm particularly fond of the <a target="blank_" href="https://youtu.be/NJRDclzi5Vg?si=esZQrLzfJNDSeB3N&t=57">right hand rule</a> too, which implies the <math>z</math> axis points backwards meaning the camera is looking straight down the negative <math>z</math> axis.
+									<br/>
+									
+									Having determined where the camera is looking at the field of view angle <math>FoV</math> is defined to adequately asses whether points are visible in front of it. It spreads vertically and symmetrically centered on the camera's axis so that only light inciding on the camera at an angle within its edges can be seen. This vertical angle naturally imposes an opposite vertical visible range in the <math>y</math> direction increasing the further away from the camera controlling the visibility of points in space so as to exclude those directly above or even behind it. Since the screen is a rectangle there obviously must exist a corresponding horizontal visible range related by the screen's aspect ratio <math>AR = <msub><mi>Screen</mi><mi>height</mi></msub> / <msub><mi>Screen</mi><mi>width</mi></msub> </math>. The resulting rectangular boundary defines a rectangular orthogonal symetric pyramid extending indefinitely in the negative <math>z</math> direction with the camera at its tip looking down its center. The ever growing rectangles down the pyramid normal to the camera direction are naturally all <a target="blank_" href="https://en.wikipedia.org/wiki/Similarity_(geometry)">similar</a> among them and are also similar to the screen.
+									<br/>
+									
+									Because computers belong to the real world they inevitably have finite capabilities so our camera can only see so far. We set a plane normal to the camera direction at coordinate negative <math><msub><mn>Z</mn><mi>far</mi></msub></math> as the furthest visible distance whose intersection with the field of view's edges delimits the rectangle to serve as the base of the pyramid. Lastly a second plane parallel to the pyramid's base is added closer to the camera at a distance <math><msub><mn>Z</mn><mi>near</mi></msub></math> so nothing closer is rendered since everything would collapse on a single point as approaching the camera.
+									<br/>
+									
+									The resulting volume bounded by the vertical field of view, its corresponding horizontal ratio, and the near and far planes has the shape of a <a target="blank_" href="https://en.wikipedia.org/wiki/Frustum">frustum</a> and corresponds to the visible volume to be projected onto the clip space for rendering. The best analogy I can think of is as if looking at your screen is the same as looking into the world trough a window. We are standing still at a fixed distance before the window and everything in the world happens beyond it so all we can see is what is directly in front of it at any given time.
+									<br/>
+									
+									The 4x4 projection matrix is built from the geometrycal relationships to accurately map a world coordinate
+									<math>
+										<mn>W</mn>
+										=
+										(
+											<msub>
+												<mi>W</mi>
+												<mn>x</mn>
+											</msub>
+											,
+											<msub>
+												<mi>W</mi>
+												<mn>y</mn>
+											</msub>
+											,
+											<msub>
+												<mi>W</mi>
+												<mn>z</mn>
+											</msub>
+											,
+											1
+										)
+									</math>
+									into normalized clip space. Since our model has light traveling in a straight line rays at the field of view's edges form an <a target="blank_" href="https://en.wikipedia.org/wiki/Isosceles_triangle">isosceles</a> triangle whose height <math><msub><mn>Z</mn><mi>near</mi></msub></math> <a target="blank_" href="https://en.wikipedia.org/wiki/Bisection#Angle_bisector">bisects</a> the <math>FoV</math> and whose base lies on the near plane with length <math><msub><mi>H</mi><mi>near</mi></msub> = 2 <msub><mi>h</mi><mi>near</mi></msub></math> holding the relationship
+									
+									<math class="equation">
+										<mrow>
+											tan
+											<mo>(</mo>
+											<mfrac>
+												<mrow>FoV</mrow>
+												<mrow>2</mrow>
+											</mfrac>
+											<mo>)</mo>
+											<mo>=</mo>
+											<mfrac>
+												<mrow><msub><mi>h</mi><mi>near</mi></msub></mrow>
+												<mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow>
+											</mfrac>
+										</mrow>
+									</math>
+									
+									Because the rectangular orthogonal symmetric visible frustum has its tip in the camera located at the origin implying it is <math>0</math> centered in both the <math>x</math> and <math>y</math> directions a ray from the camera to the point in the world <math>W</math> intersects the near plane at a point
+									<math>
+										<mn>N</mn>
+										=
+										(
+											<msub>
+												<mi>N</mi>
+												<mn>x</mn>
+											</msub>
+											,
+											<msub>
+												<mi>N</mi>
+												<mn>y</mn>
+											</msub>
+											,
+											<msub>
+												<mi>N</mi>
+												<mn>z</mn>
+											</msub>
+											,
+											1
+										)
+									</math>
+									proportional to it in 3D forming 2 pairs of similar triangles in both the <math>x</math> and <math>y</math> directions. Therefore the <math>y</math> coordinate yields
+									<math class="equation">
+										<mrow>
+											<mfrac>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>y</mn>
+												</msub></mrow>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>z</mn>
+												</msub></mrow>
+											</mfrac>
+											<mo>=</mo>
+											<mfrac>
+												<mrow><msub>
+													<mi>N</mi>
+													<mn>y</mn>
+												</msub></mrow>
+												<mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow>
+											</mfrac>
+										</mrow>
+									</math>
+									Its clip coordinate
+									<math>
+										<mn>C</mn>
+										=
+										(
+											<msub>
+												<mi>C</mi>
+												<mn>x</mn>
+											</msub>
+											,
+											<msub>
+												<mi>C</mi>
+												<mn>y</mn>
+											</msub>
+											,
+											<msub>
+												<mi>C</mi>
+												<mn>z</mn>
+											</msub>
+											,
+											<msub>
+												<mi>C</mi>
+												<mn>w</mn>
+											</msub>
+										)
+									</math>
+									in the <math>y</math> axis is therefore obtained by normalizing it by the near rectangle's height to belong in the interval <math>[-1, 1]</math> as
+									<math class="equation">
+										<mrow>
+											<msub>
+												<mi>C</mi>
+												<mn>y</mn>
+											</msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow><msub>
+													<mi>N</mi>
+													<mn>y</mn>
+												</msub></mrow>
+												<mrow><msub><mn>h</mn><mi>near</mi></msub></mrow>
+											</mfrac>
+											<mo>=</mo>
+											<!-- <mfrac> -->
+												<!-- <mrow><msub> -->
+													<!-- <mi>N</mi> -->
+													<!-- <mn>y</mn> -->
+												<!-- </msub></mrow> -->
+												<!-- <mrow><msub><mn>h</mn><mi>near</mi></msub></mrow> -->
+											<!-- </mfrac> -->
+											<!-- <mfrac> -->
+												<!-- <mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow> -->
+												<!-- <mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow> -->
+											<!-- </mfrac> -->
+											<!-- <mo>=</mo> -->
+											<mfrac>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>y</mn>
+												</msub></mrow>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>z</mn>
+												</msub></mrow>
+											</mfrac>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow>
+													tan
+													<mo>(</mo>
+													<mfrac>
+														<mrow>FoV</mrow>
+														<mrow>2</mrow>
+													</mfrac>
+													<mo>)</mo>
+												</mrow>
+											</mfrac>
+										</mrow>
+									</math>
+									
+									The near rectangle's width is related to its height by
+									<math class="equation">
+										<mrow>
+											<mfrac>
+												<mrow><msub><mn>H</mn><mi>near</mi></msub></mrow>
+												<mrow><msub><mn>W</mn><mi>near</mi></msub></mrow>
+											</mfrac>
+											<mo>=</mo>
+											<mfrac>
+												<mrow><msub><mn>h</mn><mi>near</mi></msub></mrow>
+												<mrow><msub><mn>w</mn><mi>near</mi></msub></mrow>
+											</mfrac>
+											<mo>=</mo>
+											<mfrac>
+												<mrow><msub><mi>Screen</mi><mi>height</mi></msub></mrow>
+												<mrow><msub><mi>Screen</mi><mi>width</mi></msub></mrow>
+											</mfrac>
+											<mo>=</mo>
+											AR
+										</mrow>
+									</math>
+									The <math>x</math> coordinate yields a relationship analog to the <math>y</math> coordinate like
+									<math class="equation">
+										<mrow>
+											<mfrac>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>x</mn>
+												</msub></mrow>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>z</mn>
+												</msub></mrow>
+											</mfrac>
+											<mo>=</mo>
+											<mfrac>
+												<mrow><msub>
+													<mi>N</mi>
+													<mn>x</mn>
+												</msub></mrow>
+												<mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow>
+											</mfrac>
+										</mrow>
+									</math>
+									Thus the clip <math>x</math> coordinate is obtained as
+									<math class="equation">
+										<mrow>
+											<msub>
+												<mi>C</mi>
+												<mn>x</mn>
+											</msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow><msub>
+													<mi>N</mi>
+													<mn>x</mn>
+												</msub></mrow>
+												<mrow><msub><mn>w</mn><mi>near</mi></msub></mrow>
+											</mfrac>
+											<mo>=</mo>
+											<!-- <mfrac> -->
+												<!-- <mrow><msub> -->
+													<!-- <mi>N</mi> -->
+													<!-- <mn>x</mn> -->
+												<!-- </msub></mrow> -->
+												<!-- <mrow><msub><mn>w</mn><mi>near</mi></msub></mrow> -->
+											<!-- </mfrac> -->
+											<!-- <mfrac> -->
+												<!-- <mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow> -->
+												<!-- <mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow> -->
+											<!-- </mfrac> -->
+											<!-- <mfrac> -->
+												<!-- <mrow><msub><mn>h</mn><mi>near</mi></msub></mrow> -->
+												<!-- <mrow><msub><mn>h</mn><mi>near</mi></msub></mrow> -->
+											<!-- </mfrac> -->
+											<!-- <mo>=</mo> -->
+											<mfrac>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>x</mn>
+												</msub></mrow>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>z</mn>
+												</msub></mrow>
+											</mfrac>
+											<mfrac>
+												<mrow>AR</mrow>
+												<mrow>
+													tan
+													<mo>(</mo>
+													<mfrac>
+														<mrow>FoV</mrow>
+														<mrow>2</mrow>
+													</mfrac>
+													<mo>)</mo>
+												</mrow>
+											</mfrac>
+										</mrow>
+									</math>
+									<br/>
+									
+									A glaring problem rises though since both the <math>x</math> and <math>y</math> clip components are to be scaled by a constant value divided by the vector's own <math><msub><mi>W</mi><mn>z</mn></msub></math> coordinate in circumstances where it is clearly impossible to accomplish that by matrix multiplication. Here is where homogeneous coordinates
+									<math class="equation">
+										<mrow>
+											<mn>H</mn>
+											<mo>=</mo>
+											<mrow>
+												<mo>(</mo>
+												<mtable>
+													<mtr>
+														<mtd><msub>
+															<mi>H</mi>
+															<mn>x</mn>
+														</msub></mtd>
+													</mtr>
+													<mtr>
+														<mtd><msub>
+															<mi>H</mi>
+															<mn>y</mn>
+														</msub></mtd>
+													</mtr>
+													<mtr>
+														<mtd><msub>
+															<mi>H</mi>
+															<mn>z</mn>
+														</msub></mtd>
+													</mtr>
+													<mtr>
+														<mtd><msub>
+															<mi>H</mi>
+															<mn>w</mn>
+														</msub></mtd>
+													</mtr>
+												</mtable>
+												<mo>)</mo>
+											</mrow>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow>
+													<msub>
+														<mi>C</mi>
+														<mn>w</mn>
+													</msub>
+												</mrow>
+											</mfrac>
+											<mrow>
+												<mo>(</mo>
+												<mtable>
+													<mtr>
+														<mtd><msub>
+															<mi>C</mi>
+															<mn>x</mn>
+														</msub></mtd>
+													</mtr>
+													<mtr>
+														<mtd><msub>
+															<mi>C</mi>
+															<mn>y</mn>
+														</msub></mtd>
+													</mtr>
+													<mtr>
+														<mtd><msub>
+															<mi>C</mi>
+															<mn>z</mn>
+														</msub></mtd>
+													</mtr>
+													<mtr>
+														<mtd><msub>
+															<mi>C</mi>
+															<mn>w</mn>
+														</msub></mtd>
+													</mtr>
+												</mtable>
+												<mo>)</mo>
+											</mrow>
+										</mrow>
+									</math>
+									come in handy. Since <a target="blank_" href="https://www.youtube.com/watch?v=eVTXPUF4Oz4">in the end</a> the whole vector will get scaled internally its value is conveniently set to <math> <msub><mi>C</mi><mn>w</mn></msub> <mo>=</mo> <msub><mi>W</mi><mn>z</mn></msub> </math> allowing to accomodate the previous equations to the homogeneous result <math>H</math> yielding
+									<math class="equation">
+										<mrow>
+											<msub><mi>H</mi><mn>x</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
+											</mfrac>
+											<msub><mi>C</mi><mn>x</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>W</mi><mn>z</mn></msub></mrow>
+											</mfrac>
+											<mfrac>
+												<mrow>AR</mrow>
+												<mrow>
+													tan
+													<mo>(</mo>
+													<mfrac>
+														<mrow>FoV</mrow>
+														<mrow>2</mrow>
+													</mfrac>
+													<mo>)</mo>
+												</mrow>
+											</mfrac>
+											<msub><mi>W</mi><mn>x</mn></msub>
+										</mrow>
+									</math>
+									<math class="equation">
+										<mrow>
+											<msub><mi>H</mi><mn>y</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
+											</mfrac>
+											<msub><mi>C</mi><mn>y</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>W</mi><mn>z</mn></msub></mrow>
+											</mfrac>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow>
+													tan
+													<mo>(</mo>
+													<mfrac>
+														<mrow>FoV</mrow>
+														<mrow>2</mrow>
+													</mfrac>
+													<mo>)</mo>
+												</mrow>
+											</mfrac>
+											<msub><mi>W</mi><mn>y</mn></msub>
+										</mrow>
+									</math>
+									The projection matrix is therefore constructed in the form
+									<math class="equation">
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd>
+														<mrow>
+															<mfrac>
+																<mrow>AR</mrow>
+																<mrow>
+																	tan
+																	<mo>(</mo>
+																	<mfrac>
+																		<mrow>FoV</mrow>
+																		<mrow>2</mrow>
+																	</mfrac>
+																	<mo>)</mo>
+																</mrow>
+															</mfrac>
+														</mrow>
+													</mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd>
+														<mrow>
+															<mfrac>
+																<mrow>1</mrow>
+																<mrow>
+																	tan
+																	<mo>(</mo>
+																	<mfrac>
+																		<mrow>FoV</mrow>
+																		<mrow>2</mrow>
+																	</mfrac>
+																	<mo>)</mo>
+																</mrow>
+															</mfrac>
+														</mrow>
+													</mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>&alpha;</mn></mtd>
+													<mtd><mn>&beta;</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>-1</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+									</math>
+									where the <math>z</math> component has been negated since its value grows negative in front of the camera so as to not flip the <math>x</math> and <math>y</math> coordinates. The depth normalization has also been assumed to not depend on the <math>x</math> and <math>y</math> components so their respective factors have been set to <math>0</math>. This rises yet another problem though since the <math>z</math> transformation now has the form
+									<math class="equation">
+										<mrow>
+											<msub><mn>H</mn><mi>z</mi></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
+											</mfrac>
+											<msub><mi>C</mi><mn>z</mn></msub>
+											<mo>=</mo>
+											<mfrac>
+												<mrow>1</mrow>
+												<mrow><mo>-</mo><msub><mi>W</mi><mn>z</mn></msub></mrow>
+											</mfrac>
+											<mo>(</mo>
+											<mn>&alpha;</mn>
+											<msub><mi>W</mi><mn>z</mn></msub>
+											<mo>+</mo>
+											<mn>&beta;</mn>
+											<mo>)</mo>
+											<mo>=</mo>
+											<mo>-</mo>
+											<mn>&alpha;</mn>
+											<mo>-</mo>
+											<mfrac>
+												<mrow><mn>&beta;</mn></mrow>
+												<mrow><msub>
+													<mi>W</mi>
+													<mn>z</mn>
+												</msub></mrow>
+											</mfrac>
+										</mrow>
+									</math>
+									Remembering depth increases in the negative <math>z</math> direction conditions are set for the near and far plane to map to the front and back faces of the clip space respectively. At this point the only proper way to write this linear system of equations clearly is matrix form
+									<math class="equation">
+										<mrow>
+											<mrow>
+												<mo>(</mo>
+												<mtable>
+													<mtr>
+														<mtd><mn>-1</mn></mtd>
+														<mtd>
+															<mrow>
+																<mfrac>
+																	<mrow>1</mrow>
+																	<mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow>
+																</mfrac>
+															</mrow>
+														</mtd>
+													</mtr>
+													<mtr>
+														<mtd><mn>-1</mn></mtd>
+														<mtd>
+															<mrow>
+																<mfrac>
+																	<mrow>1</mrow>
+																	<mrow><msub><mn>Z</mn><mi>far</mi></msub></mrow>
+																</mfrac>
+															</mrow>
+														</mtd>
+													</mtr>
+												</mtable>
+												<mo>)</mo>
+											</mrow>
+											<mrow>
+												<mo>(</mo>
+												<mtable>
+													<mtr>
+														<mtd><mn>&alpha;</mn></mtd>
+													</mtr>
+													<mtr>
+														<mtd><mn>&beta;</mn></mtd>
+													</mtr>
+												</mtable>
+												<mo>)</mo>
+											</mrow>
+											<mo>=</mo>
+											<mrow>
+												<mo>(</mo>
+												<mtable>
+													<mtr><mtd>-1</mtd></mtr>
+													<mtr><mtd>1</mtd></mtr>
+												</mtable>
+												<mo>)</mo>
+											</mrow>
+										</mrow>
+									</math>
+									Solving for &alpha; and &beta; finally allows to write the complete WebGL projection matrix
+									<math class="equation">
+										<mrow>
+											<mo>(</mo>
+											<mtable>
+												<mtr>
+													<mtd>
+														<mrow>
+															<mfrac>
+																<mrow>AR</mrow>
+																<mrow>
+																	tan
+																	<mo>(</mo>
+																	<mfrac>
+																		<mrow>FoV</mrow>
+																		<mrow>2</mrow>
+																	</mfrac>
+																	<mo>)</mo>
+																</mrow>
+															</mfrac>
+														</mrow>
+													</mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd>
+														<mrow>
+															<mfrac>
+																<mrow>1</mrow>
+																<mrow>
+																	tan
+																	<mo>(</mo>
+																	<mfrac>
+																		<mrow>FoV</mrow>
+																		<mrow>2</mrow>
+																	</mfrac>
+																	<mo>)</mo>
+																</mrow>
+															</mfrac>
+														</mrow>
+													</mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd>
+														<mrow>
+															<mfrac>
+																<mrow>
+																	<msub><mn>Z</mn><mi>near</mi></msub> <mo>+</mo> <msub><mn>Z</mn><mi>far</mi></msub>
+																</mrow>
+																<mrow>
+																	<msub><mn>Z</mn><mi>near</mi></msub> <mo>-</mo> <msub><mn>Z</mn><mi>far</mi></msub>
+																</mrow>
+															</mfrac>
+														</mrow>
+													</mtd>
+													<mtd>
+														<mrow>
+															2
+															<mfrac>
+																<mrow>
+																	<msub><mn>Z</mn><mi>near</mi></msub> <mo>&InvisibleTimes;</mo> <msub><mn>Z</mn><mi>far</mi></msub>
+																</mrow>
+																<mrow>
+																	<msub><mn>Z</mn><mi>near</mi></msub> <mo>-</mo> <msub><mn>Z</mn><mi>far</mi></msub>
+																</mrow>
+															</mfrac>
+														</mrow>
+													</mtd>
+												</mtr>
+												<mtr>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+													<mtd><mn>-1</mn></mtd>
+													<mtd><mn>0</mn></mtd>
+												</mtr>
+											</mtable>
+											<mo>)</mo>
+										</mrow>
+									</math>
+									<br/>
+								</p>
+							</div>
+							
+							<!-- https://stackoverflow.com/a/8331169 -->
+							<div class="buttonFrame">
+								<div class="buttonArrow"></div> <!-- https://www.w3schools.com/howto/howto_css_shapes.asp -->
+								<p class="buttonReturn">Back to Library</p>
+							</div>
+						</div>
+						
+						<div class="sectionCover">
+							<div>
+								<h2>Projection</h2>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			
+			<section id="OUTLINE" style="display: none;">
+				<div class="sectionBackground">
+					<div class="sectionFrame">
+						<div class="sectionContent">
+							<div class="sectionColumn">
+								<h2 class="title_sec">Outline</h2>
+								<p>
+									Under construction!
+								</p>
+							</div>
+							
+							<div class="buttonFrame">
+								<div class="buttonArrow"></div>
+								<p class="buttonReturn">Back to Library</p>
+							</div>
+						</div>
+						
+						<div class="sectionCover">
+							<div>
+								<h2>Outline</h2>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			
+			<section id="RAY-COLLISSION" style="display: none;">
+				<div class="sectionBackground">
+					<div class="sectionFrame">
+						<div class="sectionContent">
+							<div class="sectionColumn">
+								<h2 class="title_sec">Ray Collission</h2>
+								<p>
+									Under construction!
+								</p>
+							</div>
+							
+							<div class="buttonFrame">
+								<div class="buttonArrow"></div>
+								<p class="buttonReturn">Back to Library</p>
+							</div>
+						</div>
+						
+						<div class="sectionCover">
+							<div>
+								<h2>Ray Collission</h2>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+			
+			<section id="SAUCE" style="display: none;">
+				<div class="sectionBackground">
+					<div class="sectionFrame">
+						<div class="sectionContent">
+							<div class="sectionColumn">
+								<h2 class="title_sec">Source</h2>
+								<div class="references"><p class="webSite">Code: <a class="webAddress" target="blank_" href="https://github.com/rorroup/rorroup.github.io"></a></p></div>
+								
+								<h2 class="title_sec">References</h2>
+								<ol id="References" class="references">
+									<li class="webSite manual">
+										<span class="bookTitle">Reference guide</span>.
+										<span class="publisherCountry">USA</span>:
+										<span class="institution">IEEE</span>,
+										<span class="datePublished">2023</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="http://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE_Reference_Guide.pdf"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">DisgruntledGoat</span>.
+										Answer in <span class="pageTitle">Ordered list (HTML) lower-alpha with right parentheses?</span>.
+										<span class="websiteTitle">Stack Overflow</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://stackoverflow.com/a/1636635"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">attr()</span>.
+										<span class="websiteTitle">mdn web docs</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/CSS/attr"></a>
+									</li>
+									<li class="webVideo">
+										<span class="author">The Coding Train</span>.
+										<span class="videoTitle">1.1: fetch() - Working With Data &amp; APIs in JavaScript</span>.
+										<span class="datePublished">May 17, 2019</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.youtube.com/watch?v=tc8DU14qX6I"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">Using promises</span>.
+										<span class="websiteTitle">mdn web docs</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">function*</span>.
+										<span class="websiteTitle">mdn web docs</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">yield*</span>.
+										<span class="websiteTitle">mdn web docs</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/yield*"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">Web animation API tips and tricks</span>.
+										<span class="websiteTitle">mdn web docs</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API/Tips"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">jake</span>.
+										Answer in <span class="pageTitle">How can I transition height: 0; to height: auto; using CSS?</span>.
+										<span class="websiteTitle">Stack Overflow</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://stackoverflow.com/a/8331169"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">CSS Dropdowns</span>.
+										<span class="websiteTitle">w3schools</span>.
+										<span class="dateAccessed">Oct. 31, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.w3schools.com/css/css_dropdowns.asp"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">How TO - CSS Shapes</span>.
+										<span class="websiteTitle">w3schools</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.w3schools.com/howto/howto_css_shapes.asp"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">N. Rohler</span>.
+										<span class="pageTitle">Creating a Responsive Tiled Photo Gallery with Pure CSS</span>.
+										<span class="websiteTitle">DWUser.com</span>.
+										<span class="dateAccessed">Oct. 31, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.dwuser.com/education/content/creating-responsive-tiled-layout-with-pure-css/"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">Saram</span>.
+										Answer in <span class="pageTitle">Escaping HTML strings with jQuery</span>.
+										<span class="websiteTitle">Stack Overflow</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://stackoverflow.com/a/17546215"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">&lt;math&gt;</span>.
+										<span class="websiteTitle">mdn web docs</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/MathML/Element/math"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">J. Javawaski</span>.
+										<span class="pageTitle">MathML Browser Test (Presentation Markup)</span>.
+										<span class="datePublished">2023</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="http://eyeasme.com/Joe/MathML/MathML_browser_test.html"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">WebGL tutorial</span>.
+										<span class="websiteTitle">mdn web docs</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial"></a>
+									</li>
+									<li class="webSite manual">
+										<span class="author">J. Leech and B. Lipchak</span>.
+										<span class="bookTitle">OpenGL ES</span>.
+										<span class="institution">The Khronos Group Inc.</span>,
+										<span class="datePublished">2019</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://registry.khronos.org/OpenGL/specs/es/3.0/es_spec_3.0.pdf"></a>
+									</li>
+									<li class="webVideo">
+										<span class="author">javidx9</span>.
+										<span class="videoTitle">Code-It-Yourself! 3D Graphics Engine Part #1 - Triangles &amp; Projection</span>.
+										<span class="datePublished">Jul. 14, 2018</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.youtube.com/watch?v=ih20l3pJoeU"></a>
+									</li>
+									<li class="webVideo">
+										<span class="author">Computerphile</span>.
+										<span class="videoTitle">A Universe of Triangles - Computerphile</span>.
+										<span class="datePublished">Nov. 29, 2013</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.youtube.com/watch?v=KdyvizaygyY"></a>
+									</li>
+									<li class="webVideo">
+										<span class="author">Brendan Galea</span>.
+										<span class="videoTitle">The Math behind (most) 3D games - Perspective Projection</span>.
+										<span class="datePublished">Jun. 8, 2021</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.youtube.com/watch?v=U0_ONQQ5ZNM"></a>
+									</li>
+									<li class="webVideo">
+										<span class="author">3Blue1Brown</span>.
+										<span class="videoTitle">Linear transformations and matrices | Chapter 3, Essence of linear algebra</span>.
+										<span class="datePublished">Aug. 7, 2016</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.youtube.com/watch?v=kYB8IZa5AuE&list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab&index=3"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">greggman</span>.
+										<span class="pageTitle">WebGL 3D Perspective</span>.
+										<span class="websiteTitle">WebGLFundamentals</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://webglfundamentals.org/webgl/lessons/webgl-3d-perspective.html"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">greggman</span>.
+										<span class="pageTitle">WebGL - Drawing Multiple Things</span>.
+										<span class="websiteTitle">WebGLFundamentals</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://webglfundamentals.org/webgl/lessons/webgl-drawing-multiple-things.html"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">greggman</span>.
+										<span class="pageTitle">WebGL 3D - Data Textures</span>.
+										<span class="websiteTitle">WebGLFundamentals</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://webglfundamentals.org/webgl/lessons/webgl-data-textures.html"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">greggman</span>.
+										<span class="pageTitle">WebGL Rendering to a Texture</span>.
+										<span class="websiteTitle">WebGLFundamentals</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://webglfundamentals.org/webgl/lessons/webgl-render-to-texture.html"></a>
+									</li>
+									<li class="webSite">
+										<span class="author">greggman</span>.
+										<span class="pageTitle">WebGL Image Processing</span>.
+										<span class="websiteTitle">WebGLFundamentals</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://webglfundamentals.org/webgl/lessons/webgl-image-processing.html"></a>
+									</li>
+									<li class="webSite manual">
+										<span class="author">raysan5</span>.
+										<span class="pageTitle">outline.fs</span> in <span class="bookTitle">raylib</span>.
+										<span class="websiteTitle">Github</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://github.com/raysan5/raylib/blob/master/examples/shaders/resources/shaders/glsl330/outline.fs"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">Rotation matrix</span>.
+										<span class="websiteTitle">Wikipedia</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://en.wikipedia.org/wiki/Rotation_matrix"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">Spherical coordinate system</span>.
+										<span class="websiteTitle">Wikipedia</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://en.wikipedia.org/wiki/Spherical_coordinate_system"></a>
+									</li>
+									<li class="webVideo">
+										<span class="author">Blender</span>.
+										<span class="videoTitle">Blender Fundamentals 2.8</span>.
+										<span class="dateAccessed">Oct. 30, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://www.youtube.com/playlist?list=PLa1F2ddGya_-UvuAqHAksYnB0qL9yWDO6"></a>
+									</li>
+								</ol>
+							</div>
+							
+							<div class="buttonFrame">
+								<div class="buttonArrow"></div>
+								<p class="buttonReturn">Back to Library</p>
+							</div>
+						</div>
+						
+						<div class="sectionCover">
+							<div>
+								<h2>References</h2>
+							</div>
+						</div>
+					</div>
+				</div>
 			</section>
 			
 		</main>
 		<footer>
-			<div>
-				<p class="credits">Disclaimer: this page has not been optimized for mobile devices.</p>
-				<p class="credits">b1.0.0</p>
-				<p class="credits">page by Penicilina</p>
-			</div>
 		</footer>
 	</body>
-	<script src="script/lib/Vector2.js"></script>
-	<script src="script/lib/canvas2d.js"></script>
-	<script src="script/lib/animation.js"></script>
-	<script src="script/general.js"></script>
-	<script src="script/dialogue.js"></script>
-	<script src="script/demo.js"></script>
-	<script src="script/resume.js"></script>
+	
+	<script type="text/javascript" src="script/lib/util.js"></script>
+	<script type="text/javascript" src="script/lib/pen_Matrix.js"></script>
+	<script type="text/javascript" src="script/lib/pen_canvasgl.js"></script>
+	<script type="text/javascript" src="script/lib/animation.js"></script>
+	<script type="text/javascript" src="script/lib/pen_obj.js"></script>
+	<script type="text/javascript" src="script/Body3D.js"></script>
+	<script type="text/javascript" src="script/draw.js"></script>
+	<script type="text/javascript" src="script/graphics.js"></script>
+	<script type="text/javascript" src="script/dialogue.js"></script>
+	<script type="text/javascript" src="script/resume.js"></script>
+	
 </html>
