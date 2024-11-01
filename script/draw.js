@@ -27,7 +27,6 @@ function draw_vertexColor(gl, programInfo, camera, light, body, skybox){
 	// Tell WebGL how to pull out the positions from the position
 	// buffer into the vertexPosition attribute.
 	body.setPositionAttribute(gl, programInfo);
-	body.setTextureAttribute(gl, programInfo);
 	body.setNormalAttribute(gl, programInfo);
 	
 	// Set the shader uniforms

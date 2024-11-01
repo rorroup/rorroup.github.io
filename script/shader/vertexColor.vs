@@ -1,7 +1,6 @@
 
 attribute vec4 aVertexPosition;
 attribute vec3 aVertexNormal;
-attribute vec2 aTextureCoord;
 
 uniform mat4 uRotationMatrix;
 
@@ -20,12 +19,10 @@ uniform vec3 uLightColor;
 
 uniform vec3 uSelected;
 
-varying highp vec2 vTextureCoord;
 varying highp vec3 vLighting;
 
 void main(void){
 	gl_Position = uProjectionMatrix * uCameraRotation * uCameraPosition * uModelViewMatrix * uRotationMatrix * aVertexPosition;
-	vTextureCoord = aTextureCoord;
 	
 	vColor = vec4(uVertexColor, 1.0);
 	
