@@ -1,10 +1,8 @@
 
 varying highp vec3 vLighting;
 
-varying lowp vec4 vColor;
+varying highp vec4 vColor;
 
 void main(void){
-	highp vec4 texelColor = vColor;
-	
-	gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
+	gl_FragColor = vec4(vColor.rgb * vLighting, vColor.a);
 }

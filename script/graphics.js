@@ -99,8 +99,8 @@ function main(){
 				},
 				uniformLocations: {
 					projectionMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uProjectionMatrix"),
-					modelViewMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uModelViewMatrix"),
-					rotationMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uRotationMatrix"),
+					modelViewMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uVertexTranslation"),
+					rotationMatrix: gl.getUniformLocation(shaderProgram_vertexColor, "uVertexRotation"),
 					cameraPosition: gl.getUniformLocation(shaderProgram_vertexColor, "uCameraPosition"),
 					cameraRotation: gl.getUniformLocation(shaderProgram_vertexColor, "uCameraRotation"),
 					VertexColor: gl.getUniformLocation(shaderProgram_vertexColor, "uVertexColor"),
