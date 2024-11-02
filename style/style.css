@@ -307,13 +307,16 @@ mrow
 
 mtd
 {
-	padding: 0px 0.3em;
+	padding: 0.1em 0.3em;
 }
 
 math[class="equation"]
 {
 	display: block;
+	display: block math;
 	text-align: center;
+	text-wrap: wrap;
+	overflow: auto;
 }
 
 .variable

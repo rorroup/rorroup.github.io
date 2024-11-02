@@ -130,7 +130,7 @@
 							<div class="sectionColumn">
 								<h2 class="title_sec">Projection</h2>
 								<p>
-									<a target="blank_" href="https://www.khronos.org/webgl/">WebGL</a> allows for high quality rendering to an html canvas element. It outputs from an internal 4-dimentional normalized coordinate system regarded as clip space ranging from <math>-1</math> to <math>1</math> to the screen by scaling the contents to fit the destination resolution. Points for drawing are passed into WebGL using special programs called <a target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Adding_2D_content_to_a_WebGL_context#the_shaders">shaders</a>. Firstly, the vertex shader defines the position of the desired point by setting a special variable called <math><mi class="variable">gl_Position</mi></math> using a 4-component vector in what is called <a target="blank_" href="https://youtu.be/U0_ONQQ5ZNM?si=WJcXtkjHvVZsn8GA&t=423">homogeneous coordinates</a> meaning that the first 3 components correspond to the <a target="blank_" href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system#Three_dimensions">cartesian</a> <math>x</math>, <math>y</math> and <math>z</math> coordinates dictating horizontal position, vertical position and depth respectively, while the fourth component usually called <math>w</math> serves as a factor whose inverse scales the whole vector; so that everything laying within the 3-dimentional origin-centered 2-unit cube will be drawn and everything else will be ignored. Then the color of the point is established by setting another special variable called <math><mi class="variable">gl_FragColor</mi></math> in the fragment shader.
+									<a target="blank_" href="https://www.khronos.org/webgl/">WebGL</a> allows for high quality rendering to an html canvas element. It outputs from an internal 4-dimentional normalized coordinate system regarded as clip space ranging from <math><mn>-1</mn></math> to <math><mn>1</mn></math> to the screen by scaling the contents to fit the destination resolution. Points for drawing are passed into WebGL using special programs called <a target="blank_" href="https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API/Tutorial/Adding_2D_content_to_a_WebGL_context#the_shaders">shaders</a>. Firstly, the vertex shader defines the position of the desired point by setting a special variable called <math><mi class="variable">gl_Position</mi></math> using a 4-component vector in what is called <a target="blank_" href="https://youtu.be/U0_ONQQ5ZNM?si=WJcXtkjHvVZsn8GA&t=423">homogeneous coordinates</a> meaning that the first 3 components correspond to the <a target="blank_" href="https://en.wikipedia.org/wiki/Cartesian_coordinate_system#Three_dimensions">cartesian</a> <math><mn>x</mn></math>, <math><mn>y</mn></math> and <math><mn>z</mn></math> coordinates dictating horizontal position, vertical position and depth respectively, while the fourth component usually called <math><mn>w</mn></math> serves as a factor whose inverse scales the whole vector; so that everything laying within the 3-dimentional origin-centered 2-unit cube will be drawn and everything else will be ignored. Then the color of the point is established by setting another special variable called <math><mi class="variable">gl_FragColor</mi></math> in the fragment shader.
 									<br/>
 									
 									The rendering of a 3D scene requires mapping the vertices of the objects in the world to the clip space so that WebGL knows how to draw them to the screen. This is generally achieved using <a target="blank_" href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebra</a> through the application of <a target="blank_" href="https://www.youtube.com/watch?v=kYB8IZa5AuE">linear transformations</a> consisting in matrix multiplication to manipulate space thus driving the points to their appropiate coordinates. Being an electrical engineer I'm a big fan of <a target="blank_" href="https://en.wikipedia.org/wiki/Superposition_principle#Other_example_applications">linear systems</a> myself.
@@ -139,23 +139,23 @@
 									Square 3x3 matrices allow for a variety of transformations of three dimentional vectors. Scaling for example implies the multiplication of the vector's components by a constant value. Let
 									<math>
 										<mn>P</mn>
-										=
-										(
+										<mo>=</mo>
+										<mo>(</mo>
 											<msub>
 												<mi>P</mi>
 												<mn>x</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>P</mi>
 												<mn>y</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>P</mi>
 												<mn>z</mn>
 											</msub>
-										)
+										<mo>)</mo>
 									</math>
 									be a vector in cartesian space and <math><mn>k</mn></math> the scaling constant. Then its scaling matrix satisfies the equality
 									
@@ -232,7 +232,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
+										<mo>=</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -246,7 +246,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>x</mi>
 															<mn>1</mn>
@@ -255,7 +255,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>x</mi>
 															<mn>2</mn>
@@ -276,7 +276,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>y</mi>
 															<mn>1</mn>
@@ -285,7 +285,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>y</mi>
 															<mn>2</mn>
@@ -306,7 +306,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>z</mi>
 															<mn>1</mn>
@@ -315,7 +315,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>z</mi>
 															<mn>2</mn>
@@ -329,7 +329,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
+										<mo>=</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -363,8 +363,8 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
-										k
+										<mo>=</mo>
+										<mn>k</mn>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -415,8 +415,8 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
-										k
+										<mo>=</mo>
+										<mn>k</mn>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -440,26 +440,26 @@
 										</mrow>
 									</math>
 									
-									which can be written as <math>k<msub><mi>I</mi><mn>3</mn></msub></math> using the <a target="blank_" href="https://en.wikipedia.org/wiki/Identity_matrix">identity matrix</a>. <a target="blank_" href="https://en.wikipedia.org/wiki/Rotation_matrix">Rotation</a> may be similarly <a target="blank_" href="https://www.khanacademy.org/math/linear-algebra/matrix-transformations/lin-trans-examples/v/rotation-in-r3-around-the-x-axis">deduced</a> among other transformations. It can be proved however that translation by a vector
+									which can be written as <math><mn>k</mn><msub><mi>I</mi><mn>3</mn></msub></math> using the <a target="blank_" href="https://en.wikipedia.org/wiki/Identity_matrix">identity matrix</a>. <a target="blank_" href="https://en.wikipedia.org/wiki/Rotation_matrix">Rotation</a> may be similarly <a target="blank_" href="https://www.khanacademy.org/math/linear-algebra/matrix-transformations/lin-trans-examples/v/rotation-in-r3-around-the-x-axis">deduced</a> among other transformations. It can be proved however that translation by a vector
 									<math>
 										<mn>T</mn>
-										=
-										(
+										<mo>=</mo>
+										<mo>(</mo>
 											<msub>
 												<mi>T</mi>
 												<mn>x</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>T</mi>
 												<mn>y</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>T</mi>
 												<mn>z</mn>
 											</msub>
-										)
+										<mo>)</mo>
 									</math>
 									can not be accomplished in this fashion since the matrix equation
 									
@@ -536,7 +536,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
+										<mo>=</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -550,7 +550,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>x</mi>
 															<mn>1</mn>
@@ -559,7 +559,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>x</mi>
 															<mn>2</mn>
@@ -580,7 +580,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>y</mi>
 															<mn>1</mn>
@@ -589,7 +589,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>y</mi>
 															<mn>2</mn>
@@ -610,7 +610,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>z</mi>
 															<mn>1</mn>
@@ -619,7 +619,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>z</mi>
 															<mn>2</mn>
@@ -633,7 +633,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
+										<mo>=</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -643,7 +643,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>T</mi>
 															<mn>x</mn>
@@ -656,7 +656,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>T</mi>
 															<mn>y</mn>
@@ -669,7 +669,7 @@
 															<mi>P</mi>
 															<mn>z</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>T</mi>
 															<mn>z</mn>
@@ -679,7 +679,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
+										<mo>=</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -704,7 +704,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										+
+										<mo>+</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -731,9 +731,9 @@
 										</mrow>
 									</math>
 									
-									has no solution. This issue is circumvented by conveniently adding the aforementioned 4th component <math>w</math> yielding
+									has no solution. This issue is circumvented by conveniently adding the aforementioned 4th component <math><mn>w</mn></math> yielding
 									
-									<math class="equation" style="display: block;">
+									<math class="equation">
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -839,7 +839,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
+										<mo>=</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -853,7 +853,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>x</mi>
 															<mn>1</mn>
@@ -862,7 +862,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>x</mi>
 															<mn>2</mn>
@@ -871,7 +871,7 @@
 															<mi>P</mi>
 															<mn>z</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>x</mi>
 															<mn>3</mn>
@@ -888,7 +888,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>y</mi>
 															<mn>1</mn>
@@ -897,7 +897,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>y</mi>
 															<mn>2</mn>
@@ -906,7 +906,7 @@
 															<mi>P</mi>
 															<mn>z</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>y</mi>
 															<mn>3</mn>
@@ -923,7 +923,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>z</mi>
 															<mn>1</mn>
@@ -932,7 +932,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>z</mi>
 															<mn>2</mn>
@@ -941,7 +941,7 @@
 															<mi>P</mi>
 															<mn>z</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>z</mi>
 															<mn>3</mn>
@@ -958,7 +958,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>w</mi>
 															<mn>1</mn>
@@ -967,7 +967,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>w</mi>
 															<mn>2</mn>
@@ -976,7 +976,7 @@
 															<mi>P</mi>
 															<mn>z</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>w</mi>
 															<mn>3</mn>
@@ -986,7 +986,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
+										<mo>=</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -996,7 +996,7 @@
 															<mi>P</mi>
 															<mn>x</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>T</mi>
 															<mn>x</mn>
@@ -1009,7 +1009,7 @@
 															<mi>P</mi>
 															<mn>y</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>T</mi>
 															<mn>y</mn>
@@ -1022,7 +1022,7 @@
 															<mi>P</mi>
 															<mn>z</mn>
 														</msub>
-														+
+														<mo>+</mo>
 														<msub>
 															<mi>T</mi>
 															<mn>z</mn>
@@ -1035,7 +1035,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										=
+										<mo>=</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -1063,7 +1063,7 @@
 											</mtable>
 											<mo>)</mo>
 										</mrow>
-										+
+										<mo>+</mo>
 										<mrow>
 											<mo>(</mo>
 											<mtable>
@@ -1096,36 +1096,36 @@
 										</mrow>
 									</math>
 									
-									where for simplicity the <math>w</math> component of the 4-dimentional homogeneous equivalent of the <math>P</math> vector
+									where for simplicity the <math><mn>w</mn></math> component of the 4-dimentional homogeneous equivalent of the <math><mn>P</mn></math> vector
 									<math>
 										<msub>
 											<mn>P</mn>
 											<mi>H</mi>
 										</msub>
-										=
-										(
+										<mo>=</mo>
+										<mo>(</mo>
 											<msub>
 												<mi>P</mi>
 												<mn>x</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>P</mi>
 												<mn>y</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>P</mi>
 												<mn>z</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>P</mi>
 												<mn>w</mn>
 											</msub>
-										)
+										<mo>)</mo>
 									</math>
-									as well as the translated vector have been forced to scale by <math>1</math> so that the homogeneous coordinates match numerically their 3-dimentional counterparts. The solution to this equation is the 4x4 3D translation matrix
+									as well as the translated vector have been forced to scale by <math><mn>1</mn></math> so that the homogeneous coordinates match numerically their 3-dimentional counterparts. The solution to this equation is the 4x4 3D translation matrix
 									
 									<math class="equation">
 										<mrow>
@@ -1169,7 +1169,7 @@
 										</mrow>
 									</math>
 									
-									that is clearly independent of the <math><msub><mi>T</mi><mn>w</mn></msub></math> translation component which is usually considered as <math>1</math> for consistency reasons as it won't affect the numerical result. This approach establishes the points are to be passed as 4D homogeneous vectors and transformed by 4x4 matrices. Other transformation matrices may be expanded from 3x3 to 4x4 rather trivially like the scaling matrix
+									that is clearly independent of the <math><msub><mi>T</mi><mn>w</mn></msub></math> translation component which is usually considered as <math><mn>1</mn></math> for consistency reasons as it won't affect the numerical result. This approach establishes the points are to be passed as 4D homogeneous vectors and transformed by 4x4 matrices. Other transformation matrices may be expanded from 3x3 to 4x4 rather trivially like the scaling matrix
 									
 									<math class="equation">
 										<mrow>
@@ -1204,13 +1204,13 @@
 										</mrow>
 									</math>
 									
-									keeping in mind a 3D vector is numerically equivalent to its homogenooeus expansion scaled by <math>w = 1</math>. This enables <a target="blank_" href="https://en.wikipedia.org/wiki/Matrix_multiplication">composing</a> multiple matrix multiplications to achieve further transformations.
+									keeping in mind a 3D vector is numerically equivalent to its homogenooeus expansion scaled by <math><mn>w</mn> <mo>=</mo> <mn>1</mn></math>. This enables <a target="blank_" href="https://en.wikipedia.org/wiki/Matrix_multiplication">composing</a> multiple matrix multiplications to achieve further transformations.
 									<br/>
 									
-									The 2D screen pixel coordinate for rendering a particular point that exists in the world is calculated from its mapping into WebGL 4D clip space obtained from the perspective of an observer looking into the 3D space through a process called projection. Therefore it is only natural to begin with building a sufficiently accurate model to mimic human sight. Biology is not my specialty, nor is optics, but we know we see by percieving the light coming trough the pupil of the eye which bounced off of an object allowing us to see it. Therefore I establish 2 fundamental laws: firstly light travels in a strictly straight line; and secondly, that which can be seen is light that reaches a particular point in space from the front as if it was the pupil which I will call the camera. To define the camera's front and for simplicity and <a target="blank_" href="https://en.wikipedia.org/wiki/Without_loss_of_generality">without loss of generality</a> the camera will exist at the origin of my coordinate system with the <math>x</math> axis going to the right and the <math>y</math> axis going upwards so that the center of the view as well as the <math>x</math> and <math>y</math> axis match those of the clip space. Again, being an electrical engineer I'm particularly fond of the <a target="blank_" href="https://youtu.be/NJRDclzi5Vg?si=esZQrLzfJNDSeB3N&t=57">right hand rule</a> too, which implies the <math>z</math> axis points backwards meaning the camera is looking straight down the negative <math>z</math> axis.
+									The 2D screen pixel coordinate for rendering a particular point that exists in the world is calculated from its mapping into WebGL 4D clip space obtained from the perspective of an observer looking into the 3D space through a process called projection. Therefore it is only natural to begin with building a sufficiently accurate model to mimic human sight. Biology is not my specialty, nor is optics, but we know we see by percieving the light coming trough the pupil of the eye which bounced off of an object allowing us to see it. Therefore I establish 2 fundamental laws: firstly light travels in a strictly straight line; and secondly, that which can be seen is light that reaches a particular point in space from the front as if it was the pupil which I will call the camera. To define the camera's front and for simplicity and <a target="blank_" href="https://en.wikipedia.org/wiki/Without_loss_of_generality">without loss of generality</a> the camera will exist at the origin of my coordinate system with the <math><mn>x</mn></math> axis going to the right and the <math><mn>y</mn></math> axis going upwards so that the center of the view as well as the <math><mn>x</mn></math> and <math><mn>y</mn></math> axis match those of the clip space. Again, being an electrical engineer I'm particularly fond of the <a target="blank_" href="https://youtu.be/NJRDclzi5Vg?si=esZQrLzfJNDSeB3N&t=57">right hand rule</a> too, which implies the <math><mn>z</mn></math> axis points backwards meaning the camera is looking straight down the negative <math><mn>z</mn></math> axis.
 									<br/>
 									
-									Having determined where the camera is looking at the field of view angle <math>FoV</math> is defined to adequately asses whether points are visible in front of it. It spreads vertically and symmetrically centered on the camera's axis so that only light inciding on the camera at an angle within its edges can be seen. This vertical angle naturally imposes an opposite vertical visible range in the <math>y</math> direction increasing the further away from the camera controlling the visibility of points in space so as to exclude those directly above or even behind it. Since the screen is a rectangle there obviously must exist a corresponding horizontal visible range related by the screen's aspect ratio <math>AR = <msub><mi>Screen</mi><mi>height</mi></msub> / <msub><mi>Screen</mi><mi>width</mi></msub> </math>. The resulting rectangular boundary defines a rectangular orthogonal symetric pyramid extending indefinitely in the negative <math>z</math> direction with the camera at its tip looking down its center. The ever growing rectangles down the pyramid normal to the camera direction are naturally all <a target="blank_" href="https://en.wikipedia.org/wiki/Similarity_(geometry)">similar</a> among them and are also similar to the screen.
+									Having determined where the camera is looking at the field of view angle <math><mn>FoV</mn></math> is defined to adequately asses whether points are visible in front of it. It spreads vertically and symmetrically centered on the camera's axis so that only light inciding on the camera at an angle within its edges can be seen. This vertical angle naturally imposes an opposite vertical visible range in the <math><mn>y</mn></math> direction increasing the further away from the camera controlling the visibility of points in space so as to exclude those directly above or even behind it. Since the screen is a rectangle there obviously must exist a corresponding horizontal visible range related by the screen's aspect ratio <math><mn>AR</mn> <mo>=</mo> <msub><mi>Screen</mi><mi>height</mi></msub> <mo>/</mo> <msub><mi>Screen</mi><mi>width</mi></msub> </math>. The resulting rectangular boundary defines a rectangular orthogonal symetric pyramid extending indefinitely in the negative <math><mn>z</mn></math> direction with the camera at its tip looking down its center. The ever growing rectangles down the pyramid normal to the camera direction are naturally all <a target="blank_" href="https://en.wikipedia.org/wiki/Similarity_(geometry)">similar</a> among them and are also similar to the screen.
 									<br/>
 									
 									Because computers belong to the real world they inevitably have finite capabilities so our camera can only see so far. We set a plane normal to the camera direction at coordinate negative <math><msub><mn>Z</mn><mi>far</mi></msub></math> as the furthest visible distance whose intersection with the field of view's edges delimits the rectangle to serve as the base of the pyramid. Lastly a second plane parallel to the pyramid's base is added closer to the camera at a distance <math><msub><mn>Z</mn><mi>near</mi></msub></math> so nothing closer is rendered since everything would collapse on a single point as approaching the camera.
@@ -1222,35 +1222,35 @@
 									The 4x4 projection matrix is built from the geometrycal relationships to accurately map a world coordinate
 									<math>
 										<mn>W</mn>
-										=
-										(
+										<mo>=</mo>
+										<mo>(</mo>
 											<msub>
 												<mi>W</mi>
 												<mn>x</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>W</mi>
 												<mn>y</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>W</mi>
 												<mn>z</mn>
 											</msub>
-											,
-											1
-										)
+											<mo>,</mo>
+											<mn>1</mn>
+										<mo>)</mo>
 									</math>
-									into normalized clip space. Since our model has light traveling in a straight line rays at the field of view's edges form an <a target="blank_" href="https://en.wikipedia.org/wiki/Isosceles_triangle">isosceles</a> triangle whose height <math><msub><mn>Z</mn><mi>near</mi></msub></math> <a target="blank_" href="https://en.wikipedia.org/wiki/Bisection#Angle_bisector">bisects</a> the <math>FoV</math> and whose base lies on the near plane with length <math><msub><mi>H</mi><mi>near</mi></msub> = 2 <msub><mi>h</mi><mi>near</mi></msub></math> holding the relationship
+									into normalized clip space. Since our model has light traveling in a straight line rays at the field of view's edges form an <a target="blank_" href="https://en.wikipedia.org/wiki/Isosceles_triangle">isosceles</a> triangle whose height <math><msub><mn>Z</mn><mi>near</mi></msub></math> <a target="blank_" href="https://en.wikipedia.org/wiki/Bisection#Angle_bisector">bisects</a> the <math><mn>FoV</mn></math> and whose base lies on the near plane with length <math><msub><mi>H</mi><mi>near</mi></msub> <mo>=</mo> <mn>2</mn> <msub><mi>h</mi><mi>near</mi></msub></math> holding the relationship
 									
 									<math class="equation">
 										<mrow>
-											tan
+											<mn>tan</mn>
 											<mo>(</mo>
 											<mfrac>
-												<mrow>FoV</mrow>
-												<mrow>2</mrow>
+												<mrow><mn>FoV</mn></mrow>
+												<mrow><mn>2</mn></mrow>
 											</mfrac>
 											<mo>)</mo>
 											<mo>=</mo>
@@ -1261,30 +1261,30 @@
 										</mrow>
 									</math>
 									
-									Because the rectangular orthogonal symmetric visible frustum has its tip in the camera located at the origin implying it is <math>0</math> centered in both the <math>x</math> and <math>y</math> directions a ray from the camera to the point in the world <math>W</math> intersects the near plane at a point
+									Because the rectangular orthogonal symmetric visible frustum has its tip in the camera located at the origin implying it is <math><mn>0</mn></math> centered in both the <math><mn>x</mn></math> and <math><mn>y</mn></math> directions a ray from the camera to the point in the world <math><mn>W</mn></math> intersects the near plane at a point
 									<math>
 										<mn>N</mn>
-										=
-										(
+										<mo>=</mo>
+										<mo>(</mo>
 											<msub>
 												<mi>N</mi>
 												<mn>x</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>N</mi>
 												<mn>y</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>N</mi>
 												<mn>z</mn>
 											</msub>
-											,
-											1
-										)
+											<mo>,</mo>
+											<mn>1</mn>
+										<mo>)</mo>
 									</math>
-									proportional to it in 3D forming 2 pairs of similar triangles in both the <math>x</math> and <math>y</math> directions. Therefore the <math>y</math> coordinate yields
+									proportional to it in 3D forming 2 pairs of similar triangles in both the <math><mn>x</mn></math> and <math><mn>y</mn></math> directions. Therefore the <math><mn>y</mn></math> coordinate yields
 									<math class="equation">
 										<mrow>
 											<mfrac>
@@ -1310,30 +1310,30 @@
 									Its clip coordinate
 									<math>
 										<mn>C</mn>
-										=
-										(
+										<mo>=</mo>
+										<mo>(</mo>
 											<msub>
 												<mi>C</mi>
 												<mn>x</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>C</mi>
 												<mn>y</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>C</mi>
 												<mn>z</mn>
 											</msub>
-											,
+											<mo>,</mo>
 											<msub>
 												<mi>C</mi>
 												<mn>w</mn>
 											</msub>
-										)
+										<mo>)</mo>
 									</math>
-									in the <math>y</math> axis is therefore obtained by normalizing it by the near rectangle's height to belong in the interval <math>[-1, 1]</math> as
+									in the <math><mn>y</mn></math> axis is therefore obtained by normalizing it by the near rectangle's height to belong in the interval <math><mo>[</mo><mo>-</mo><mn>1</mn><mo>,</mo> <mn>1</mn><mo>]</mo></math> as
 									<math class="equation">
 										<mrow>
 											<msub>
@@ -1371,14 +1371,15 @@
 													<mn>z</mn>
 												</msub></mrow>
 											</mfrac>
+											<mo>&InvisibleTimes;</mo>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow>
-													tan
+													<mn>tan</mn>
 													<mo>(</mo>
 													<mfrac>
-														<mrow>FoV</mrow>
-														<mrow>2</mrow>
+														<mrow><mn>FoV</mn></mrow>
+														<mrow><mn>2</mn></mrow>
 													</mfrac>
 													<mo>)</mo>
 												</mrow>
@@ -1404,10 +1405,10 @@
 												<mrow><msub><mi>Screen</mi><mi>width</mi></msub></mrow>
 											</mfrac>
 											<mo>=</mo>
-											AR
+											<mn>AR</mn>
 										</mrow>
 									</math>
-									The <math>x</math> coordinate yields a relationship analog to the <math>y</math> coordinate like
+									The <math><mn>x</mn></math> coordinate yields a relationship analog to the <math><mn>y</mn></math> coordinate like
 									<math class="equation">
 										<mrow>
 											<mfrac>
@@ -1430,7 +1431,7 @@
 											</mfrac>
 										</mrow>
 									</math>
-									Thus the clip <math>x</math> coordinate is obtained as
+									Thus the clip <math><mn>x</mn></math> coordinate is obtained as
 									<math class="equation">
 										<mrow>
 											<msub>
@@ -1472,14 +1473,15 @@
 													<mn>z</mn>
 												</msub></mrow>
 											</mfrac>
+											<mo>&InvisibleTimes;</mo>
 											<mfrac>
-												<mrow>AR</mrow>
+												<mrow><mn>AR</mn></mrow>
 												<mrow>
-													tan
+													<mn>tan</mn>
 													<mo>(</mo>
 													<mfrac>
-														<mrow>FoV</mrow>
-														<mrow>2</mrow>
+														<mrow><mn>FoV</mn></mrow>
+														<mrow><mn>2</mn></mrow>
 													</mfrac>
 													<mo>)</mo>
 												</mrow>
@@ -1488,7 +1490,7 @@
 									</math>
 									<br/>
 									
-									A glaring problem rises though since both the <math>x</math> and <math>y</math> clip components are to be scaled by a constant value divided by the vector's own <math><msub><mi>W</mi><mn>z</mn></msub></math> coordinate in circumstances where it is clearly impossible to accomplish that by matrix multiplication. Here is where homogeneous coordinates
+									A glaring problem rises though since both the <math><mn>x</mn></math> and <math><mn>y</mn></math> clip components are to be scaled by a constant value divided by the vector's own <math><msub><mi>W</mi><mn>z</mn></msub></math> coordinate in circumstances where it is clearly impossible to accomplish that by matrix multiplication. Here is where homogeneous coordinates
 									<math class="equation">
 										<mrow>
 											<mn>H</mn>
@@ -1525,7 +1527,7 @@
 											</mrow>
 											<mo>=</mo>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow>
 													<msub>
 														<mi>C</mi>
@@ -1565,29 +1567,29 @@
 											</mrow>
 										</mrow>
 									</math>
-									come in handy. Since <a target="blank_" href="https://www.youtube.com/watch?v=eVTXPUF4Oz4">in the end</a> the whole vector will get scaled internally its value is conveniently set to <math> <msub><mi>C</mi><mn>w</mn></msub> <mo>=</mo> <msub><mi>W</mi><mn>z</mn></msub> </math> allowing to accomodate the previous equations to the homogeneous result <math>H</math> yielding
+									come in handy. Since <a target="blank_" href="https://www.youtube.com/watch?v=eVTXPUF4Oz4">in the end</a> the whole vector will get scaled internally its value is conveniently set to <math> <msub><mi>C</mi><mn>w</mn></msub> <mo>=</mo> <msub><mi>W</mi><mn>z</mn></msub> </math> allowing to accomodate the previous equations to the homogeneous result <math><mn>H</mn></math> yielding
 									<math class="equation">
 										<mrow>
 											<msub><mi>H</mi><mn>x</mn></msub>
 											<mo>=</mo>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
 											</mfrac>
 											<msub><mi>C</mi><mn>x</mn></msub>
 											<mo>=</mo>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow><msub><mi>W</mi><mn>z</mn></msub></mrow>
 											</mfrac>
 											<mfrac>
-												<mrow>AR</mrow>
+												<mrow><mn>AR</mn></mrow>
 												<mrow>
-													tan
+													<mn>tan</mn>
 													<mo>(</mo>
 													<mfrac>
-														<mrow>FoV</mrow>
-														<mrow>2</mrow>
+														<mrow><mn>FoV</mn></mrow>
+														<mrow><mn>2</mn></mrow>
 													</mfrac>
 													<mo>)</mo>
 												</mrow>
@@ -1600,23 +1602,23 @@
 											<msub><mi>H</mi><mn>y</mn></msub>
 											<mo>=</mo>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
 											</mfrac>
 											<msub><mi>C</mi><mn>y</mn></msub>
 											<mo>=</mo>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow><msub><mi>W</mi><mn>z</mn></msub></mrow>
 											</mfrac>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow>
-													tan
+													<mn>tan</mn>
 													<mo>(</mo>
 													<mfrac>
-														<mrow>FoV</mrow>
-														<mrow>2</mrow>
+														<mrow><mn>FoV</mn></mrow>
+														<mrow><mn>2</mn></mrow>
 													</mfrac>
 													<mo>)</mo>
 												</mrow>
@@ -1633,13 +1635,13 @@
 													<mtd>
 														<mrow>
 															<mfrac>
-																<mrow>AR</mrow>
+																<mrow><mn>AR</mn></mrow>
 																<mrow>
-																	tan
+																	<mn>tan</mn>
 																	<mo>(</mo>
 																	<mfrac>
-																		<mrow>FoV</mrow>
-																		<mrow>2</mrow>
+																		<mrow><mn>FoV</mn></mrow>
+																		<mrow><mn>2</mn></mrow>
 																	</mfrac>
 																	<mo>)</mo>
 																</mrow>
@@ -1655,13 +1657,13 @@
 													<mtd>
 														<mrow>
 															<mfrac>
-																<mrow>1</mrow>
+																<mrow><mn>1</mn></mrow>
 																<mrow>
-																	tan
+																	<mn>tan</mn>
 																	<mo>(</mo>
 																	<mfrac>
-																		<mrow>FoV</mrow>
-																		<mrow>2</mrow>
+																		<mrow><mn>FoV</mn></mrow>
+																		<mrow><mn>2</mn></mrow>
 																	</mfrac>
 																	<mo>)</mo>
 																</mrow>
@@ -1687,19 +1689,19 @@
 											<mo>)</mo>
 										</mrow>
 									</math>
-									where the <math>z</math> component has been negated since its value grows negative in front of the camera so as to not flip the <math>x</math> and <math>y</math> coordinates. The depth normalization has also been assumed to not depend on the <math>x</math> and <math>y</math> components so their respective factors have been set to <math>0</math>. This rises yet another problem though since the <math>z</math> transformation now has the form
+									where the <math><mn>z</mn></math> component has been negated since its value grows negative in front of the camera so as to not flip the <math><mn>x</mn></math> and <math><mn>y</mn></math> coordinates. The depth normalization has also been assumed to not depend on the <math><mn>x</mn></math> and <math><mn>y</mn></math> components so their respective factors have been set to <math><mn>0</mn></math>. This rises yet another problem though since the <math><mn>z</mn></math> transformation now has the form
 									<math class="equation">
 										<mrow>
 											<msub><mn>H</mn><mi>z</mi></msub>
 											<mo>=</mo>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow><msub><mi>C</mi><mn>w</mn></msub></mrow>
 											</mfrac>
 											<msub><mi>C</mi><mn>z</mn></msub>
 											<mo>=</mo>
 											<mfrac>
-												<mrow>1</mrow>
+												<mrow><mn>1</mn></mrow>
 												<mrow><mo>-</mo><msub><mi>W</mi><mn>z</mn></msub></mrow>
 											</mfrac>
 											<mo>(</mo>
@@ -1721,7 +1723,7 @@
 											</mfrac>
 										</mrow>
 									</math>
-									Remembering depth increases in the negative <math>z</math> direction conditions are set for the near and far plane to map to the front and back faces of the clip space respectively. At this point the only proper way to write this linear system of equations clearly is matrix form
+									Remembering depth increases in the negative <math><mn>z</mn></math> direction conditions are set for the near and far plane to map to the front and back faces of the clip space respectively. At this point the only proper way to write this linear system of equations clearly is matrix form
 									<math class="equation">
 										<mrow>
 											<mrow>
@@ -1732,7 +1734,7 @@
 														<mtd>
 															<mrow>
 																<mfrac>
-																	<mrow>1</mrow>
+																	<mrow><mn>1</mn></mrow>
 																	<mrow><msub><mn>Z</mn><mi>near</mi></msub></mrow>
 																</mfrac>
 															</mrow>
@@ -1768,8 +1770,8 @@
 											<mrow>
 												<mo>(</mo>
 												<mtable>
-													<mtr><mtd>-1</mtd></mtr>
-													<mtr><mtd>1</mtd></mtr>
+													<mtr><mtd><mn>-1</mn></mtd></mtr>
+													<mtr><mtd><mn>1</mn></mtd></mtr>
 												</mtable>
 												<mo>)</mo>
 											</mrow>
@@ -1784,13 +1786,13 @@
 													<mtd>
 														<mrow>
 															<mfrac>
-																<mrow>AR</mrow>
+																<mrow><mn>AR</mn></mrow>
 																<mrow>
-																	tan
+																	<mn>tan</mn>
 																	<mo>(</mo>
 																	<mfrac>
-																		<mrow>FoV</mrow>
-																		<mrow>2</mrow>
+																		<mrow><mn>FoV</mn></mrow>
+																		<mrow><mn>2</mn></mrow>
 																	</mfrac>
 																	<mo>)</mo>
 																</mrow>
@@ -1806,13 +1808,13 @@
 													<mtd>
 														<mrow>
 															<mfrac>
-																<mrow>1</mrow>
+																<mrow><mn>1</mn></mrow>
 																<mrow>
-																	tan
+																	<mn>tan</mn>
 																	<mo>(</mo>
 																	<mfrac>
-																		<mrow>FoV</mrow>
-																		<mrow>2</mrow>
+																		<mrow><mn>FoV</mn></mrow>
+																		<mrow><mn>2</mn></mrow>
 																	</mfrac>
 																	<mo>)</mo>
 																</mrow>
@@ -1839,7 +1841,7 @@
 													</mtd>
 													<mtd>
 														<mrow>
-															2
+															<mn>2</mn>
 															<mfrac>
 																<mrow>
 																	<msub><mn>Z</mn><mi>near</mi></msub> <mo>&InvisibleTimes;</mo> <msub><mn>Z</mn><mi>far</mi></msub>
@@ -2040,6 +2042,13 @@
 										<span class="datePublished">2023</span>.
 										<span class="dateAccessed">Oct. 30, 2024</span>.
 										<a class="webAddress" target="blank_" href="http://eyeasme.com/Joe/MathML/MathML_browser_test.html"></a>
+									</li>
+									<li class="webSite">
+										<span class="pageTitle">Feature: MathML</span>.
+										<span class="websiteTitle">Chrome Platform Status</span>.
+										<span class="datePublished">2022</span>.
+										<span class="dateAccessed">Nov. 2, 2024</span>.
+										<a class="webAddress" target="blank_" href="https://chromestatus.com/feature/5240822173794304"></a>
 									</li>
 									<li class="webSite">
 										<span class="pageTitle">WebGL tutorial</span>.
