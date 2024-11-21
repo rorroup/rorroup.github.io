@@ -198,6 +198,10 @@ class Camera
 		this.rotation[0] = Math.asin(this.direction.y);
 		this.rotation[1] = Math.atan2(-this.direction.x, -this.direction.z);
 	}
+	
+	target(target){
+		return this.direct(new Vector3(target).substract(this.position));
+	}
 }
 
 class Material{
