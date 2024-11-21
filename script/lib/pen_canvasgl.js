@@ -184,10 +184,9 @@ class Camera
 	}
 	
 	rotate(rotation){
-		this.rotation.set(rotation);
-		for(let i = 0; i < 3; i++){
-			this.rotation[i] = ((this.rotation[i] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
-		}
+		this.rotation[0] = Math.min(Math.PI / 2, Math.max(-Math.PI / 2, rotation[0]));
+		this.rotation[1] = ((rotation[1] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
+		this.rotation[2] = ((rotation[2] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
 		this.direction.set([-Math.sin(this.rotation[1]) * Math.cos(this.rotation[0]), Math.sin(this.rotation[0]), -Math.cos(this.rotation[1]) * Math.cos(this.rotation[0]), 1.0]);
 	}
 	
@@ -196,8 +195,8 @@ class Camera
 		this.direction[3] = 0.0;
 		this.direction.normalize();
 		this.direction[3] = 1.0;
-		this.rotation[0] = Math.asin(y);
-		this.rotation[1] = Math.atan2(-x, -z);
+		this.rotation[0] = Math.asin(this.direction.y);
+		this.rotation[1] = Math.atan2(-this.direction.x, -this.direction.z);
 	}
 }
 
