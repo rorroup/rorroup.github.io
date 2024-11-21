@@ -196,8 +196,8 @@ class Camera
 		this.direction[3] = 0.0;
 		this.direction.normalize();
 		this.direction[3] = 1.0;
-		this.rotation[0] = Math.asin(y);
-		this.rotation[1] = Math.atan2(-x, -z);
+		this.rotation[0] = Math.asin(this.direction.y);
+		this.rotation[1] = Math.atan2(-this.direction.x, -this.direction.z);
 	}
 }
 
