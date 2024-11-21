@@ -177,14 +177,7 @@ function draw_outline(gl, programInfo, relativeSize, screenSize, attribBuffer, t
 		const offset = 0; // how many bytes inside the buffer to start from
 		gl.bindBuffer(gl.ARRAY_BUFFER, attribBuffer[1]);
 		
-		gl.bufferData(
-			gl.ARRAY_BUFFER,
-			new Float32Array([
-				0.0, 0.0, relativeSize[0], 0.0, relativeSize[0], relativeSize[1],
-				0.0, 0.0, relativeSize[0], relativeSize[1], 0.0, relativeSize[1]
-			]),
-			gl.STATIC_DRAW,
-		);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, 0.0, 0.0, relativeSize[1], relativeSize[0], relativeSize[1], relativeSize[0], 0.0]), gl.STATIC_DRAW);
 		
 		gl.vertexAttribPointer(
 			programInfo.attribLocations.aTextureCoord,
@@ -197,7 +190,7 @@ function draw_outline(gl, programInfo, relativeSize, screenSize, attribBuffer, t
 		gl.enableVertexAttribArray(programInfo.attribLocations.aTextureCoord);
 	}
 	
-	gl.drawArrays(gl.TRIANGLES, 0, 6);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
 }
 
 function draw_silhouette(gl, programInfo, camera, bodySelected){
