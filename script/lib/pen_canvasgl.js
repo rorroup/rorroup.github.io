@@ -185,9 +185,9 @@ class Camera
 	
 	rotate(rotation){
 		this.rotation.set(rotation);
-		for(let i = 0; i < 3; i++){
-			this.rotation[i] = ((this.rotation[i] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
-		}
+		this.rotation[0] = Math.min(Math.PI / 2, Math.max(-Math.PI / 2, this.rotation[0]));
+		this.rotation[1] = ((this.rotation[1] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
+		this.rotation[2] = ((this.rotation[2] * 100000000) % (2 * Math.PI * 100000000)) / 100000000;
 		this.direction.set([-Math.sin(this.rotation[1]) * Math.cos(this.rotation[0]), Math.sin(this.rotation[0]), -Math.cos(this.rotation[1]) * Math.cos(this.rotation[0]), 1.0]);
 	}
 	
