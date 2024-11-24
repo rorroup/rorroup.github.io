@@ -540,26 +540,46 @@ function projection()
 			},
 			camera: new Camera(45.0, 0.1, 100.0, 1),
 			radius: 12.0,
+			mouse: {x: 0, y: 0, b: 0},
 			cursor: new Vector3([10, 10, 50]),
 			point: new Vector3([1.0, 1.0, -5.0]),
-			initPlanes(){
+			INIT(){
 				const camera = new Camera(45.0, 1.0, 10.0, 9 / 16);
 				
 				this.planeCorner = new Vector3([Math.tan(camera.FoV * 0.5 / 180.0 * Math.PI) / camera.aspectRatio, Math.tan(camera.FoV * 0.5 / 180.0 * Math.PI), 1.0]);
 				
+				const cornerNear = this.planeCorner.copy().scale(camera.Znear);
+				const cornerFar = this.planeCorner.copy().scale(camera.Zfar);
+				
+				this.FoV = [0.0, -cornerNear.y, 0.0, 0.0, cornerNear.y, 0.0, 0.0, cornerNear.y, -cornerNear.z, 0.0, -cornerNear.y, -cornerNear.z];
+				
 				this.planes = [
-					this.planeCorner.copy().scale(camera.Znear),
-					this.planeCorner.copy().scale(camera.Zfar),
+					[-cornerNear.x, -cornerNear.y, -cornerNear.z, -cornerNear.x, cornerNear.y, -cornerNear.z, cornerNear.x, cornerNear.y, -cornerNear.z, cornerNear.x, -cornerNear.y, -cornerNear.z],
+					[-cornerFar.x, -cornerFar.y, -cornerFar.z, -cornerFar.x, cornerFar.y, -cornerFar.z, cornerFar.x, cornerFar.y, -cornerFar.z, cornerFar.x, -cornerFar.y, -cornerFar.z],
 				];
 				
 				
-				this.pivot = new Vector3([0.0, 0.0, -0.4 * this.planes[1].z]);
+				this.pivot = new Vector3([0.0, 0.0, -0.4 * cornerFar.z]);
 				
 				const angle = 35 * Math.PI / 180;
 				
 				this.camera.position.set([this.radius * Math.cos(angle), this.radius * 0.4, this.radius * Math.sin(angle) + this.pivot.z]);
 				this.camera.target([0.0, 0.0, this.pivot.z]);
 				
+				this.axis = [
+					-cornerFar.z * 0.5, 0.0, 0.0, cornerFar.z * 0.5, 0.0, 0.0, // X axis.
+					0.0, -cornerFar.z * 0.5, 0.0, 0.0, cornerFar.z * 0.5, 0.0, // Y axis.
+					0.0, 0.0, -cornerFar.z, 0.0, 0.0, cornerFar.z * 0.5, // Z axis.
+				];
+				
+				this.pyramid = [
+					0.0, 0.0, 0.0, cornerFar.x, cornerFar.y, -cornerFar.z,
+					0.0, 0.0, 0.0, -cornerFar.x, cornerFar.y, -cornerFar.z,
+					0.0, 0.0, 0.0, cornerFar.x, -cornerFar.y, -cornerFar.z,
+					0.0, 0.0, 0.0, -cornerFar.x, -cornerFar.y, -cornerFar.z,
+				];
+				
+				Animated.cursorBG.src = "asset/Z.png";
 				
 				// TODO:
 				// this.calculatePoint();
@@ -587,8 +607,6 @@ function projection()
 				
 				gl.enable(gl.BLEND);
 				gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-				
-				
 				
 				const camera = {
 					projection: new Float32Array(this.camera.projection),
@@ -644,46 +662,12 @@ function projection()
 					])
 				);
 				
-				const origin = [0.0, 0.0, 0.0];
-				
-				const axis = [
-					-this.planes[1].z, 0.0, 0.0, this.planes[1].z, 0.0, 0.0, // x axis
-					0.0, -this.planes[1].z, 0.0, 0.0, this.planes[1].z, 0.0, // y axis
-					0.0, 0.0, -this.planes[1].z, 0.0, 0.0, this.planes[1].z * 0.5, // z axis
-				];
-				
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, axis, [0.0, 1.0, 0.0, 1.0], 2 * 3);
-				
-				
-				const pyramid = [
-					...origin, this.planes[1].x, this.planes[1].y, -this.planes[1].z, // pyramid
-					...origin, -this.planes[1].x, this.planes[1].y, -this.planes[1].z, // pyramid
-					...origin, this.planes[1].x, -this.planes[1].y, -this.planes[1].z, // pyramid
-					...origin, -this.planes[1].x, -this.planes[1].y, -this.planes[1].z, // pyramid
-				];
-				
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, pyramid, [0.0, 0.0, 1.0, 0.6], 2 * 4);
-				
-				
-				const ray = [
-					...origin, ...this.point, // ray_origin_mouse_point
-				];
-				
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, ray, [1.0, 1.0, 0.0, 1.0], 2 * 1);
-				
-				const projected = [
-					...origin, this.point.x, 0.0, this.point.z,
-					...origin, 0.0, this.point.y, this.point.z,
-					0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z,
-					0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z,
-				];
-				
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, projected, [1.0, 0.0, 0.0, 1.0], 2 * 4);
-				
-				const cubeVertices = makeCube(0.1, 0.1, 0.1)[0];
-				
-				
-				{
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, this.axis, [0.0, 1.0, 0.0, 1.0], 2 * 3); // Axis.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, this.pyramid, [0.0, 1.0, 1.0, 0.6], 2 * 4); // Pyramid.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2 * 1); // Ray.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 2 * 2); // X projection.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 2 * 2); // Y projection.
+				{ // Point.
 					gl.uniformMatrix4fv(
 						this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
 						false,
@@ -699,53 +683,7 @@ function projection()
 					
 					// aVertexPosition
 					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-					gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
-					
-					gl.drawArrays(gl.TRIANGLES, 0, 6 * 2 * 3);
-				}
-				
-				{
-					gl.uniformMatrix4fv(
-						this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
-						false,
-						new Float32Array([
-							1, 0, 0, 0,
-							0, 1, 0, 0,
-							0, 0, 1, 0,
-							0.0, this.point.y, this.point.z, 1,
-						])
-					);
-					
-					gl.uniform4fv(this.glProgram.Fig3D_color.uniformLocations.uVertexColor, new Float32Array([0.0, 1.0, 1.0, 1.0]));
-					
-					// aVertexPosition
-					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-					gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
-					
-					gl.drawArrays(gl.TRIANGLES, 0, 6 * 2 * 3);
-				}
-				
-				{
-					gl.uniformMatrix4fv(
-						this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
-						false,
-						new Float32Array([
-							1, 0, 0, 0,
-							0, 1, 0, 0,
-							0, 0, 1, 0,
-							this.point.x, 0.0, this.point.z, 1,
-						])
-					);
-					
-					gl.uniform4fv(this.glProgram.Fig3D_color.uniformLocations.uVertexColor, new Float32Array([0.0, 1.0, 1.0, 1.0]));
-					
-					// aVertexPosition
-					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(makeCube(0.1, 0.1, 0.1)[0]), gl.STATIC_DRAW);
 					gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 					gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
 					
@@ -791,55 +729,34 @@ function projection()
 					])
 				);
 				
-				const Zcorner = this.planeCorner.copy().scale(-this.point.z);
-				const squareTextCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
+				const cornerZ = this.planeCorner.copy().scale(-this.point.z);
+				const squareTexCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
 				
-				const planes = [ // Znear, z, Zfar
-					{
-						v: [-this.planes[0].x, -this.planes[0].y, -this.planes[0].z, -this.planes[0].x, this.planes[0].y, -this.planes[0].z, this.planes[0].x, this.planes[0].y, -this.planes[0].z, this.planes[0].x, -this.planes[0].y, -this.planes[0].z],
-						t: squareTextCoord,
+				const planes = [
+					{ // Znear.
+						v: this.planes[0],
+						t: squareTexCoord,
 						i: this.glProgram.Fig3D_texture.texture[0],
 					},
-					{
-						v: [-Zcorner.x, -Zcorner.y, -Zcorner.z, -Zcorner.x, Zcorner.y, -Zcorner.z, Zcorner.x, Zcorner.y, -Zcorner.z, Zcorner.x, -Zcorner.y, -Zcorner.z],
-						t: squareTextCoord,
-						i: this.glProgram.Fig3D_texture.texture[1],
-					},
-					{
-						v: [-this.planes[1].x, -this.planes[1].y, -this.planes[1].z, -this.planes[1].x, this.planes[1].y, -this.planes[1].z, this.planes[1].x, this.planes[1].y, -this.planes[1].z, this.planes[1].x, -this.planes[1].y, -this.planes[1].z],
-						t: squareTextCoord,
+					{ // Zfar.
+						v: this.planes[1],
+						t: squareTexCoord,
 						i: this.glProgram.Fig3D_texture.texture[2],
+					},
+					{ // FoV.
+						v: this.FoV,
+						t: squareTexCoord,
+						i: this.glProgram.Fig3D_texture.texture[3],
+					},
+					{ // Z.
+						v: [-cornerZ.x, -cornerZ.y, -cornerZ.z, -cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, -cornerZ.y, -cornerZ.z],
+						t: squareTexCoord,
+						i: this.glProgram.Fig3D_texture.texture[1],
 					},
 				];
 				planes.forEach((plane) => {
 					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, plane);
 				});
-				
-				
-				{
-					// Tell WebGL we want to affect texture unit 0
-					gl.activeTexture(gl.TEXTURE0);
-
-					// Bind the texture to texture unit 0
-					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.texture[3]);
-
-					// Tell the shader we bound the texture to texture unit 0
-					gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
-					
-					// aVertexPosition
-					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[0]);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, -this.planes[0].y, 0.0, 0.0, this.planes[0].y, 0.0, 0.0, this.planes[0].y, -this.planes[0].z, 0.0, -this.planes[0].y, -this.planes[0].z]), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition);
-					
-					// aTextureCoord
-					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[1]);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareTextCoord), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aTextureCoord, 2, gl.FLOAT, false, 0, 0);
-					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aTextureCoord);
-					
-					gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
-				}
 			},
 			canvas2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0],
 			ctx2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0].getContext("2d"),
@@ -854,27 +771,48 @@ function projection()
 			},
 		};
 		
-		Animated.initPlanes();
-		Animated.cursorBG.src = "asset/Z.png";
+		Animated.INIT();
+		
+		// https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event#examples
+		Animated.canvasgl.onwheel = (event_) => {
+			event_.preventDefault();
+			
+			Animated.radius = Math.min(15.0, Math.max(2.0, Animated.radius + event_.deltaY * 0.01));
+			Animated.camera.position.set(Animated.camera.direction.scale(-Animated.radius).add(Animated.pivot));
+			Animated.camera.target(Animated.pivot);
+		};
+		
+		Animated.canvasgl.addEventListener("mouseleave", function(event_){
+			Animated.mouse.b = 0;
+		});
 		
 		Animated.canvasgl.addEventListener("mousemove", function(event_){
-			if(event_.buttons == 1){
-				event_.offsetX;
-				event_.offsetY;
-				
-				// TODO: drag to rotate camera.
-				
+			if(event_.buttons == 1 && Animated.mouse.b == 1){
+				Animated.camera.rotate(Animated.camera.rotation.substract([0.007 * (event_.offsetY - Animated.mouse.y), 0.007 * (event_.offsetX - Animated.mouse.x), 0, 0]));
+				Animated.camera.position.set(Animated.camera.direction.scale(-Animated.radius).add(Animated.pivot));
+				Animated.camera.target(Animated.pivot);
 			}
+			Animated.mouse = {
+				x: event_.offsetX,
+				y: event_.offsetY,
+				b: event_.buttons,
+			};
 		});
 		
-		document.getElementById("ZoomIn").addEventListener("click", function(event_){
-			Animated.radius = Math.max(Animated.radius - 1.0, 2.0);
-			
-			// Animated.camera.position.set([Animated.radius * Math.cos(angle), Animated.radius * 0.4, Animated.radius * Math.sin(angle) + Animated.pivot.z]);
-			// Animated.camera.target([0.0, 0.0, Animated.pivot.z]);
+		Animated.canvasgl.addEventListener("mousedown", function(event_){
+			Animated.mouse = {
+				x: event_.offsetX,
+				y: event_.offsetY,
+				b: event_.buttons,
+			};
 		});
-		document.getElementById("ZoomOut").addEventListener("click", function(event_){
-			Animated.radius = Math.min(Animated.radius + 1.0, 15.0);
+		
+		Animated.canvasgl.addEventListener("mouseup", function(event_){
+			Animated.mouse = {
+				x: event_.offsetX,
+				y: event_.offsetY,
+				b: event_.buttons,
+			};
 		});
 		
 		document.getElementById("Fig3D").getElementsByTagName("input")[0].oninput = function(){
@@ -882,7 +820,7 @@ function projection()
 			Animated.calculatePoint();
 		};
 		
-		Animated.canvas2d.addEventListener("mousedown", function(event_){ // TODO: avoid event bubbling.
+		Animated.canvas2d.addEventListener("mousedown", function(event_){
 			if(event_.buttons == 1){
 				Animated.cursor[0] = event_.offsetX;
 				Animated.cursor[1] = event_.offsetY;
@@ -913,7 +851,6 @@ function projection()
 		
 		// Flip image pixels into the bottom-to-top order that WebGL expects.
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
-		
 		
 		// Draw the scene repeatedly
 		function Animated_Play(){
