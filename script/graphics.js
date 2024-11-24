@@ -1,6 +1,6 @@
 // start here
-function main(){
-	const canvas = document.querySelector("#glcanvas");
+function manager(){
+	const canvas = document.querySelector("#glcanvas"); // TODO: class canvasgl.
 	// Initialize the GL context
 	const gl = canvas.getContext("webgl");
 	
@@ -441,6 +441,527 @@ function main(){
 	});
 }
 
+function projection()
+{
+	const canvasgl = document.getElementById("Fig3D").getElementsByClassName("canvasgl")[0];
+	// Initialize the GL context
+	const gl = canvasgl.getContext("webgl");
+	
+	// Only continue if WebGL is available and working
+	if(gl === null){
+		alert(
+			"Unable to initialize WebGL. Your browser or machine may not support it.",
+		);
+		return;
+	}
+	
+	Promise.all([
+		Promise.all([
+			fetch("script/shader/vertexColor0.vs"),
+			fetch("script/shader/vertexColor0.fs"),
+		]),
+		Promise.all([
+			fetch("script/shader/texture0.vs"),
+			fetch("script/shader/texture0.fs"),
+		]),
+	]).then((responses) => {
+		responses.forEach((response) => {
+			response.forEach((shaderFile) => {
+				if(!shaderFile.ok){
+					throw new Error(`Response status: ${shaderFile.status}`);
+				}
+			});
+		});
+		[vertexColor0, texture0] = responses;
+		return Promise.all([
+			Promise.all([
+				vertexColor0[0].text(),
+				vertexColor0[1].text(),
+			]),
+			Promise.all([
+				texture0[0].text(),
+				texture0[1].text(),
+			]),
+		]);
+	}).then((shaders) => {
+		[vertexColor0, texture0] = shaders;
+		
+		const shaderProgram = {};
+		
+		shaderProgram.Fig3D_color = initShaderProgram(gl, vertexColor0[0], vertexColor0[1]);
+		if(shaderProgram.Fig3D_color === null){
+			return;
+		}
+		
+		shaderProgram.Fig3D_texture = initShaderProgram(gl, texture0[0], texture0[1]);
+		if(shaderProgram.Fig3D_texture === null){
+			return;
+		}
+		
+		// Collect all the info needed to use the shader program.
+		// Look up which attribute our shader program is using
+		// for aVertexPosition and look up uniform locations.
+		const Animated = {
+			canvasgl: canvasgl,
+			gl: gl,
+			glProgram: {
+				Fig3D_color: {
+					program: shaderProgram.Fig3D_color,
+					attribLocations: {
+						aVertexPosition: gl.getAttribLocation(shaderProgram.Fig3D_color, "aVertexPosition"),
+					},
+					uniformLocations: {
+						uProjectionMatrix: gl.getUniformLocation(shaderProgram.Fig3D_color, "uProjectionMatrix"),
+						uVertexTranslation: gl.getUniformLocation(shaderProgram.Fig3D_color, "uVertexTranslation"),
+						uVertexRotation: gl.getUniformLocation(shaderProgram.Fig3D_color, "uVertexRotation"),
+						uCameraPosition: gl.getUniformLocation(shaderProgram.Fig3D_color, "uCameraPosition"),
+						uCameraRotation: gl.getUniformLocation(shaderProgram.Fig3D_color, "uCameraRotation"),
+						uVertexColor: gl.getUniformLocation(shaderProgram.Fig3D_color, "uVertexColor"),
+					},
+					AttributeBuffer: gl.createBuffer(),
+				},
+				Fig3D_texture: {
+					program: shaderProgram.Fig3D_texture,
+					attribLocations: {
+						aVertexPosition: gl.getAttribLocation(shaderProgram.Fig3D_texture, "aVertexPosition"),
+						aTextureCoord: gl.getAttribLocation(shaderProgram.Fig3D_texture, "aTextureCoord"),
+					},
+					uniformLocations: {
+						uProjectionMatrix: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uProjectionMatrix"),
+						uVertexTranslation: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uVertexTranslation"),
+						uVertexRotation: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uVertexRotation"),
+						uCameraPosition: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uCameraPosition"),
+						uCameraRotation: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uCameraRotation"),
+						uSampler: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uSampler"),
+					},
+					AttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
+					texture: [loadTexture(gl, "asset/Znear.png"), loadTexture(gl, "asset/Z.png"), loadTexture(gl, "asset/Zfar.png"), loadTexture(gl, "asset/FoV.png")], // Load texture
+				},
+			},
+			camera: new Camera(45.0, 0.1, 100.0, 1),
+			radius: 12.0,
+			cursor: new Vector3([10, 10, 50]),
+			point: new Vector3([1.0, 1.0, -5.0]),
+			initPlanes(){
+				const camera = new Camera(45.0, 1.0, 10.0, 9 / 16);
+				
+				this.planeCorner = new Vector3([Math.tan(camera.FoV * 0.5 / 180.0 * Math.PI) / camera.aspectRatio, Math.tan(camera.FoV * 0.5 / 180.0 * Math.PI), 1.0]);
+				
+				this.planes = [
+					this.planeCorner.copy().scale(camera.Znear),
+					this.planeCorner.copy().scale(camera.Zfar),
+				];
+				
+				
+				this.pivot = new Vector3([0.0, 0.0, -0.4 * this.planes[1].z]);
+				
+				const angle = 35 * Math.PI / 180;
+				
+				this.camera.position.set([this.radius * Math.cos(angle), this.radius * 0.4, this.radius * Math.sin(angle) + this.pivot.z]);
+				this.camera.target([0.0, 0.0, this.pivot.z]);
+				
+				
+				// TODO:
+				// this.calculatePoint();
+			},
+			calculatePoint(){
+				const x = -2.0 * this.cursor[0] / this.canvas2d.offsetWidth + 1.0;
+				const y = 2.0 * this.cursor[1] / this.canvas2d.offsetHeight - 1.0;
+				const z = -this.cursor[2] / 10.0;
+				
+				this.point = this.planeCorner.copy().scale(z);
+				this.point.x *= x;
+				this.point.y *= y;
+			},
+			draw_3d(){
+				gl.clearColor(0.6, 0.6, 0.6, 1.0); // Background color
+				gl.clearDepth(1.0); // Clear everything
+				// gl.enable(gl.DEPTH_TEST); // Enable depth testing
+				// gl.depthFunc(gl.LEQUAL); // Near things obscure far things
+				
+				// Clear the canvas before we start drawing on it.
+				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+				
+				gl.disable(gl.DEPTH_TEST);
+				gl.depthMask(false);
+				
+				gl.enable(gl.BLEND);
+				gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+				
+				
+				
+				const camera = {
+					projection: new Float32Array(this.camera.projection),
+					position: new Float32Array([
+						1.0, 0.0, 0.0, 0.0,
+						0.0, 1.0, 0.0, 0.0,
+						0.0, 0.0, 1.0, 0.0,
+						-this.camera.position.x, -this.camera.position.y, -this.camera.position.z, 1.0
+					]),
+					rotation: new Float32Array([
+						Math.cos(-this.camera.rotation.y), Math.sin(-this.camera.rotation.y) * Math.sin(-this.camera.rotation.x), -Math.sin(-this.camera.rotation.y) * Math.cos(-this.camera.rotation.x), 0.0,
+						0.0, Math.cos(-this.camera.rotation.x), Math.sin(-this.camera.rotation.x), 0.0,
+						Math.sin(-this.camera.rotation.y), -Math.cos(-this.camera.rotation.y) * Math.sin(-this.camera.rotation.x), Math.cos(-this.camera.rotation.y) * Math.cos(-this.camera.rotation.x), 0.0,
+						0.0, 0.0, 0.0, 1.0,
+					]),
+				};
+				
+				gl.useProgram(this.glProgram.Fig3D_color.program);
+				
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_color.uniformLocations.uProjectionMatrix,
+					false,
+					camera.projection
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_color.uniformLocations.uCameraPosition,
+					false,
+					camera.position
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_color.uniformLocations.uCameraRotation,
+					false,
+					camera.rotation
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1,
+					])
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_color.uniformLocations.uVertexRotation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1,
+					])
+				);
+				
+				const origin = [0.0, 0.0, 0.0];
+				
+				const axis = [
+					-this.planes[1].z, 0.0, 0.0, this.planes[1].z, 0.0, 0.0, // x axis
+					0.0, -this.planes[1].z, 0.0, 0.0, this.planes[1].z, 0.0, // y axis
+					0.0, 0.0, -this.planes[1].z, 0.0, 0.0, this.planes[1].z * 0.5, // z axis
+				];
+				
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, axis, [0.0, 1.0, 0.0, 1.0], 2 * 3);
+				
+				
+				const pyramid = [
+					...origin, this.planes[1].x, this.planes[1].y, -this.planes[1].z, // pyramid
+					...origin, -this.planes[1].x, this.planes[1].y, -this.planes[1].z, // pyramid
+					...origin, this.planes[1].x, -this.planes[1].y, -this.planes[1].z, // pyramid
+					...origin, -this.planes[1].x, -this.planes[1].y, -this.planes[1].z, // pyramid
+				];
+				
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, pyramid, [0.0, 0.0, 1.0, 0.6], 2 * 4);
+				
+				
+				const ray = [
+					...origin, ...this.point, // ray_origin_mouse_point
+				];
+				
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, ray, [1.0, 1.0, 0.0, 1.0], 2 * 1);
+				
+				const projected = [
+					...origin, this.point.x, 0.0, this.point.z,
+					...origin, 0.0, this.point.y, this.point.z,
+					0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z,
+					0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z,
+				];
+				
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, projected, [1.0, 0.0, 0.0, 1.0], 2 * 4);
+				
+				const cubeVertices = makeCube(0.1, 0.1, 0.1)[0];
+				
+				
+				{
+					gl.uniformMatrix4fv(
+						this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
+						false,
+						new Float32Array([
+							1, 0, 0, 0,
+							0, 1, 0, 0,
+							0, 0, 1, 0,
+							...this.point, 1,
+						])
+					);
+					
+					gl.uniform4fv(this.glProgram.Fig3D_color.uniformLocations.uVertexColor, new Float32Array([1.0, 0.0, 1.0, 1.0]));
+					
+					// aVertexPosition
+					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+					gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
+					
+					gl.drawArrays(gl.TRIANGLES, 0, 6 * 2 * 3);
+				}
+				
+				{
+					gl.uniformMatrix4fv(
+						this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
+						false,
+						new Float32Array([
+							1, 0, 0, 0,
+							0, 1, 0, 0,
+							0, 0, 1, 0,
+							0.0, this.point.y, this.point.z, 1,
+						])
+					);
+					
+					gl.uniform4fv(this.glProgram.Fig3D_color.uniformLocations.uVertexColor, new Float32Array([0.0, 1.0, 1.0, 1.0]));
+					
+					// aVertexPosition
+					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+					gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
+					
+					gl.drawArrays(gl.TRIANGLES, 0, 6 * 2 * 3);
+				}
+				
+				{
+					gl.uniformMatrix4fv(
+						this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
+						false,
+						new Float32Array([
+							1, 0, 0, 0,
+							0, 1, 0, 0,
+							0, 0, 1, 0,
+							this.point.x, 0.0, this.point.z, 1,
+						])
+					);
+					
+					gl.uniform4fv(this.glProgram.Fig3D_color.uniformLocations.uVertexColor, new Float32Array([0.0, 1.0, 1.0, 1.0]));
+					
+					// aVertexPosition
+					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cubeVertices), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+					gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
+					
+					gl.drawArrays(gl.TRIANGLES, 0, 6 * 2 * 3);
+				}
+				
+				
+				gl.useProgram(this.glProgram.Fig3D_texture.program);
+				
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_texture.uniformLocations.uProjectionMatrix,
+					false,
+					camera.projection
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_texture.uniformLocations.uCameraPosition,
+					false,
+					camera.position
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_texture.uniformLocations.uCameraRotation,
+					false,
+					camera.rotation
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_texture.uniformLocations.uVertexTranslation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1,
+					])
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_texture.uniformLocations.uVertexRotation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1,
+					])
+				);
+				
+				const Zcorner = this.planeCorner.copy().scale(-this.point.z);
+				const squareTextCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
+				
+				const planes = [ // Znear, z, Zfar
+					{
+						v: [-this.planes[0].x, -this.planes[0].y, -this.planes[0].z, -this.planes[0].x, this.planes[0].y, -this.planes[0].z, this.planes[0].x, this.planes[0].y, -this.planes[0].z, this.planes[0].x, -this.planes[0].y, -this.planes[0].z],
+						t: squareTextCoord,
+						i: this.glProgram.Fig3D_texture.texture[0],
+					},
+					{
+						v: [-Zcorner.x, -Zcorner.y, -Zcorner.z, -Zcorner.x, Zcorner.y, -Zcorner.z, Zcorner.x, Zcorner.y, -Zcorner.z, Zcorner.x, -Zcorner.y, -Zcorner.z],
+						t: squareTextCoord,
+						i: this.glProgram.Fig3D_texture.texture[1],
+					},
+					{
+						v: [-this.planes[1].x, -this.planes[1].y, -this.planes[1].z, -this.planes[1].x, this.planes[1].y, -this.planes[1].z, this.planes[1].x, this.planes[1].y, -this.planes[1].z, this.planes[1].x, -this.planes[1].y, -this.planes[1].z],
+						t: squareTextCoord,
+						i: this.glProgram.Fig3D_texture.texture[2],
+					},
+				];
+				planes.forEach((plane) => {
+					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, plane);
+				});
+				
+				
+				{
+					// Tell WebGL we want to affect texture unit 0
+					gl.activeTexture(gl.TEXTURE0);
+
+					// Bind the texture to texture unit 0
+					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.texture[3]);
+
+					// Tell the shader we bound the texture to texture unit 0
+					gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
+					
+					// aVertexPosition
+					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[0]);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0.0, -this.planes[0].y, 0.0, 0.0, this.planes[0].y, 0.0, 0.0, this.planes[0].y, -this.planes[0].z, 0.0, -this.planes[0].y, -this.planes[0].z]), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition);
+					
+					// aTextureCoord
+					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[1]);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareTextCoord), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aTextureCoord, 2, gl.FLOAT, false, 0, 0);
+					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aTextureCoord);
+					
+					gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+				}
+			},
+			canvas2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0],
+			ctx2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0].getContext("2d"),
+			cursorBG: new Image(),
+			draw_2d(){
+				this.ctx2d.drawImage(this.cursorBG, 0, 0, this.canvas2d.offsetWidth, this.canvas2d.offsetHeight);
+				canvas2d_drawPoint(this.ctx2d, this.cursor, "#FF00FF", 3);
+			},
+			draw(){
+				this.draw_2d();
+				this.draw_3d();
+			},
+		};
+		
+		Animated.initPlanes();
+		Animated.cursorBG.src = "asset/Z.png";
+		
+		Animated.canvasgl.addEventListener("mousemove", function(event_){
+			if(event_.buttons == 1){
+				event_.offsetX;
+				event_.offsetY;
+				
+				// TODO: drag to rotate camera.
+				
+			}
+		});
+		
+		document.getElementById("ZoomIn").addEventListener("click", function(event_){
+			Animated.radius = Math.max(Animated.radius - 1.0, 2.0);
+			
+			// Animated.camera.position.set([Animated.radius * Math.cos(angle), Animated.radius * 0.4, Animated.radius * Math.sin(angle) + Animated.pivot.z]);
+			// Animated.camera.target([0.0, 0.0, Animated.pivot.z]);
+		});
+		document.getElementById("ZoomOut").addEventListener("click", function(event_){
+			Animated.radius = Math.min(Animated.radius + 1.0, 15.0);
+		});
+		
+		document.getElementById("Fig3D").getElementsByTagName("input")[0].oninput = function(){
+			Animated.cursor[2] = parseInt(this.value);
+			Animated.calculatePoint();
+		};
+		
+		Animated.canvas2d.addEventListener("mousedown", function(event_){ // TODO: avoid event bubbling.
+			if(event_.buttons == 1){
+				Animated.cursor[0] = event_.offsetX;
+				Animated.cursor[1] = event_.offsetY;
+				Animated.calculatePoint();
+			}
+		});
+		
+		Animated.canvas2d.addEventListener("mousemove", function(event_){
+			if(event_.buttons == 1){
+				Animated.cursor[0] = event_.offsetX;
+				Animated.cursor[1] = event_.offsetY;
+				Animated.calculatePoint();
+			}
+		});
+		
+		
+		{ // TODO: REMOVE.
+			canvasgl.width = canvasgl.offsetWidth;
+			canvasgl.height = canvasgl.offsetHeight;
+			gl.viewport(0, 0, canvasgl.offsetWidth, canvasgl.offsetHeight);
+			Animated.camera.aspectRatio = canvasgl.offsetHeight / canvasgl.offsetWidth;
+			Animated.camera.project();
+			
+			Animated.canvas2d.width = Animated.canvas2d.offsetWidth;
+			Animated.canvas2d.height = Animated.canvas2d.offsetHeight;
+		}
+		
+		
+		// Flip image pixels into the bottom-to-top order that WebGL expects.
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+		
+		
+		// Draw the scene repeatedly
+		function Animated_Play(){
+			// Update
+			this.deltaTime = this.timeFrameCurrent - this.timeFrameLast;
+			// this.update();
+			
+			// Draw
+			this.draw();
+		}
+		animation_initAnimationComponent(Animated, Animated_Play, false, true); // TODO: DO NOT INITIATE ANIMATION.
+		
+		// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+		new MutationObserver((mutationList, observer) => {
+			for(const mutation of mutationList){
+				if(mutation.type == "attributes" && mutation.attributeName == "style"){
+					if(mutation.target.style.display == "none"){
+						if(Animated.animationID != 0){
+							// Stop animation.
+							cancelAnimationFrame(Animated.animationID);
+							Animated.animationID = 0;
+						}
+					}else{
+						// Adjust resolution.
+						canvasgl.width = canvasgl.offsetWidth;
+						canvasgl.height = canvasgl.offsetHeight;
+						gl.viewport(0, 0, canvasgl.offsetWidth, canvasgl.offsetHeight);
+						
+						Animated.camera.aspectRatio = canvasgl.offsetHeight / canvasgl.offsetWidth;
+						Animated.camera.project();
+						
+						Animated.canvas2d.width = Animated.canvas2d.offsetWidth;
+						Animated.canvas2d.height = Animated.canvas2d.offsetHeight;
+						
+						if(Animated.animationID == 0){
+							// Resume animation.
+							Animated.animationID = requestAnimationFrame(Animated.animationStart);
+						}
+					}
+				}
+			}
+		}).observe(document.getElementById("PROJECTION"), {attributes: true});
+		
+	}).catch((e) => {
+		console.error(e);
+	});
+}
+
 function bookClose(rootID, animation_)
 {
 	animation_.animationID = requestAnimationFrame(animation_.animationStart); // Resume drawing.
@@ -453,6 +974,12 @@ function bookClose(rootID, animation_)
 	root.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
 		root.style.display = "none";
 	});
+}
+
+function main()
+{
+	manager();
+	projection();
 }
 
 main();

@@ -253,3 +253,42 @@ function draw_silhouette(gl, programInfo, camera, bodySelected){
 	
 	gl.drawArrays(gl.TRIANGLES, bodySelected.model.offset, bodySelected.model.vertexCount);
 }
+
+function draw_Figure3D_lines(gl, programInfo, camera, lines, color, num)
+{
+	gl.uniform4fv(programInfo.uniformLocations.uVertexColor, new Float32Array(color));
+	
+	// aVertexPosition
+	gl.bindBuffer(gl.ARRAY_BUFFER, programInfo.AttributeBuffer);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lines), gl.STATIC_DRAW);
+	gl.vertexAttribPointer(programInfo.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(programInfo.attribLocations.aVertexPosition);
+	
+	gl.drawArrays(gl.LINES, 0, num);
+}
+
+function draw_Figure3D_planes(gl, programInfo, plane)
+{
+	// Tell WebGL we want to affect texture unit 0
+	gl.activeTexture(gl.TEXTURE0);
+
+	// Bind the texture to texture unit 0
+	gl.bindTexture(gl.TEXTURE_2D, plane.i);
+
+	// Tell the shader we bound the texture to texture unit 0
+	gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
+	
+	// aVertexPosition
+	gl.bindBuffer(gl.ARRAY_BUFFER, programInfo.AttributeBuffer[0]);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(plane.v), gl.STATIC_DRAW);
+	gl.vertexAttribPointer(programInfo.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(programInfo.attribLocations.aVertexPosition);
+	
+	// aTextureCoord
+	gl.bindBuffer(gl.ARRAY_BUFFER, programInfo.AttributeBuffer[1]);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(plane.t), gl.STATIC_DRAW);
+	gl.vertexAttribPointer(programInfo.attribLocations.aTextureCoord, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(programInfo.attribLocations.aTextureCoord);
+	
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+}

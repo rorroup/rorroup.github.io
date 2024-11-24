@@ -399,3 +399,54 @@ ol[class="references"]>li::before
 {
 	content: "[Online Video]. Available: " attr(href);
 }
+
+#Fig3D
+{
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 0px;
+	padding-bottom: 50%;
+	margin: 1em auto;
+}
+
+#Fig3D>canvas
+{
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	left: 0px;
+	top: 0px;
+}
+
+#Fig3D>div
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	display: table;
+	width: 100%;
+}
+
+#Fig3D>div>div
+{
+	position: relative;
+	display: table-cell;
+	width: 30%;
+	left: 0px;
+	top: 0px;
+	vertical-align: top;
+}
+
+#Fig3D>div>div>.canvas2d
+{
+	position: absolute;
+	background-color: black;
+	width: 320px;
+	height: 180px;
+}
+
+#Fig3D>div>div>p
+{
+	display: inline;
+}
