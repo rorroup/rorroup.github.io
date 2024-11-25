@@ -587,10 +587,10 @@ function projection()
 				
 				
 				// create text texture.
-				var textCanvas = makeTextCanvas("Hello!", 100, 26);
-				var textWidth  = textCanvas.width;
-				var textHeight = textCanvas.height;
-				var textTex = gl.createTexture();
+				const textCanvas = makeTextCanvas("-X");
+				const textWidth  = 0.005 * textCanvas.width;
+				const textHeight = 0.005 * textCanvas.height;
+				const textTex = gl.createTexture();
 				gl.bindTexture(gl.TEXTURE_2D, textTex);
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
 				// make sure we can render it even if it's not a power of 2
@@ -598,7 +598,7 @@ function projection()
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 				
-				this.glProgram.Fig3D_texture.labelAxis.push(textTex);
+				this.glProgram.Fig3D_texture.labelAxis.push({t: textTex, v: [-textWidth, -textHeight, 0, -textWidth, textHeight, 0, textWidth, textHeight, 0, textWidth, -textHeight, 0]});
 			},
 			calculatePoint(){
 				const x = -2.0 * this.cursor[0] / this.canvas2d.offsetWidth + 1.0;
@@ -775,8 +775,6 @@ function projection()
 				});
 				
 				{
-					const size = 1.0;
-					const square = [-size, -size, 0, -size, size, 0, size, size, 0, size, -size, 0];
 					const position = this.axis.slice(0, 3);
 					
 					gl.uniformMatrix4fv(
@@ -804,14 +802,14 @@ function projection()
 					gl.activeTexture(gl.TEXTURE0);
 
 					// Bind the texture to texture unit 0
-					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.labelAxis[0]);
+					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.labelAxis[0].t);
 
 					// Tell the shader we bound the texture to texture unit 0
 					gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
 					
 					// aVertexPosition
 					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[0]);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(square), gl.STATIC_DRAW);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.glProgram.Fig3D_texture.labelAxis[0].v), gl.STATIC_DRAW);
 					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition);
 					
@@ -980,18 +978,19 @@ function bookClose(rootID, animation_)
 }
 
 // https://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
-var textCtx = document.createElement("canvas").getContext("2d");
+const textCtx = document.createElement("canvas").getContext("2d");
 
-// Puts text in center of canvas.
-function makeTextCanvas(text, width, height) {
-	textCtx.canvas.width  = width;
-	textCtx.canvas.height = height;
-	textCtx.font = "20px monospace";
-	textCtx.textAlign = "center";
-	textCtx.textBaseline = "middle";
-	textCtx.fillStyle = "black";
+// Puts text in canvas.
+function makeTextCanvas(text_, color = "#000000", font = "30px Arial"){
+	textCtx.font = font;
+	textCtx.canvas.width = Math.ceil(textCtx.measureText(text_).width);
+	textCtx.canvas.height = parseInt(font);
+	textCtx.font = font; // Resizing resets the font.
+	textCtx.textAlign = "left";
+	textCtx.textBaseline = "top";
+	textCtx.fillStyle = color;
 	textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
-	textCtx.fillText(text, width / 2, height / 2);
+	textCtx.fillText(text_, 0, 0);
 	return textCtx.canvas;
 }
 
