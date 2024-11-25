@@ -771,6 +771,9 @@ function projection()
 			},
 		};
 		
+		// Flip image pixels into the bottom-to-top order that WebGL expects.
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+		
 		Animated.INIT();
 		
 		// https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event#examples
@@ -848,9 +851,6 @@ function projection()
 			Animated.canvas2d.height = Animated.canvas2d.offsetHeight;
 		}
 		
-		
-		// Flip image pixels into the bottom-to-top order that WebGL expects.
-		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		
 		// Draw the scene repeatedly
 		function Animated_Play(){
