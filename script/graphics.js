@@ -536,6 +536,7 @@ function projection()
 					},
 					AttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
 					texture: [loadTexture(gl, "asset/Znear.png"), loadTexture(gl, "asset/Z.png"), loadTexture(gl, "asset/Zfar.png"), loadTexture(gl, "asset/FoV.png")], // Load texture
+					labelAxis: [],
 				},
 			},
 			camera: new Camera(45.0, 0.1, 100.0, 1),
@@ -583,6 +584,21 @@ function projection()
 				
 				// TODO:
 				// this.calculatePoint();
+				
+				
+				// create text texture.
+				var textCanvas = makeTextCanvas("Hello!", 100, 26);
+				var textWidth  = textCanvas.width;
+				var textHeight = textCanvas.height;
+				var textTex = gl.createTexture();
+				gl.bindTexture(gl.TEXTURE_2D, textTex);
+				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
+				// make sure we can render it even if it's not a power of 2
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+				
+				this.glProgram.Fig3D_texture.labelAxis.push(textTex);
 			},
 			calculatePoint(){
 				const x = -2.0 * this.cursor[0] / this.canvas2d.offsetWidth + 1.0;
@@ -757,6 +773,56 @@ function projection()
 				planes.forEach((plane) => {
 					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, plane);
 				});
+				
+				{
+					const size = 1.0;
+					const square = [-size, -size, 0, -size, size, 0, size, size, 0, size, -size, 0];
+					const position = this.axis.slice(0, 3);
+					
+					gl.uniformMatrix4fv(
+						this.glProgram.Fig3D_texture.uniformLocations.uVertexTranslation,
+						false,
+						new Float32Array([
+							1, 0, 0, 0,
+							0, 1, 0, 0,
+							0, 0, 1, 0,
+							...position, 1
+						])
+					);
+					gl.uniformMatrix4fv(
+						this.glProgram.Fig3D_texture.uniformLocations.uVertexRotation,
+						false,
+						new Float32Array([
+							Math.cos(this.camera.rotation.y), 0, -Math.sin(this.camera.rotation.y), 0,
+							Math.sin(this.camera.rotation.x) * Math.sin(this.camera.rotation.y), Math.cos(this.camera.rotation.x), Math.sin(this.camera.rotation.x) * Math.cos(this.camera.rotation.y), 0,
+							Math.cos(this.camera.rotation.x) * Math.sin(this.camera.rotation.y), -Math.sin(this.camera.rotation.x), Math.cos(this.camera.rotation.x) * Math.cos(this.camera.rotation.y), 0,
+							0, 0, 0, 1,
+						])
+					);
+					
+					// Tell WebGL we want to affect texture unit 0
+					gl.activeTexture(gl.TEXTURE0);
+
+					// Bind the texture to texture unit 0
+					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.labelAxis[0]);
+
+					// Tell the shader we bound the texture to texture unit 0
+					gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
+					
+					// aVertexPosition
+					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[0]);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(square), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition);
+					
+					// aTextureCoord
+					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[1]);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareTexCoord), gl.STATIC_DRAW);
+					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aTextureCoord, 2, gl.FLOAT, false, 0, 0);
+					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aTextureCoord);
+					
+					gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+				}
 			},
 			canvas2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0],
 			ctx2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0].getContext("2d"),
@@ -911,6 +977,22 @@ function bookClose(rootID, animation_)
 	root.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
 		root.style.display = "none";
 	});
+}
+
+// https://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
+var textCtx = document.createElement("canvas").getContext("2d");
+
+// Puts text in center of canvas.
+function makeTextCanvas(text, width, height) {
+	textCtx.canvas.width  = width;
+	textCtx.canvas.height = height;
+	textCtx.font = "20px monospace";
+	textCtx.textAlign = "center";
+	textCtx.textBaseline = "middle";
+	textCtx.fillStyle = "black";
+	textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
+	textCtx.fillText(text, width / 2, height / 2);
+	return textCtx.canvas;
 }
 
 function main()
