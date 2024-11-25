@@ -586,19 +586,21 @@ function projection()
 				// this.calculatePoint();
 				
 				
-				// create text texture.
-				const textCanvas = makeTextCanvas("-X");
-				const textWidth  = 0.005 * textCanvas.width;
-				const textHeight = 0.005 * textCanvas.height;
-				const textTex = gl.createTexture();
-				gl.bindTexture(gl.TEXTURE_2D, textTex);
-				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
-				// make sure we can render it even if it's not a power of 2
-				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-				
-				this.glProgram.Fig3D_texture.labelAxis.push({t: textTex, v: [-textWidth, -textHeight, 0, -textWidth, textHeight, 0, textWidth, textHeight, 0, textWidth, -textHeight, 0]});
+				["-X", "X", "-Y", "Y", "-Z", "Z"].forEach((label) => {
+					// create text texture.
+					const textCanvas = makeTextCanvas(label);
+					const textWidth  = 0.005 * textCanvas.width;
+					const textHeight = 0.005 * textCanvas.height;
+					const textTex = gl.createTexture();
+					gl.bindTexture(gl.TEXTURE_2D, textTex);
+					gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
+					// make sure we can render it even if it's not a power of 2
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+					
+					this.glProgram.Fig3D_texture.labelAxis.push({t: textTex, v: [-textWidth, -textHeight, 0, -textWidth, textHeight, 0, textWidth, textHeight, 0, textWidth, -textHeight, 0]});
+				});
 			},
 			calculatePoint(){
 				const x = -2.0 * this.cursor[0] / this.canvas2d.offsetWidth + 1.0;
@@ -774,8 +776,8 @@ function projection()
 					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, plane);
 				});
 				
-				{
-					const position = this.axis.slice(0, 3);
+				for(let i = 0; i < this.glProgram.Fig3D_texture.labelAxis.length; i++){
+					const position = this.axis.slice(0 + 3 * i, 3 + 3 * i);
 					
 					gl.uniformMatrix4fv(
 						this.glProgram.Fig3D_texture.uniformLocations.uVertexTranslation,
@@ -802,14 +804,14 @@ function projection()
 					gl.activeTexture(gl.TEXTURE0);
 
 					// Bind the texture to texture unit 0
-					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.labelAxis[0].t);
+					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.labelAxis[i].t);
 
 					// Tell the shader we bound the texture to texture unit 0
 					gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
 					
 					// aVertexPosition
 					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[0]);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.glProgram.Fig3D_texture.labelAxis[0].v), gl.STATIC_DRAW);
+					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.glProgram.Fig3D_texture.labelAxis[i].v), gl.STATIC_DRAW);
 					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition);
 					
