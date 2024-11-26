@@ -778,22 +778,7 @@ function projection()
 						])
 					);
 					
-					// Bind the texture to texture unit 0
-					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.labelAxis[i].t);
-
-					// aVertexPosition
-					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[0]);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.glProgram.Fig3D_texture.labelAxis[i].v), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aVertexPosition);
-					
-					// aTextureCoord
-					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[1]);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(squareTexCoord), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(this.glProgram.Fig3D_texture.attribLocations.aTextureCoord, 2, gl.FLOAT, false, 0, 0);
-					gl.enableVertexAttribArray(this.glProgram.Fig3D_texture.attribLocations.aTextureCoord);
-					
-					gl.drawArrays(gl.TRIANGLE_FAN, 0, 4);
+					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, this.glProgram.Fig3D_texture.labelAxis[i].v, squareTexCoord, this.glProgram.Fig3D_texture.labelAxis[i].t);
 				}
 			},
 			canvas2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0],
