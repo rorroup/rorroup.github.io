@@ -488,13 +488,13 @@ function projection()
 		
 		const shaderProgram = {};
 		
-		shaderProgram.Fig3D_color = initShaderProgram(gl, vertexColor0[0], vertexColor0[1]);
-		if(shaderProgram.Fig3D_color === null){
+		shaderProgram.color0 = initShaderProgram(gl, vertexColor0[0], vertexColor0[1]);
+		if(shaderProgram.color0 === null){
 			return;
 		}
 		
-		shaderProgram.Fig3D_texture = initShaderProgram(gl, texture0[0], texture0[1]);
-		if(shaderProgram.Fig3D_texture === null){
+		shaderProgram.texture0 = initShaderProgram(gl, texture0[0], texture0[1]);
+		if(shaderProgram.texture0 === null){
 			return;
 		}
 		
@@ -505,34 +505,34 @@ function projection()
 			canvasgl: canvasgl,
 			gl: gl,
 			glProgram: {
-				Fig3D_color: {
-					program: shaderProgram.Fig3D_color,
+				color0: {
+					program: shaderProgram.color0,
 					attribLocations: {
-						aVertexPosition: gl.getAttribLocation(shaderProgram.Fig3D_color, "aVertexPosition"),
+						aVertexPosition: gl.getAttribLocation(shaderProgram.color0, "aVertexPosition"),
 					},
 					uniformLocations: {
-						uProjectionMatrix: gl.getUniformLocation(shaderProgram.Fig3D_color, "uProjectionMatrix"),
-						uVertexTranslation: gl.getUniformLocation(shaderProgram.Fig3D_color, "uVertexTranslation"),
-						uVertexRotation: gl.getUniformLocation(shaderProgram.Fig3D_color, "uVertexRotation"),
-						uCameraPosition: gl.getUniformLocation(shaderProgram.Fig3D_color, "uCameraPosition"),
-						uCameraRotation: gl.getUniformLocation(shaderProgram.Fig3D_color, "uCameraRotation"),
-						uVertexColor: gl.getUniformLocation(shaderProgram.Fig3D_color, "uVertexColor"),
+						uProjectionMatrix: gl.getUniformLocation(shaderProgram.color0, "uProjectionMatrix"),
+						uVertexTranslation: gl.getUniformLocation(shaderProgram.color0, "uVertexTranslation"),
+						uVertexRotation: gl.getUniformLocation(shaderProgram.color0, "uVertexRotation"),
+						uCameraPosition: gl.getUniformLocation(shaderProgram.color0, "uCameraPosition"),
+						uCameraRotation: gl.getUniformLocation(shaderProgram.color0, "uCameraRotation"),
+						uVertexColor: gl.getUniformLocation(shaderProgram.color0, "uVertexColor"),
 					},
 					AttributeBuffer: gl.createBuffer(),
 				},
-				Fig3D_texture: {
-					program: shaderProgram.Fig3D_texture,
+				texture0: {
+					program: shaderProgram.texture0,
 					attribLocations: {
-						aVertexPosition: gl.getAttribLocation(shaderProgram.Fig3D_texture, "aVertexPosition"),
-						aTextureCoord: gl.getAttribLocation(shaderProgram.Fig3D_texture, "aTextureCoord"),
+						aVertexPosition: gl.getAttribLocation(shaderProgram.texture0, "aVertexPosition"),
+						aTextureCoord: gl.getAttribLocation(shaderProgram.texture0, "aTextureCoord"),
 					},
 					uniformLocations: {
-						uProjectionMatrix: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uProjectionMatrix"),
-						uVertexTranslation: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uVertexTranslation"),
-						uVertexRotation: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uVertexRotation"),
-						uCameraPosition: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uCameraPosition"),
-						uCameraRotation: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uCameraRotation"),
-						uSampler: gl.getUniformLocation(shaderProgram.Fig3D_texture, "uSampler"),
+						uProjectionMatrix: gl.getUniformLocation(shaderProgram.texture0, "uProjectionMatrix"),
+						uVertexTranslation: gl.getUniformLocation(shaderProgram.texture0, "uVertexTranslation"),
+						uVertexRotation: gl.getUniformLocation(shaderProgram.texture0, "uVertexRotation"),
+						uCameraPosition: gl.getUniformLocation(shaderProgram.texture0, "uCameraPosition"),
+						uCameraRotation: gl.getUniformLocation(shaderProgram.texture0, "uCameraRotation"),
+						uSampler: gl.getUniformLocation(shaderProgram.texture0, "uSampler"),
 					},
 					AttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
 					texture: [loadTexture(gl, "asset/Znear.png"), loadTexture(gl, "asset/Z.png"), loadTexture(gl, "asset/Zfar.png"), loadTexture(gl, "asset/FoV.png")], // Load texture
@@ -598,7 +598,7 @@ function projection()
 					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
 					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 					
-					this.glProgram.Fig3D_texture.labelAxis.push({t: textTex, v: [-textWidth, -textHeight, 0, -textWidth, textHeight, 0, textWidth, textHeight, 0, textWidth, -textHeight, 0]});
+					this.glProgram.texture0.labelAxis.push({t: textTex, v: [-textWidth, -textHeight, 0, -textWidth, textHeight, 0, textWidth, textHeight, 0, textWidth, -textHeight, 0]});
 				});
 			},
 			calculatePoint(){
@@ -637,25 +637,25 @@ function projection()
 				};
 				
 				// vertexColor0
-				gl.useProgram(this.glProgram.Fig3D_color.program);
+				gl.useProgram(this.glProgram.color0.program);
 				
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_color.uniformLocations.uProjectionMatrix,
+					this.glProgram.color0.uniformLocations.uProjectionMatrix,
 					false,
 					camera.projection
 				);
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_color.uniformLocations.uCameraPosition,
+					this.glProgram.color0.uniformLocations.uCameraPosition,
 					false,
 					camera.position
 				);
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_color.uniformLocations.uCameraRotation,
+					this.glProgram.color0.uniformLocations.uCameraRotation,
 					false,
 					camera.rotation
 				);
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
+					this.glProgram.color0.uniformLocations.uVertexTranslation,
 					false,
 					new Float32Array([
 						1, 0, 0, 0,
@@ -665,7 +665,7 @@ function projection()
 					])
 				);
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_color.uniformLocations.uVertexRotation,
+					this.glProgram.color0.uniformLocations.uVertexRotation,
 					false,
 					new Float32Array([
 						1, 0, 0, 0,
@@ -675,15 +675,15 @@ function projection()
 					])
 				);
 				
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, this.axis, [0.0, 1.0, 0.0, 1.0], 6); // Axis.
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, this.pyramid, [0.0, 1.0, 1.0, 0.6], 8); // Pyramid.
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2); // Ray.
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 4); // X projection.
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 4); // Y projection.
+				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, this.axis, [0.0, 1.0, 0.0, 1.0], 6); // Axis.
+				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, this.pyramid, [0.0, 1.0, 1.0, 0.6], 8); // Pyramid.
+				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2); // Ray.
+				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 4); // X projection.
+				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 4); // Y projection.
 				
 				// Point.
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
+					this.glProgram.color0.uniformLocations.uVertexTranslation,
 					false,
 					new Float32Array([
 						1, 0, 0, 0,
@@ -693,37 +693,37 @@ function projection()
 					])
 				);
 				
-				gl.uniform4fv(this.glProgram.Fig3D_color.uniformLocations.uVertexColor, new Float32Array([1.0, 0.0, 1.0, 1.0]));
+				gl.uniform4fv(this.glProgram.color0.uniformLocations.uVertexColor, new Float32Array([1.0, 0.0, 1.0, 1.0]));
 				
 				// aVertexPosition
-				gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
+				gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.color0.AttributeBuffer);
 				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(makeCube(0.1, 0.1, 0.1)[0]), gl.STATIC_DRAW);
-				gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-				gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
+				gl.vertexAttribPointer(this.glProgram.color0.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+				gl.enableVertexAttribArray(this.glProgram.color0.attribLocations.aVertexPosition);
 				
 				gl.drawArrays(gl.TRIANGLES, 0, 36);
 				
 				
 				// texture0
-				gl.useProgram(this.glProgram.Fig3D_texture.program);
+				gl.useProgram(this.glProgram.texture0.program);
 				
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_texture.uniformLocations.uProjectionMatrix,
+					this.glProgram.texture0.uniformLocations.uProjectionMatrix,
 					false,
 					camera.projection
 				);
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_texture.uniformLocations.uCameraPosition,
+					this.glProgram.texture0.uniformLocations.uCameraPosition,
 					false,
 					camera.position
 				);
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_texture.uniformLocations.uCameraRotation,
+					this.glProgram.texture0.uniformLocations.uCameraRotation,
 					false,
 					camera.rotation
 				);
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_texture.uniformLocations.uVertexTranslation,
+					this.glProgram.texture0.uniformLocations.uVertexTranslation,
 					false,
 					new Float32Array([
 						1, 0, 0, 0,
@@ -733,7 +733,7 @@ function projection()
 					])
 				);
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_texture.uniformLocations.uVertexRotation,
+					this.glProgram.texture0.uniformLocations.uVertexRotation,
 					false,
 					new Float32Array([
 						1, 0, 0, 0,
@@ -746,18 +746,18 @@ function projection()
 				// Tell WebGL we want to affect texture unit 0
 				gl.activeTexture(gl.TEXTURE0);
 				// Tell the shader we bound the texture to texture unit 0
-				gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
+				gl.uniform1i(this.glProgram.texture0.uniformLocations.uSampler, 0);
 				
 				const cornerZ = this.planeCorner.copy().scale(-this.point.z);
 				const squareTexCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
 				
-				draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, this.planes[0], squareTexCoord, this.glProgram.Fig3D_texture.texture[0]); // Znear.
-				draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, this.planes[1], squareTexCoord, this.glProgram.Fig3D_texture.texture[2]); // Zfar.
-				draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, this.FoV, squareTexCoord, this.glProgram.Fig3D_texture.texture[3]); // FoV.
-				draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, [-cornerZ.x, -cornerZ.y, -cornerZ.z, -cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, -cornerZ.y, -cornerZ.z], squareTexCoord, this.glProgram.Fig3D_texture.texture[1]); // Z.
+				draw_Figure3D_planes(gl, this.glProgram.texture0, this.planes[0], squareTexCoord, this.glProgram.texture0.texture[0]); // Znear.
+				draw_Figure3D_planes(gl, this.glProgram.texture0, this.planes[1], squareTexCoord, this.glProgram.texture0.texture[2]); // Zfar.
+				draw_Figure3D_planes(gl, this.glProgram.texture0, this.FoV, squareTexCoord, this.glProgram.texture0.texture[3]); // FoV.
+				draw_Figure3D_planes(gl, this.glProgram.texture0, [-cornerZ.x, -cornerZ.y, -cornerZ.z, -cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, -cornerZ.y, -cornerZ.z], squareTexCoord, this.glProgram.texture0.texture[1]); // Z.
 				
 				gl.uniformMatrix4fv(
-					this.glProgram.Fig3D_texture.uniformLocations.uVertexRotation,
+					this.glProgram.texture0.uniformLocations.uVertexRotation,
 					false,
 					new Float32Array([
 						Math.cos(this.camera.rotation.y), 0, -Math.sin(this.camera.rotation.y), 0,
@@ -767,9 +767,9 @@ function projection()
 					])
 				);
 				
-				for(let i = 0; i < this.glProgram.Fig3D_texture.labelAxis.length; i++){
+				for(let i = 0; i < this.glProgram.texture0.labelAxis.length; i++){
 					gl.uniformMatrix4fv(
-						this.glProgram.Fig3D_texture.uniformLocations.uVertexTranslation,
+						this.glProgram.texture0.uniformLocations.uVertexTranslation,
 						false,
 						new Float32Array([
 							1, 0, 0, 0,
@@ -779,7 +779,7 @@ function projection()
 						])
 					);
 					
-					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, this.glProgram.Fig3D_texture.labelAxis[i].v, squareTexCoord, this.glProgram.Fig3D_texture.labelAxis[i].t);
+					draw_Figure3D_planes(gl, this.glProgram.texture0, this.glProgram.texture0.labelAxis[i].v, squareTexCoord, this.glProgram.texture0.labelAxis[i].t);
 				}
 			},
 			canvas2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0],
