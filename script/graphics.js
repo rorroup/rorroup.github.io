@@ -846,7 +846,7 @@ function projection()
 		Animated.canvasgl.onwheel = (event_) => {
 			event_.preventDefault();
 			
-			Animated.radius = Math.min(15.0, Math.max(2.0, Animated.radius + event_.deltaY * 0.01));
+			Animated.radius = Math.min(15.0, Math.max(2.0, Animated.radius + event_.deltaY * 0.005));
 			Animated.camera.position.set(Animated.camera.direction.scale(-Animated.radius).add(Animated.pivot));
 			Animated.camera.target(Animated.pivot);
 		};
