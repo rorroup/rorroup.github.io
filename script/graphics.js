@@ -443,18 +443,6 @@ function manager(){
 
 function projection()
 {
-	const canvasgl = document.getElementById("Fig3D").getElementsByClassName("canvasgl")[0];
-	// Initialize the GL context
-	const gl = canvasgl.getContext("webgl");
-	
-	// Only continue if WebGL is available and working
-	if(gl === null){
-		alert(
-			"Unable to initialize WebGL. Your browser or machine may not support it.",
-		);
-		return;
-	}
-	
 	Promise.all([
 		Promise.all([
 			fetch("script/shader/vertexColor0.vs"),
@@ -484,6 +472,18 @@ function projection()
 			]),
 		]);
 	}).then((shaders) => {
+		const canvasgl = document.getElementById("Fig3D").getElementsByClassName("canvasgl")[0];
+		// Initialize the GL context
+		const gl = canvasgl.getContext("webgl");
+		
+		// Only continue if WebGL is available and working
+		if(gl === null){
+			alert(
+				"Unable to initialize WebGL. Your browser or machine may not support it.",
+			);
+			return;
+		}
+		
 		[vertexColor0, texture0] = shaders;
 		
 		const shaderProgram = {};
