@@ -680,28 +680,29 @@ function projection()
 				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2); // Ray.
 				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 4); // X projection.
 				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 4); // Y projection.
-				{ // Point.
-					gl.uniformMatrix4fv(
-						this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
-						false,
-						new Float32Array([
-							1, 0, 0, 0,
-							0, 1, 0, 0,
-							0, 0, 1, 0,
-							...this.point, 1,
-						])
-					);
-					
-					gl.uniform4fv(this.glProgram.Fig3D_color.uniformLocations.uVertexColor, new Float32Array([1.0, 0.0, 1.0, 1.0]));
-					
-					// aVertexPosition
-					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
-					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(makeCube(0.1, 0.1, 0.1)[0]), gl.STATIC_DRAW);
-					gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
-					gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
-					
-					gl.drawArrays(gl.TRIANGLES, 0, 36);
-				}
+				
+				// Point.
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						...this.point, 1,
+					])
+				);
+				
+				gl.uniform4fv(this.glProgram.Fig3D_color.uniformLocations.uVertexColor, new Float32Array([1.0, 0.0, 1.0, 1.0]));
+				
+				// aVertexPosition
+				gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_color.AttributeBuffer);
+				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(makeCube(0.1, 0.1, 0.1)[0]), gl.STATIC_DRAW);
+				gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+				gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
+				
+				gl.drawArrays(gl.TRIANGLES, 0, 36);
+				
 				
 				
 				gl.useProgram(this.glProgram.Fig3D_texture.program);
