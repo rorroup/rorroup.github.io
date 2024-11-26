@@ -587,6 +587,7 @@ function projection()
 				
 				
 				["-X", "X", "-Y", "Y", "-Z", "Z"].forEach((label) => {
+					// https://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
 					// create text texture.
 					const textCanvas = makeTextCanvas(label);
 					const textWidth  = 0.005 * textCanvas.width;
@@ -603,13 +604,9 @@ function projection()
 				});
 			},
 			calculatePoint(){
-				const x = -2.0 * this.cursor[0] / this.canvas2d.offsetWidth + 1.0;
-				const y = 2.0 * this.cursor[1] / this.canvas2d.offsetHeight - 1.0;
-				const z = -this.cursor[2] / 10.0;
-				
-				this.point = this.planeCorner.copy().scale(z);
-				this.point.x *= x;
-				this.point.y *= y;
+				this.point = this.planeCorner.copy().scale(-this.cursor[2] / 10.0);
+				this.point.x *= -2.0 * this.cursor[0] / this.canvas2d.offsetWidth + 1.0;
+				this.point.y *= 2.0 * this.cursor[1] / this.canvas2d.offsetHeight - 1.0;
 			},
 			draw_3d(){
 				gl.clearColor(0.6, 0.6, 0.6, 1.0); // Background color
@@ -680,11 +677,11 @@ function projection()
 					])
 				);
 				
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, this.axis, [0.0, 1.0, 0.0, 1.0], 2 * 3); // Axis.
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, this.pyramid, [0.0, 1.0, 1.0, 0.6], 2 * 4); // Pyramid.
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2 * 1); // Ray.
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 2 * 2); // X projection.
-				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 2 * 2); // Y projection.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, this.axis, [0.0, 1.0, 0.0, 1.0], 6); // Axis.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, this.pyramid, [0.0, 1.0, 1.0, 0.6], 8); // Pyramid.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2); // Ray.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 4); // X projection.
+				draw_Figure3D_lines(this.gl, this.glProgram.Fig3D_color, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 4); // Y projection.
 				{ // Point.
 					gl.uniformMatrix4fv(
 						this.glProgram.Fig3D_color.uniformLocations.uVertexTranslation,
@@ -705,7 +702,7 @@ function projection()
 					gl.vertexAttribPointer(this.glProgram.Fig3D_color.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 					gl.enableVertexAttribArray(this.glProgram.Fig3D_color.attribLocations.aVertexPosition);
 					
-					gl.drawArrays(gl.TRIANGLES, 0, 6 * 2 * 3);
+					gl.drawArrays(gl.TRIANGLES, 0, 36);
 				}
 				
 				
@@ -750,7 +747,7 @@ function projection()
 				const cornerZ = this.planeCorner.copy().scale(-this.point.z);
 				const squareTexCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
 				
-				const planes = [
+				[
 					{ // Znear.
 						v: this.planes[0],
 						t: squareTexCoord,
@@ -771,8 +768,7 @@ function projection()
 						t: squareTexCoord,
 						i: this.glProgram.Fig3D_texture.texture[1],
 					},
-				];
-				planes.forEach((plane) => {
+				].forEach((plane) => {
 					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, plane);
 				});
 				
@@ -979,7 +975,7 @@ function bookClose(rootID, animation_)
 	});
 }
 
-// https://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
+
 const textCtx = document.createElement("canvas").getContext("2d");
 
 // Puts text in canvas.
