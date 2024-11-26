@@ -899,6 +899,11 @@ function projection()
 			}
 		});
 		
+		const pointControl = document.getElementById("Fig3D").getElementsByClassName("point")[0].getElementsByClassName("controls")[0];
+		document.getElementById("Fig3D").getElementsByClassName("point")[0].getElementsByClassName("display")[0].addEventListener("click", function(event_){
+			pointControl.style.display = (pointControl.style.display == "none") ? "block" : "none";
+		});
+		
 		
 		{ // TODO: REMOVE.
 			canvasgl.width = canvasgl.offsetWidth;
