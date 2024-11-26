@@ -542,7 +542,7 @@ function projection()
 			camera: new Camera(45.0, 0.1, 100.0, 1),
 			radius: 12.0,
 			mouse: {x: 0, y: 0, b: 0},
-			cursor: new Vector3([10, 10, 50]),
+			cursor: new Vector3([10, 10, parseInt(document.getElementById("Fig3D").getElementsByTagName("input")[0].value)]),
 			point: new Vector3([1.0, 1.0, -5.0]),
 			INIT(){
 				const camera = new Camera(45.0, 1.0, 10.0, 9 / 16);
@@ -562,10 +562,9 @@ function projection()
 				
 				this.pivot = new Vector3([0.0, 0.0, -0.4 * cornerFar.z]);
 				
-				const angle = 35 * Math.PI / 180;
-				
-				this.camera.position.set([this.radius * Math.cos(angle), this.radius * 0.4, this.radius * Math.sin(angle) + this.pivot.z]);
-				this.camera.target([0.0, 0.0, this.pivot.z]);
+				this.camera.rotate([-20 * Math.PI / 180, 35 * Math.PI / 180, 0.0]);
+				this.camera.position.set(this.camera.direction.scale(-this.radius).add(this.pivot));
+				this.camera.target(this.pivot);
 				
 				this.axis = [
 					-cornerFar.z * 0.5, 0.0, 0.0, cornerFar.z * 0.5, 0.0, 0.0, // X axis.
@@ -582,8 +581,7 @@ function projection()
 				
 				Animated.cursorBG.src = "asset/Z.png";
 				
-				// TODO:
-				// this.calculatePoint();
+				this.calculatePoint();
 				
 				
 				["-X", "X", "-Y", "Y", "-Z", "Z"].forEach((label) => {
