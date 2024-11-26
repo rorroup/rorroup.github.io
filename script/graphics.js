@@ -744,7 +744,6 @@ function projection()
 				
 				// Tell WebGL we want to affect texture unit 0
 				gl.activeTexture(gl.TEXTURE0);
-				
 				// Tell the shader we bound the texture to texture unit 0
 				gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
 				
@@ -786,10 +785,7 @@ function projection()
 						0, 0, 0, 1,
 					])
 				);
-				// Tell WebGL we want to affect texture unit 0
-				gl.activeTexture(gl.TEXTURE0);
-				// Tell the shader we bound the texture to texture unit 0
-				gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
+				
 				for(let i = 0; i < this.glProgram.Fig3D_texture.labelAxis.length; i++){
 					gl.uniformMatrix4fv(
 						this.glProgram.Fig3D_texture.uniformLocations.uVertexTranslation,
