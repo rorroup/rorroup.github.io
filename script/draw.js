@@ -267,20 +267,20 @@ function draw_Figure3D_lines(gl, programInfo, camera, lines, color, num)
 	gl.drawArrays(gl.LINES, 0, num);
 }
 
-function draw_Figure3D_planes(gl, programInfo, plane)
+function draw_Figure3D_planes(gl, programInfo, vertices, texCoord, texture)
 {
 	// Bind the texture to texture unit 0
-	gl.bindTexture(gl.TEXTURE_2D, plane.i);
+	gl.bindTexture(gl.TEXTURE_2D, texture);
 	
 	// aVertexPosition
 	gl.bindBuffer(gl.ARRAY_BUFFER, programInfo.AttributeBuffer[0]);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(plane.v), gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
 	gl.vertexAttribPointer(programInfo.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(programInfo.attribLocations.aVertexPosition);
 	
 	// aTextureCoord
 	gl.bindBuffer(gl.ARRAY_BUFFER, programInfo.AttributeBuffer[1]);
-	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(plane.t), gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(texCoord), gl.STATIC_DRAW);
 	gl.vertexAttribPointer(programInfo.attribLocations.aTextureCoord, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(programInfo.attribLocations.aTextureCoord);
 	

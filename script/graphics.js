@@ -750,30 +750,10 @@ function projection()
 				const cornerZ = this.planeCorner.copy().scale(-this.point.z);
 				const squareTexCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
 				
-				[
-					{ // Znear.
-						v: this.planes[0],
-						t: squareTexCoord,
-						i: this.glProgram.Fig3D_texture.texture[0],
-					},
-					{ // Zfar.
-						v: this.planes[1],
-						t: squareTexCoord,
-						i: this.glProgram.Fig3D_texture.texture[2],
-					},
-					{ // FoV.
-						v: this.FoV,
-						t: squareTexCoord,
-						i: this.glProgram.Fig3D_texture.texture[3],
-					},
-					{ // Z.
-						v: [-cornerZ.x, -cornerZ.y, -cornerZ.z, -cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, -cornerZ.y, -cornerZ.z],
-						t: squareTexCoord,
-						i: this.glProgram.Fig3D_texture.texture[1],
-					},
-				].forEach((plane) => {
-					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, plane);
-				});
+				draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, this.planes[0], squareTexCoord, this.glProgram.Fig3D_texture.texture[0]); // Znear.
+				draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, this.planes[1], squareTexCoord, this.glProgram.Fig3D_texture.texture[2]); // Zfar.
+				draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, this.FoV, squareTexCoord, this.glProgram.Fig3D_texture.texture[3]); // FoV.
+				draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, [-cornerZ.x, -cornerZ.y, -cornerZ.z, -cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, -cornerZ.y, -cornerZ.z], squareTexCoord, this.glProgram.Fig3D_texture.texture[1]); // Z.
 				
 				gl.uniformMatrix4fv(
 					this.glProgram.Fig3D_texture.uniformLocations.uVertexRotation,
