@@ -770,9 +770,21 @@ function projection()
 					draw_Figure3D_planes(gl, this.glProgram.Fig3D_texture, plane);
 				});
 				
+				gl.uniformMatrix4fv(
+					this.glProgram.Fig3D_texture.uniformLocations.uVertexRotation,
+					false,
+					new Float32Array([
+						Math.cos(this.camera.rotation.y), 0, -Math.sin(this.camera.rotation.y), 0,
+						Math.sin(this.camera.rotation.x) * Math.sin(this.camera.rotation.y), Math.cos(this.camera.rotation.x), Math.sin(this.camera.rotation.x) * Math.cos(this.camera.rotation.y), 0,
+						Math.cos(this.camera.rotation.x) * Math.sin(this.camera.rotation.y), -Math.sin(this.camera.rotation.x), Math.cos(this.camera.rotation.x) * Math.cos(this.camera.rotation.y), 0,
+						0, 0, 0, 1,
+					])
+				);
+				// Tell WebGL we want to affect texture unit 0
+				gl.activeTexture(gl.TEXTURE0);
+				// Tell the shader we bound the texture to texture unit 0
+				gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
 				for(let i = 0; i < this.glProgram.Fig3D_texture.labelAxis.length; i++){
-					const position = this.axis.slice(0 + 3 * i, 3 + 3 * i);
-					
 					gl.uniformMatrix4fv(
 						this.glProgram.Fig3D_texture.uniformLocations.uVertexTranslation,
 						false,
@@ -780,29 +792,13 @@ function projection()
 							1, 0, 0, 0,
 							0, 1, 0, 0,
 							0, 0, 1, 0,
-							...position, 1
-						])
-					);
-					gl.uniformMatrix4fv(
-						this.glProgram.Fig3D_texture.uniformLocations.uVertexRotation,
-						false,
-						new Float32Array([
-							Math.cos(this.camera.rotation.y), 0, -Math.sin(this.camera.rotation.y), 0,
-							Math.sin(this.camera.rotation.x) * Math.sin(this.camera.rotation.y), Math.cos(this.camera.rotation.x), Math.sin(this.camera.rotation.x) * Math.cos(this.camera.rotation.y), 0,
-							Math.cos(this.camera.rotation.x) * Math.sin(this.camera.rotation.y), -Math.sin(this.camera.rotation.x), Math.cos(this.camera.rotation.x) * Math.cos(this.camera.rotation.y), 0,
-							0, 0, 0, 1,
+							...this.axis.slice(3 * i, 3 * i + 3), 1,
 						])
 					);
 					
-					// Tell WebGL we want to affect texture unit 0
-					gl.activeTexture(gl.TEXTURE0);
-
 					// Bind the texture to texture unit 0
 					gl.bindTexture(gl.TEXTURE_2D, this.glProgram.Fig3D_texture.labelAxis[i].t);
 
-					// Tell the shader we bound the texture to texture unit 0
-					gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
-					
 					// aVertexPosition
 					gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.Fig3D_texture.AttributeBuffer[0]);
 					gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.glProgram.Fig3D_texture.labelAxis[i].v), gl.STATIC_DRAW);
