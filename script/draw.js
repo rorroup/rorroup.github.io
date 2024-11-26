@@ -269,14 +269,8 @@ function draw_Figure3D_lines(gl, programInfo, camera, lines, color, num)
 
 function draw_Figure3D_planes(gl, programInfo, plane)
 {
-	// Tell WebGL we want to affect texture unit 0
-	gl.activeTexture(gl.TEXTURE0);
-
 	// Bind the texture to texture unit 0
 	gl.bindTexture(gl.TEXTURE_2D, plane.i);
-
-	// Tell the shader we bound the texture to texture unit 0
-	gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
 	
 	// aVertexPosition
 	gl.bindBuffer(gl.ARRAY_BUFFER, programInfo.AttributeBuffer[0]);

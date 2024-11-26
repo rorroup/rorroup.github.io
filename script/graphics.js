@@ -742,6 +742,12 @@ function projection()
 					])
 				);
 				
+				// Tell WebGL we want to affect texture unit 0
+				gl.activeTexture(gl.TEXTURE0);
+				
+				// Tell the shader we bound the texture to texture unit 0
+				gl.uniform1i(this.glProgram.Fig3D_texture.uniformLocations.uSampler, 0);
+				
 				const cornerZ = this.planeCorner.copy().scale(-this.point.z);
 				const squareTexCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
 				
