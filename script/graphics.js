@@ -1,6 +1,6 @@
 // start here
-function main(){
-	const canvas = document.querySelector("#glcanvas");
+function manager(){
+	const canvas = document.getElementById("LIBRARY").getElementsByClassName("canvasgl")[0];
 	// Initialize the GL context
 	const gl = canvas.getContext("webgl");
 	
@@ -441,6 +441,484 @@ function main(){
 	});
 }
 
+function projection()
+{
+	Promise.all([
+		Promise.all([
+			fetch("script/shader/vertexColor0.vs"),
+			fetch("script/shader/vertexColor0.fs"),
+		]),
+		Promise.all([
+			fetch("script/shader/texture0.vs"),
+			fetch("script/shader/texture0.fs"),
+		]),
+	]).then((responses) => {
+		responses.forEach((response) => {
+			response.forEach((shaderFile) => {
+				if(!shaderFile.ok){
+					throw new Error(`Response status: ${shaderFile.status}`);
+				}
+			});
+		});
+		[vertexColor0, texture0] = responses;
+		return Promise.all([
+			Promise.all([
+				vertexColor0[0].text(),
+				vertexColor0[1].text(),
+			]),
+			Promise.all([
+				texture0[0].text(),
+				texture0[1].text(),
+			]),
+		]);
+	}).then((shaders) => {
+		const canvasgl = document.getElementById("Frustum").getElementsByClassName("canvasgl")[0];
+		// Initialize the GL context
+		const gl = canvasgl.getContext("webgl");
+		
+		// Only continue if WebGL is available and working
+		if(gl === null){
+			alert(
+				"Unable to initialize WebGL. Your browser or machine may not support it.",
+			);
+			return;
+		}
+		
+		[vertexColor0, texture0] = shaders;
+		
+		const shaderProgram = {};
+		
+		shaderProgram.color0 = initShaderProgram(gl, vertexColor0[0], vertexColor0[1]);
+		if(shaderProgram.color0 === null){
+			return;
+		}
+		
+		shaderProgram.texture0 = initShaderProgram(gl, texture0[0], texture0[1]);
+		if(shaderProgram.texture0 === null){
+			return;
+		}
+		
+		// Collect all the info needed to use the shader program.
+		// Look up which attribute our shader program is using
+		// for aVertexPosition and look up uniform locations.
+		const Frustum = {
+			canvasgl: canvasgl,
+			gl: gl,
+			glProgram: {
+				color0: {
+					program: shaderProgram.color0,
+					attribLocations: {
+						aVertexPosition: gl.getAttribLocation(shaderProgram.color0, "aVertexPosition"),
+					},
+					uniformLocations: {
+						uProjectionMatrix: gl.getUniformLocation(shaderProgram.color0, "uProjectionMatrix"),
+						uVertexTranslation: gl.getUniformLocation(shaderProgram.color0, "uVertexTranslation"),
+						uVertexRotation: gl.getUniformLocation(shaderProgram.color0, "uVertexRotation"),
+						uCameraPosition: gl.getUniformLocation(shaderProgram.color0, "uCameraPosition"),
+						uCameraRotation: gl.getUniformLocation(shaderProgram.color0, "uCameraRotation"),
+						uVertexColor: gl.getUniformLocation(shaderProgram.color0, "uVertexColor"),
+					},
+					AttributeBuffer: gl.createBuffer(),
+				},
+				texture0: {
+					program: shaderProgram.texture0,
+					attribLocations: {
+						aVertexPosition: gl.getAttribLocation(shaderProgram.texture0, "aVertexPosition"),
+						aTextureCoord: gl.getAttribLocation(shaderProgram.texture0, "aTextureCoord"),
+					},
+					uniformLocations: {
+						uProjectionMatrix: gl.getUniformLocation(shaderProgram.texture0, "uProjectionMatrix"),
+						uVertexTranslation: gl.getUniformLocation(shaderProgram.texture0, "uVertexTranslation"),
+						uVertexRotation: gl.getUniformLocation(shaderProgram.texture0, "uVertexRotation"),
+						uCameraPosition: gl.getUniformLocation(shaderProgram.texture0, "uCameraPosition"),
+						uCameraRotation: gl.getUniformLocation(shaderProgram.texture0, "uCameraRotation"),
+						uSampler: gl.getUniformLocation(shaderProgram.texture0, "uSampler"),
+					},
+					AttributeBuffer: [gl.createBuffer(), gl.createBuffer()],
+					texture: [loadTexture(gl, "asset/Znear.png"), loadTexture(gl, "asset/Z.png"), loadTexture(gl, "asset/Zfar.png"), loadTexture(gl, "asset/FoV.png")], // Load texture
+					labelAxis: [],
+				},
+			},
+			camera: new Camera(45.0, 0.1, 100.0, 1),
+			radius: 12.0,
+			mouse: {x: 0, y: 0, b: 0},
+			cursor: new Vector3([10, 10, parseInt(document.getElementById("Frustum").getElementsByTagName("input")[0].value)]),
+			point: new Vector3([1.0, 1.0, -5.0]),
+			INIT(){
+				const camera = new Camera(45.0, 1.0, 10.0, 9 / 16);
+				
+				this.planeCorner = new Vector3([Math.tan(camera.FoV * 0.5 / 180.0 * Math.PI) / camera.aspectRatio, Math.tan(camera.FoV * 0.5 / 180.0 * Math.PI), 1.0]);
+				
+				const cornerNear = this.planeCorner.copy().scale(camera.Znear);
+				const cornerFar = this.planeCorner.copy().scale(camera.Zfar);
+				
+				this.FoV = [0.0, -cornerNear.y, 0.0, 0.0, cornerNear.y, 0.0, 0.0, cornerNear.y, -cornerNear.z, 0.0, -cornerNear.y, -cornerNear.z];
+				
+				this.planes = [
+					[-cornerNear.x, -cornerNear.y, -cornerNear.z, -cornerNear.x, cornerNear.y, -cornerNear.z, cornerNear.x, cornerNear.y, -cornerNear.z, cornerNear.x, -cornerNear.y, -cornerNear.z],
+					[-cornerFar.x, -cornerFar.y, -cornerFar.z, -cornerFar.x, cornerFar.y, -cornerFar.z, cornerFar.x, cornerFar.y, -cornerFar.z, cornerFar.x, -cornerFar.y, -cornerFar.z],
+				];
+				
+				
+				this.pivot = new Vector3([0.0, 0.0, -0.4 * cornerFar.z]);
+				
+				this.camera.rotate([-20 * Math.PI / 180, 35 * Math.PI / 180, 0.0]);
+				this.camera.position.set(this.camera.direction.scale(-this.radius).add(this.pivot));
+				this.camera.target(this.pivot);
+				
+				this.axis = [
+					-cornerFar.z * 0.5, 0.0, 0.0, cornerFar.z * 0.5, 0.0, 0.0, // X axis.
+					0.0, -cornerFar.z * 0.5, 0.0, 0.0, cornerFar.z * 0.5, 0.0, // Y axis.
+					0.0, 0.0, -cornerFar.z, 0.0, 0.0, cornerFar.z * 0.5, // Z axis.
+				];
+				
+				this.pyramid = [
+					0.0, 0.0, 0.0, cornerFar.x, cornerFar.y, -cornerFar.z,
+					0.0, 0.0, 0.0, -cornerFar.x, cornerFar.y, -cornerFar.z,
+					0.0, 0.0, 0.0, cornerFar.x, -cornerFar.y, -cornerFar.z,
+					0.0, 0.0, 0.0, -cornerFar.x, -cornerFar.y, -cornerFar.z,
+				];
+				
+				this.cursorBG.src = "asset/Z.png";
+				
+				["-X", "X", "-Y", "Y", "-Z", "Z"].forEach((label) => {
+					// https://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
+					// create text texture.
+					const textCanvas = makeTextCanvas(label);
+					const textWidth  = 0.005 * textCanvas.width;
+					const textHeight = 0.005 * textCanvas.height;
+					const textTex = gl.createTexture();
+					gl.bindTexture(gl.TEXTURE_2D, textTex);
+					gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
+					// make sure we can render it even if it's not a power of 2
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+					gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+					
+					this.glProgram.texture0.labelAxis.push({t: textTex, v: [-textWidth, -textHeight, 0, -textWidth, textHeight, 0, textWidth, textHeight, 0, textWidth, -textHeight, 0]});
+				});
+			},
+			calculatePoint(){
+				this.point = this.planeCorner.copy().scale(-this.cursor[2] / 10.0);
+				this.point.x *= -2.0 * this.cursor[0] / this.canvas2d.offsetWidth + 1.0;
+				this.point.y *= 2.0 * this.cursor[1] / this.canvas2d.offsetHeight - 1.0;
+			},
+			draw_3d(){
+				gl.clearColor(0.6, 0.6, 0.6, 1.0); // Background color
+				gl.clearDepth(1.0); // Clear everything
+				gl.depthFunc(gl.LEQUAL); // Near things obscure far things
+				
+				// Clear the canvas before we start drawing on it.
+				gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+				
+				gl.disable(gl.DEPTH_TEST);
+				gl.depthMask(false);
+				
+				gl.enable(gl.BLEND);
+				gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+				
+				const camera = {
+					projection: new Float32Array(this.camera.projection),
+					position: new Float32Array([
+						1.0, 0.0, 0.0, 0.0,
+						0.0, 1.0, 0.0, 0.0,
+						0.0, 0.0, 1.0, 0.0,
+						-this.camera.position.x, -this.camera.position.y, -this.camera.position.z, 1.0
+					]),
+					rotation: new Float32Array([
+						Math.cos(-this.camera.rotation.y), Math.sin(-this.camera.rotation.y) * Math.sin(-this.camera.rotation.x), -Math.sin(-this.camera.rotation.y) * Math.cos(-this.camera.rotation.x), 0.0,
+						0.0, Math.cos(-this.camera.rotation.x), Math.sin(-this.camera.rotation.x), 0.0,
+						Math.sin(-this.camera.rotation.y), -Math.cos(-this.camera.rotation.y) * Math.sin(-this.camera.rotation.x), Math.cos(-this.camera.rotation.y) * Math.cos(-this.camera.rotation.x), 0.0,
+						0.0, 0.0, 0.0, 1.0,
+					]),
+				};
+				
+				// vertexColor0
+				gl.useProgram(this.glProgram.color0.program);
+				
+				gl.uniformMatrix4fv(
+					this.glProgram.color0.uniformLocations.uProjectionMatrix,
+					false,
+					camera.projection
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.color0.uniformLocations.uCameraPosition,
+					false,
+					camera.position
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.color0.uniformLocations.uCameraRotation,
+					false,
+					camera.rotation
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.color0.uniformLocations.uVertexTranslation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1,
+					])
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.color0.uniformLocations.uVertexRotation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1,
+					])
+				);
+				
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, this.axis, [0.0, 1.0, 0.0, 1.0], 6); // Axis.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, this.pyramid, [0.0, 1.0, 1.0, 0.6], 8); // Pyramid.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2); // Ray.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 4); // X projection.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 4); // Y projection.
+				
+				// Point.
+				gl.uniformMatrix4fv(
+					this.glProgram.color0.uniformLocations.uVertexTranslation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						...this.point, 1,
+					])
+				);
+				
+				gl.uniform4fv(this.glProgram.color0.uniformLocations.uVertexColor, new Float32Array([1.0, 0.0, 1.0, 1.0]));
+				
+				// aVertexPosition
+				gl.bindBuffer(gl.ARRAY_BUFFER, this.glProgram.color0.AttributeBuffer);
+				gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(makeCube(0.1, 0.1, 0.1)[0]), gl.STATIC_DRAW);
+				gl.vertexAttribPointer(this.glProgram.color0.attribLocations.aVertexPosition, 3, gl.FLOAT, false, 0, 0);
+				gl.enableVertexAttribArray(this.glProgram.color0.attribLocations.aVertexPosition);
+				
+				gl.drawArrays(gl.TRIANGLES, 0, 36);
+				
+				
+				// texture0
+				gl.useProgram(this.glProgram.texture0.program);
+				
+				gl.uniformMatrix4fv(
+					this.glProgram.texture0.uniformLocations.uProjectionMatrix,
+					false,
+					camera.projection
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.texture0.uniformLocations.uCameraPosition,
+					false,
+					camera.position
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.texture0.uniformLocations.uCameraRotation,
+					false,
+					camera.rotation
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.texture0.uniformLocations.uVertexTranslation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1,
+					])
+				);
+				gl.uniformMatrix4fv(
+					this.glProgram.texture0.uniformLocations.uVertexRotation,
+					false,
+					new Float32Array([
+						1, 0, 0, 0,
+						0, 1, 0, 0,
+						0, 0, 1, 0,
+						0, 0, 0, 1,
+					])
+				);
+				
+				// Tell WebGL we want to affect texture unit 0
+				gl.activeTexture(gl.TEXTURE0);
+				// Tell the shader we bound the texture to texture unit 0
+				gl.uniform1i(this.glProgram.texture0.uniformLocations.uSampler, 0);
+				
+				const cornerZ = this.planeCorner.copy().scale(-this.point.z);
+				const squareTexCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
+				
+				draw_Frustum_planes(gl, this.glProgram.texture0, this.planes[0], squareTexCoord, this.glProgram.texture0.texture[0]); // Znear.
+				draw_Frustum_planes(gl, this.glProgram.texture0, this.planes[1], squareTexCoord, this.glProgram.texture0.texture[2]); // Zfar.
+				draw_Frustum_planes(gl, this.glProgram.texture0, this.FoV, squareTexCoord, this.glProgram.texture0.texture[3]); // FoV.
+				draw_Frustum_planes(gl, this.glProgram.texture0, [-cornerZ.x, -cornerZ.y, -cornerZ.z, -cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, -cornerZ.y, -cornerZ.z], squareTexCoord, this.glProgram.texture0.texture[1]); // Z.
+				
+				gl.uniformMatrix4fv(
+					this.glProgram.texture0.uniformLocations.uVertexRotation,
+					false,
+					new Float32Array([
+						Math.cos(this.camera.rotation.y), 0, -Math.sin(this.camera.rotation.y), 0,
+						Math.sin(this.camera.rotation.x) * Math.sin(this.camera.rotation.y), Math.cos(this.camera.rotation.x), Math.sin(this.camera.rotation.x) * Math.cos(this.camera.rotation.y), 0,
+						Math.cos(this.camera.rotation.x) * Math.sin(this.camera.rotation.y), -Math.sin(this.camera.rotation.x), Math.cos(this.camera.rotation.x) * Math.cos(this.camera.rotation.y), 0,
+						0, 0, 0, 1,
+					])
+				);
+				
+				for(let i = 0; i < this.glProgram.texture0.labelAxis.length; i++){
+					gl.uniformMatrix4fv(
+						this.glProgram.texture0.uniformLocations.uVertexTranslation,
+						false,
+						new Float32Array([
+							1, 0, 0, 0,
+							0, 1, 0, 0,
+							0, 0, 1, 0,
+							...this.axis.slice(3 * i, 3 * i + 3), 1,
+						])
+					);
+					
+					draw_Frustum_planes(gl, this.glProgram.texture0, this.glProgram.texture0.labelAxis[i].v, squareTexCoord, this.glProgram.texture0.labelAxis[i].t);
+				}
+			},
+			canvas2d: document.getElementById("Frustum").getElementsByClassName("canvas2d")[0],
+			ctx2d: document.getElementById("Frustum").getElementsByClassName("canvas2d")[0].getContext("2d"),
+			cursorBG: new Image(),
+			draw_2d(){
+				this.ctx2d.drawImage(this.cursorBG, 0, 0, this.canvas2d.offsetWidth, this.canvas2d.offsetHeight);
+				canvas2d_drawPoint(this.ctx2d, this.cursor, "#FF00FF", 3);
+			},
+			draw(){
+				this.draw_2d();
+				this.draw_3d();
+			},
+		};
+		
+		// Flip image pixels into the bottom-to-top order that WebGL expects.
+		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+		
+		Frustum.INIT();
+		
+		// https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event#examples
+		Frustum.canvasgl.onwheel = (event_) => {
+			event_.preventDefault();
+			
+			Frustum.radius = Math.min(15.0, Math.max(2.0, Frustum.radius + event_.deltaY * 0.005));
+			Frustum.camera.position.set(Frustum.camera.direction.scale(-Frustum.radius).add(Frustum.pivot));
+			Frustum.camera.target(Frustum.pivot);
+		};
+		
+		Frustum.canvasgl.addEventListener("mouseleave", function(event_){
+			Frustum.mouse.b = 0;
+		});
+		
+		Frustum.canvasgl.addEventListener("mousemove", function(event_){
+			if(event_.buttons == 1 && Frustum.mouse.b == 1){
+				Frustum.camera.rotate(Frustum.camera.rotation.substract([0.007 * (event_.offsetY - Frustum.mouse.y), 0.007 * (event_.offsetX - Frustum.mouse.x), 0, 0]));
+				Frustum.camera.position.set(Frustum.camera.direction.scale(-Frustum.radius).add(Frustum.pivot));
+				Frustum.camera.target(Frustum.pivot);
+			}
+			Frustum.mouse = {
+				x: event_.offsetX,
+				y: event_.offsetY,
+				b: event_.buttons,
+			};
+		});
+		
+		Frustum.canvasgl.addEventListener("mousedown", function(event_){
+			Frustum.mouse = {
+				x: event_.offsetX,
+				y: event_.offsetY,
+				b: event_.buttons,
+			};
+		});
+		
+		Frustum.canvasgl.addEventListener("mouseup", function(event_){
+			Frustum.mouse = {
+				x: event_.offsetX,
+				y: event_.offsetY,
+				b: event_.buttons,
+			};
+		});
+		
+		document.getElementById("Frustum").getElementsByTagName("input")[0].oninput = function(){
+			Frustum.cursor[2] = parseInt(this.value);
+			Frustum.calculatePoint();
+		};
+		
+		Frustum.canvas2d.addEventListener("mousedown", function(event_){
+			if(event_.buttons == 1){
+				Frustum.cursor[0] = event_.offsetX;
+				Frustum.cursor[1] = event_.offsetY;
+				Frustum.calculatePoint();
+			}
+		});
+		
+		Frustum.canvas2d.addEventListener("mousemove", function(event_){
+			if(event_.buttons == 1){
+				Frustum.cursor[0] = event_.offsetX;
+				Frustum.cursor[1] = event_.offsetY;
+				Frustum.calculatePoint();
+			}
+		});
+		
+		const pointControl = document.getElementById("Frustum").getElementsByClassName("point")[0].getElementsByClassName("controls")[0];
+		document.getElementById("Frustum").getElementsByClassName("point")[0].getElementsByClassName("display")[0].addEventListener("click", function(event_){
+			pointControl.style.display = (pointControl.style.display == "none") ? "block" : "none";
+		});
+		
+		
+		// Draw the scene repeatedly
+		function Frustum_Play(){
+			// Update
+			this.deltaTime = this.timeFrameCurrent - this.timeFrameLast;
+			// this.update();
+			
+			// Draw
+			this.draw();
+		}
+		animation_initAnimationComponent(Frustum, Frustum_Play, false, false);
+		
+		let loaded = false;
+		// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
+		new MutationObserver((mutationList, observer) => {
+			for(const mutation of mutationList){
+				if(mutation.type == "attributes" && mutation.attributeName == "style"){
+					if(mutation.target.style.display == "none"){
+						if(Frustum.animationID != 0){
+							// Stop animation.
+							cancelAnimationFrame(Frustum.animationID);
+							Frustum.animationID = 0;
+						}
+					}else{
+						if(!loaded){
+							// Adjust resolution.
+							canvasgl.width = canvasgl.offsetWidth;
+							canvasgl.height = canvasgl.offsetHeight;
+							gl.viewport(0, 0, canvasgl.offsetWidth, canvasgl.offsetHeight);
+							
+							Frustum.camera.aspectRatio = canvasgl.offsetHeight / canvasgl.offsetWidth;
+							Frustum.camera.project();
+							
+							Frustum.canvas2d.width = Frustum.canvas2d.offsetWidth;
+							Frustum.canvas2d.height = Frustum.canvas2d.offsetHeight;
+							
+							Frustum.calculatePoint();
+							
+							loaded = true;
+						}
+						if(Frustum.animationID == 0){
+							// Resume animation.
+							Frustum.animationID = requestAnimationFrame(Frustum.animationStart);
+						}
+					}
+				}
+			}
+		}).observe(document.getElementById("PROJECTION"), {attributes: true});
+		
+	}).catch((e) => {
+		console.error(e);
+	});
+}
+
 function bookClose(rootID, animation_)
 {
 	animation_.animationID = requestAnimationFrame(animation_.animationStart); // Resume drawing.
@@ -453,6 +931,29 @@ function bookClose(rootID, animation_)
 	root.getElementsByClassName("sectionBackground")[0].getAnimations()[0].addEventListener("finish", (event_) => {
 		root.style.display = "none";
 	});
+}
+
+
+const textCtx = document.createElement("canvas").getContext("2d");
+
+// Puts text in canvas.
+function makeTextCanvas(text_, color = "#000000", font = "30px Arial"){
+	textCtx.font = font;
+	textCtx.canvas.width = Math.ceil(textCtx.measureText(text_).width);
+	textCtx.canvas.height = parseInt(font);
+	textCtx.font = font; // Resizing resets the font.
+	textCtx.textAlign = "left";
+	textCtx.textBaseline = "top";
+	textCtx.fillStyle = color;
+	textCtx.clearRect(0, 0, textCtx.canvas.width, textCtx.canvas.height);
+	textCtx.fillText(text_, 0, 0);
+	return textCtx.canvas;
+}
+
+function main()
+{
+	manager();
+	projection();
 }
 
 main();

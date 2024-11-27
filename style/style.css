@@ -48,7 +48,7 @@ section{
 	left: 0px;
 }
 
-#glcanvas{
+#LIBRARY .canvasgl{
 	width: 100%;
 	height: 100%;
 	display: block;
@@ -398,4 +398,128 @@ ol[class="references"]>li::before
 .references .webVideo .webAddress::before
 {
 	content: "[Online Video]. Available: " attr(href);
+}
+
+#Frustum
+{
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 0px;
+	padding-bottom: 50%;
+	margin: 1em auto;
+}
+
+#Frustum .canvasgl
+{
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+#Frustum .point
+{
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	display: block;
+	width: 25%;
+	min-width: 250px;
+	padding: 4pt 6pt;
+	background-color: #333333;
+}
+
+#Frustum .point .display
+{
+	position: relative;
+	width: 100%;
+}
+
+#Frustum .point .display>button
+{
+	width: 1em;
+	height: 1em;
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+}
+
+#Frustum .point .controls
+{
+	position: relative;
+	left: 0px;
+	top: 0px;
+	display: block;
+	width: 100%;
+	margin: 0.1em 0px;
+}
+
+#Frustum .point .controls>div:first-child
+{
+	display: table;
+	width: 100%;
+}
+
+#Frustum .point .controls>div:first-child>p
+{
+	display: table-cell;
+	width: fit-content;
+	text-align: center;
+}
+
+#Frustum .point .controls>div:first-child>input
+{
+	display: table-cell;
+	width: 100%;
+	vertical-align: middle;
+}
+
+#Frustum .point .controls>div:last-child
+{
+	position: relative;
+	display: block;
+	width: 100%;
+	height: 0px;
+	padding-bottom: 56.25%;
+	margin: 0.3em 0px;
+}
+
+#Frustum .point .controls>div:last-child>.canvas2d
+{
+	position: absolute;
+	background-color: black;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+}
+
+#Frustum .instructions
+{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 20%;
+	min-width: 12em;
+	padding: 0.2em 0.4em;
+	background-color: #333333;
+}
+
+#Frustum .instructions .dropdown-content
+{
+	display: none;
+	position: relative;
+	right: 0px;
+	width: 100%;
+	padding: 0.2em 0.2em;
+	margin: 0px;
+	list-style-position: inside;
+	text-align: left;
+}
+
+#Frustum .instructions .dropdown:hover+.dropdown-content
+{
+	display: block;
 }
