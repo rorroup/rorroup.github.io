@@ -1,6 +1,6 @@
 // start here
 function manager(){
-	const canvas = document.querySelector("#glcanvas"); // TODO: class canvasgl.
+	const canvas = document.getElementById("LIBRARY").getElementsByClassName("canvasgl")[0];
 	// Initialize the GL context
 	const gl = canvas.getContext("webgl");
 	
