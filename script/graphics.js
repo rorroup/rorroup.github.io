@@ -581,9 +581,6 @@ function projection()
 				
 				this.cursorBG.src = "asset/Z.png";
 				
-				this.calculatePoint();
-				
-				
 				["-X", "X", "-Y", "Y", "-Z", "Z"].forEach((label) => {
 					// https://webglfundamentals.org/webgl/lessons/webgl-text-texture.html
 					// create text texture.
@@ -869,18 +866,6 @@ function projection()
 		});
 		
 		
-		{ // TODO: REMOVE.
-			canvasgl.width = canvasgl.offsetWidth;
-			canvasgl.height = canvasgl.offsetHeight;
-			gl.viewport(0, 0, canvasgl.offsetWidth, canvasgl.offsetHeight);
-			Frustum.camera.aspectRatio = canvasgl.offsetHeight / canvasgl.offsetWidth;
-			Frustum.camera.project();
-			
-			Frustum.canvas2d.width = Frustum.canvas2d.offsetWidth;
-			Frustum.canvas2d.height = Frustum.canvas2d.offsetHeight;
-		}
-		
-		
 		// Draw the scene repeatedly
 		function Frustum_Play(){
 			// Update
@@ -890,7 +875,7 @@ function projection()
 			// Draw
 			this.draw();
 		}
-		animation_initAnimationComponent(Frustum, Frustum_Play, false, true); // TODO: DO NOT INITIATE ANIMATION.
+		animation_initAnimationComponent(Frustum, Frustum_Play, false, false);
 		
 		// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 		new MutationObserver((mutationList, observer) => {
@@ -913,6 +898,8 @@ function projection()
 						
 						Frustum.canvas2d.width = Frustum.canvas2d.offsetWidth;
 						Frustum.canvas2d.height = Frustum.canvas2d.offsetHeight;
+						
+						Frustum.calculatePoint();
 						
 						if(Frustum.animationID == 0){
 							// Resume animation.
