@@ -675,11 +675,11 @@ function projection()
 					])
 				);
 				
-				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, this.axis, [0.0, 1.0, 0.0, 1.0], 6); // Axis.
-				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, this.pyramid, [0.0, 1.0, 1.0, 0.6], 8); // Pyramid.
-				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2); // Ray.
-				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 4); // X projection.
-				draw_Figure3D_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 4); // Y projection.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, this.axis, [0.0, 1.0, 0.0, 1.0], 6); // Axis.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, this.pyramid, [0.0, 1.0, 1.0, 0.6], 8); // Pyramid.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, ...this.point], [1.0, 1.0, 0.0, 1.0], 2); // Ray.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, this.point.x, 0.0, this.point.z, 0.0, 0.0, this.point.z, this.point.x, 0.0, this.point.z], [1.0, 0.0, 0.0, 1.0], 4); // X projection.
+				draw_Frustum_lines(this.gl, this.glProgram.color0, camera, [0.0, 0.0, 0.0, 0.0, this.point.y, this.point.z, 0.0, 0.0, this.point.z, 0.0, this.point.y, this.point.z], [0.0, 0.0, 1.0, 1.0], 4); // Y projection.
 				
 				// Point.
 				gl.uniformMatrix4fv(
@@ -751,10 +751,10 @@ function projection()
 				const cornerZ = this.planeCorner.copy().scale(-this.point.z);
 				const squareTexCoord = [0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0];
 				
-				draw_Figure3D_planes(gl, this.glProgram.texture0, this.planes[0], squareTexCoord, this.glProgram.texture0.texture[0]); // Znear.
-				draw_Figure3D_planes(gl, this.glProgram.texture0, this.planes[1], squareTexCoord, this.glProgram.texture0.texture[2]); // Zfar.
-				draw_Figure3D_planes(gl, this.glProgram.texture0, this.FoV, squareTexCoord, this.glProgram.texture0.texture[3]); // FoV.
-				draw_Figure3D_planes(gl, this.glProgram.texture0, [-cornerZ.x, -cornerZ.y, -cornerZ.z, -cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, -cornerZ.y, -cornerZ.z], squareTexCoord, this.glProgram.texture0.texture[1]); // Z.
+				draw_Frustum_planes(gl, this.glProgram.texture0, this.planes[0], squareTexCoord, this.glProgram.texture0.texture[0]); // Znear.
+				draw_Frustum_planes(gl, this.glProgram.texture0, this.planes[1], squareTexCoord, this.glProgram.texture0.texture[2]); // Zfar.
+				draw_Frustum_planes(gl, this.glProgram.texture0, this.FoV, squareTexCoord, this.glProgram.texture0.texture[3]); // FoV.
+				draw_Frustum_planes(gl, this.glProgram.texture0, [-cornerZ.x, -cornerZ.y, -cornerZ.z, -cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, cornerZ.y, -cornerZ.z, cornerZ.x, -cornerZ.y, -cornerZ.z], squareTexCoord, this.glProgram.texture0.texture[1]); // Z.
 				
 				gl.uniformMatrix4fv(
 					this.glProgram.texture0.uniformLocations.uVertexRotation,
@@ -779,7 +779,7 @@ function projection()
 						])
 					);
 					
-					draw_Figure3D_planes(gl, this.glProgram.texture0, this.glProgram.texture0.labelAxis[i].v, squareTexCoord, this.glProgram.texture0.labelAxis[i].t);
+					draw_Frustum_planes(gl, this.glProgram.texture0, this.glProgram.texture0.labelAxis[i].v, squareTexCoord, this.glProgram.texture0.labelAxis[i].t);
 				}
 			},
 			canvas2d: document.getElementById("Frustum").getElementsByClassName("canvas2d")[0],

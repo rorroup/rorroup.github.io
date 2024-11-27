@@ -254,7 +254,7 @@ function draw_silhouette(gl, programInfo, camera, bodySelected){
 	gl.drawArrays(gl.TRIANGLES, bodySelected.model.offset, bodySelected.model.vertexCount);
 }
 
-function draw_Figure3D_lines(gl, programInfo, camera, lines, color, num)
+function draw_Frustum_lines(gl, programInfo, camera, lines, color, num)
 {
 	gl.uniform4fv(programInfo.uniformLocations.uVertexColor, new Float32Array(color));
 	
@@ -267,7 +267,7 @@ function draw_Figure3D_lines(gl, programInfo, camera, lines, color, num)
 	gl.drawArrays(gl.LINES, 0, num);
 }
 
-function draw_Figure3D_planes(gl, programInfo, vertices, texCoord, texture)
+function draw_Frustum_planes(gl, programInfo, vertices, texCoord, texture)
 {
 	// Bind the texture to texture unit 0
 	gl.bindTexture(gl.TEXTURE_2D, texture);
