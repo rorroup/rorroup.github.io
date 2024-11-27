@@ -400,7 +400,7 @@ ol[class="references"]>li::before
 	content: "[Online Video]. Available: " attr(href);
 }
 
-#Fig3D
+#Frustum
 {
 	position: relative;
 	display: block;
@@ -410,7 +410,7 @@ ol[class="references"]>li::before
 	margin: 1em auto;
 }
 
-#Fig3D .canvasgl
+#Frustum .canvasgl
 {
 	position: absolute;
 	left: 0px;
@@ -420,7 +420,7 @@ ol[class="references"]>li::before
 	height: 100%;
 }
 
-#Fig3D .point
+#Frustum .point
 {
 	position: absolute;
 	left: 0px;
@@ -432,13 +432,13 @@ ol[class="references"]>li::before
 	background-color: #333333;
 }
 
-#Fig3D .point .display
+#Frustum .point .display
 {
 	position: relative;
 	width: 100%;
 }
 
-#Fig3D .point .display>button
+#Frustum .point .display>button
 {
 	width: 1em;
 	height: 1em;
@@ -447,7 +447,7 @@ ol[class="references"]>li::before
 	bottom: 0px;
 }
 
-#Fig3D .point .controls
+#Frustum .point .controls
 {
 	position: relative;
 	left: 0px;
@@ -457,27 +457,27 @@ ol[class="references"]>li::before
 	margin: 0.1em 0px;
 }
 
-#Fig3D .point .controls>div:first-child
+#Frustum .point .controls>div:first-child
 {
 	display: table;
 	width: 100%;
 }
 
-#Fig3D .point .controls>div:first-child>p
+#Frustum .point .controls>div:first-child>p
 {
 	display: table-cell;
 	width: fit-content;
 	text-align: center;
 }
 
-#Fig3D .point .controls>div:first-child>input
+#Frustum .point .controls>div:first-child>input
 {
 	display: table-cell;
 	width: 100%;
 	vertical-align: middle;
 }
 
-#Fig3D .point .controls>div:last-child
+#Frustum .point .controls>div:last-child
 {
 	position: relative;
 	display: block;
@@ -487,7 +487,7 @@ ol[class="references"]>li::before
 	margin: 0.3em 0px;
 }
 
-#Fig3D .point .controls>div:last-child>.canvas2d
+#Frustum .point .controls>div:last-child>.canvas2d
 {
 	position: absolute;
 	background-color: black;
@@ -496,7 +496,7 @@ ol[class="references"]>li::before
 	margin: 0px;
 }
 
-#Fig3D .instructions
+#Frustum .instructions
 {
 	position: absolute;
 	top: 0px;
@@ -507,7 +507,7 @@ ol[class="references"]>li::before
 	background-color: #333333;
 }
 
-#Fig3D .instructions .dropdown-content
+#Frustum .instructions .dropdown-content
 {
 	display: none;
 	position: relative;
@@ -519,7 +519,7 @@ ol[class="references"]>li::before
 	text-align: left;
 }
 
-#Fig3D .instructions .dropdown:hover+.dropdown-content
+#Frustum .instructions .dropdown:hover+.dropdown-content
 {
 	display: block;
 }

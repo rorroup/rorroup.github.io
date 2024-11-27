@@ -472,7 +472,7 @@ function projection()
 			]),
 		]);
 	}).then((shaders) => {
-		const canvasgl = document.getElementById("Fig3D").getElementsByClassName("canvasgl")[0];
+		const canvasgl = document.getElementById("Frustum").getElementsByClassName("canvasgl")[0];
 		// Initialize the GL context
 		const gl = canvasgl.getContext("webgl");
 		
@@ -542,7 +542,7 @@ function projection()
 			camera: new Camera(45.0, 0.1, 100.0, 1),
 			radius: 12.0,
 			mouse: {x: 0, y: 0, b: 0},
-			cursor: new Vector3([10, 10, parseInt(document.getElementById("Fig3D").getElementsByTagName("input")[0].value)]),
+			cursor: new Vector3([10, 10, parseInt(document.getElementById("Frustum").getElementsByTagName("input")[0].value)]),
 			point: new Vector3([1.0, 1.0, -5.0]),
 			INIT(){
 				const camera = new Camera(45.0, 1.0, 10.0, 9 / 16);
@@ -782,8 +782,8 @@ function projection()
 					draw_Figure3D_planes(gl, this.glProgram.texture0, this.glProgram.texture0.labelAxis[i].v, squareTexCoord, this.glProgram.texture0.labelAxis[i].t);
 				}
 			},
-			canvas2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0],
-			ctx2d: document.getElementById("Fig3D").getElementsByClassName("canvas2d")[0].getContext("2d"),
+			canvas2d: document.getElementById("Frustum").getElementsByClassName("canvas2d")[0],
+			ctx2d: document.getElementById("Frustum").getElementsByClassName("canvas2d")[0].getContext("2d"),
 			cursorBG: new Image(),
 			draw_2d(){
 				this.ctx2d.drawImage(this.cursorBG, 0, 0, this.canvas2d.offsetWidth, this.canvas2d.offsetHeight);
@@ -842,7 +842,7 @@ function projection()
 			};
 		});
 		
-		document.getElementById("Fig3D").getElementsByTagName("input")[0].oninput = function(){
+		document.getElementById("Frustum").getElementsByTagName("input")[0].oninput = function(){
 			Frustum.cursor[2] = parseInt(this.value);
 			Frustum.calculatePoint();
 		};
@@ -863,8 +863,8 @@ function projection()
 			}
 		});
 		
-		const pointControl = document.getElementById("Fig3D").getElementsByClassName("point")[0].getElementsByClassName("controls")[0];
-		document.getElementById("Fig3D").getElementsByClassName("point")[0].getElementsByClassName("display")[0].addEventListener("click", function(event_){
+		const pointControl = document.getElementById("Frustum").getElementsByClassName("point")[0].getElementsByClassName("controls")[0];
+		document.getElementById("Frustum").getElementsByClassName("point")[0].getElementsByClassName("display")[0].addEventListener("click", function(event_){
 			pointControl.style.display = (pointControl.style.display == "none") ? "block" : "none";
 		});
 		
