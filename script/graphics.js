@@ -501,7 +501,7 @@ function projection()
 		// Collect all the info needed to use the shader program.
 		// Look up which attribute our shader program is using
 		// for aVertexPosition and look up uniform locations.
-		const Animated = {
+		const Frustum = {
 			canvasgl: canvasgl,
 			gl: gl,
 			glProgram: {
@@ -798,44 +798,44 @@ function projection()
 		// Flip image pixels into the bottom-to-top order that WebGL expects.
 		gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
 		
-		Animated.INIT();
+		Frustum.INIT();
 		
 		// https://developer.mozilla.org/en-US/docs/Web/API/Element/wheel_event#examples
-		Animated.canvasgl.onwheel = (event_) => {
+		Frustum.canvasgl.onwheel = (event_) => {
 			event_.preventDefault();
 			
-			Animated.radius = Math.min(15.0, Math.max(2.0, Animated.radius + event_.deltaY * 0.005));
-			Animated.camera.position.set(Animated.camera.direction.scale(-Animated.radius).add(Animated.pivot));
-			Animated.camera.target(Animated.pivot);
+			Frustum.radius = Math.min(15.0, Math.max(2.0, Frustum.radius + event_.deltaY * 0.005));
+			Frustum.camera.position.set(Frustum.camera.direction.scale(-Frustum.radius).add(Frustum.pivot));
+			Frustum.camera.target(Frustum.pivot);
 		};
 		
-		Animated.canvasgl.addEventListener("mouseleave", function(event_){
-			Animated.mouse.b = 0;
+		Frustum.canvasgl.addEventListener("mouseleave", function(event_){
+			Frustum.mouse.b = 0;
 		});
 		
-		Animated.canvasgl.addEventListener("mousemove", function(event_){
-			if(event_.buttons == 1 && Animated.mouse.b == 1){
-				Animated.camera.rotate(Animated.camera.rotation.substract([0.007 * (event_.offsetY - Animated.mouse.y), 0.007 * (event_.offsetX - Animated.mouse.x), 0, 0]));
-				Animated.camera.position.set(Animated.camera.direction.scale(-Animated.radius).add(Animated.pivot));
-				Animated.camera.target(Animated.pivot);
+		Frustum.canvasgl.addEventListener("mousemove", function(event_){
+			if(event_.buttons == 1 && Frustum.mouse.b == 1){
+				Frustum.camera.rotate(Frustum.camera.rotation.substract([0.007 * (event_.offsetY - Frustum.mouse.y), 0.007 * (event_.offsetX - Frustum.mouse.x), 0, 0]));
+				Frustum.camera.position.set(Frustum.camera.direction.scale(-Frustum.radius).add(Frustum.pivot));
+				Frustum.camera.target(Frustum.pivot);
 			}
-			Animated.mouse = {
+			Frustum.mouse = {
 				x: event_.offsetX,
 				y: event_.offsetY,
 				b: event_.buttons,
 			};
 		});
 		
-		Animated.canvasgl.addEventListener("mousedown", function(event_){
-			Animated.mouse = {
+		Frustum.canvasgl.addEventListener("mousedown", function(event_){
+			Frustum.mouse = {
 				x: event_.offsetX,
 				y: event_.offsetY,
 				b: event_.buttons,
 			};
 		});
 		
-		Animated.canvasgl.addEventListener("mouseup", function(event_){
-			Animated.mouse = {
+		Frustum.canvasgl.addEventListener("mouseup", function(event_){
+			Frustum.mouse = {
 				x: event_.offsetX,
 				y: event_.offsetY,
 				b: event_.buttons,
@@ -843,23 +843,23 @@ function projection()
 		});
 		
 		document.getElementById("Fig3D").getElementsByTagName("input")[0].oninput = function(){
-			Animated.cursor[2] = parseInt(this.value);
-			Animated.calculatePoint();
+			Frustum.cursor[2] = parseInt(this.value);
+			Frustum.calculatePoint();
 		};
 		
-		Animated.canvas2d.addEventListener("mousedown", function(event_){
+		Frustum.canvas2d.addEventListener("mousedown", function(event_){
 			if(event_.buttons == 1){
-				Animated.cursor[0] = event_.offsetX;
-				Animated.cursor[1] = event_.offsetY;
-				Animated.calculatePoint();
+				Frustum.cursor[0] = event_.offsetX;
+				Frustum.cursor[1] = event_.offsetY;
+				Frustum.calculatePoint();
 			}
 		});
 		
-		Animated.canvas2d.addEventListener("mousemove", function(event_){
+		Frustum.canvas2d.addEventListener("mousemove", function(event_){
 			if(event_.buttons == 1){
-				Animated.cursor[0] = event_.offsetX;
-				Animated.cursor[1] = event_.offsetY;
-				Animated.calculatePoint();
+				Frustum.cursor[0] = event_.offsetX;
+				Frustum.cursor[1] = event_.offsetY;
+				Frustum.calculatePoint();
 			}
 		});
 		
@@ -873,16 +873,16 @@ function projection()
 			canvasgl.width = canvasgl.offsetWidth;
 			canvasgl.height = canvasgl.offsetHeight;
 			gl.viewport(0, 0, canvasgl.offsetWidth, canvasgl.offsetHeight);
-			Animated.camera.aspectRatio = canvasgl.offsetHeight / canvasgl.offsetWidth;
-			Animated.camera.project();
+			Frustum.camera.aspectRatio = canvasgl.offsetHeight / canvasgl.offsetWidth;
+			Frustum.camera.project();
 			
-			Animated.canvas2d.width = Animated.canvas2d.offsetWidth;
-			Animated.canvas2d.height = Animated.canvas2d.offsetHeight;
+			Frustum.canvas2d.width = Frustum.canvas2d.offsetWidth;
+			Frustum.canvas2d.height = Frustum.canvas2d.offsetHeight;
 		}
 		
 		
 		// Draw the scene repeatedly
-		function Animated_Play(){
+		function Frustum_Play(){
 			// Update
 			this.deltaTime = this.timeFrameCurrent - this.timeFrameLast;
 			// this.update();
@@ -890,17 +890,17 @@ function projection()
 			// Draw
 			this.draw();
 		}
-		animation_initAnimationComponent(Animated, Animated_Play, false, true); // TODO: DO NOT INITIATE ANIMATION.
+		animation_initAnimationComponent(Frustum, Frustum_Play, false, true); // TODO: DO NOT INITIATE ANIMATION.
 		
 		// https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver
 		new MutationObserver((mutationList, observer) => {
 			for(const mutation of mutationList){
 				if(mutation.type == "attributes" && mutation.attributeName == "style"){
 					if(mutation.target.style.display == "none"){
-						if(Animated.animationID != 0){
+						if(Frustum.animationID != 0){
 							// Stop animation.
-							cancelAnimationFrame(Animated.animationID);
-							Animated.animationID = 0;
+							cancelAnimationFrame(Frustum.animationID);
+							Frustum.animationID = 0;
 						}
 					}else{
 						// Adjust resolution.
@@ -908,15 +908,15 @@ function projection()
 						canvasgl.height = canvasgl.offsetHeight;
 						gl.viewport(0, 0, canvasgl.offsetWidth, canvasgl.offsetHeight);
 						
-						Animated.camera.aspectRatio = canvasgl.offsetHeight / canvasgl.offsetWidth;
-						Animated.camera.project();
+						Frustum.camera.aspectRatio = canvasgl.offsetHeight / canvasgl.offsetWidth;
+						Frustum.camera.project();
 						
-						Animated.canvas2d.width = Animated.canvas2d.offsetWidth;
-						Animated.canvas2d.height = Animated.canvas2d.offsetHeight;
+						Frustum.canvas2d.width = Frustum.canvas2d.offsetWidth;
+						Frustum.canvas2d.height = Frustum.canvas2d.offsetHeight;
 						
-						if(Animated.animationID == 0){
+						if(Frustum.animationID == 0){
 							// Resume animation.
-							Animated.animationID = requestAnimationFrame(Animated.animationStart);
+							Frustum.animationID = requestAnimationFrame(Frustum.animationStart);
 						}
 					}
 				}
